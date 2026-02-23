@@ -10,7 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@wailsio/runtime": "latest",
+    "@wailsio/runtime": "^3.0.0-alpha.79",
+    "lucide-vue-next": "^0.575.0",
     "naive-ui": "^2.43.2",
     "vue": "^3.2.45"
   },

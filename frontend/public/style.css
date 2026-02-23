@@ -63,11 +63,13 @@ button {
 
 body {
     margin: 0;
+    padding: 0;
     display: flex;
     place-items: center;
     place-content: center;
-    min-width: 320px;
-    min-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .container {
@@ -83,9 +85,11 @@ h1 {
 }
 
 #app {
-    max-width: 1280px;
-    margin: 0 auto;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
     text-align: center;
+    overflow: hidden;
 }
 
 .result {

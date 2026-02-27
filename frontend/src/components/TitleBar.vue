@@ -18,25 +18,25 @@
     
     <!-- 语言按钮和窗口控制按钮区域 -->
     <div class="button-group">
-      <Tooltip :text="currentLanguage === 'zh' ? '切换到英文' : '切换到中文'">
+      <Tooltip :text="locale === 'zh-CN' ? '切换到英文' : '切换到中文'">
         <button @click="toggleLanguage" class="control-button language-button">
-          <span class="language-icon" :class="currentLanguage === 'zh' ? 'china-flag' : 'us-flag'"></span>
+          <span class="language-icon" :class="locale === 'zh-CN' ? 'china-flag' : 'us-flag'"></span>
         </button>
       </Tooltip>
       <div class="divider"></div>
-      <Tooltip :text="i18n('minimize')">
+      <Tooltip :text="t('status.minimize')">
         <button @click="minimizeWindow" class="window-control minimize">
           <Minus :size="20" />
         </button>
       </Tooltip>
     </div>
-    <Tooltip :text="isMaximized ? i18n('restore') : i18n('maximize')">
+    <Tooltip :text="isMaximized ? t('status.restore') : t('status.maximize')">
       <button @click="toggleMaximize" class="window-control maximize">
         <Maximize2 v-if="!isMaximized" :size="20" />
         <Minimize2 v-else :size="20" />
       </button>
     </Tooltip>
-    <Tooltip :text="i18n('close')">
+    <Tooltip :text="t('status.close')">
       <button @click="closeWindow" class="window-control close">
         <X :size="20" />
       </button>
@@ -46,57 +46,58 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Minus, Maximize2, Minimize2, X, Sun, Moon } from 'lucide-vue-next'
 import * as wails from '@wailsio/runtime'
 import Tooltip from './Tooltip.vue'
 
+const { t, locale } = useI18n()
+
+// 接收主题状态作为prop
+const props = defineProps({
+  isDarkTheme: {
+    type: Boolean,
+    default: false
+  }
+})
+
 // 窗口状态
 const isMaximized = ref(false)
 
-// 主题状态
-const isDarkTheme = ref(localStorage.getItem('theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches)
-
-// 国际化状态
-const currentLanguage = ref(localStorage.getItem('language') || 'zh')
-
 // 应用名称
-const appName = ref('FG-ABYSS')
-
-// 语言数据
-const messages = {
-  zh: {
-    minimize: '最小化',
-    maximize: '最大化',
-    restore: '还原',
-    close: '关闭',
-    appName: 'FG-ABYSS 非攻-渊渟'
-  },
-  en: {
-    minimize: 'Minimize',
-    maximize: 'Maximize',
-    restore: 'Restore',
-    close: 'Close',
-    appName: 'FG-ABYSS 非攻-渊渟'
-  }
-}
-
-// 国际化函数
-const i18n = (key: string) => {
-  return messages[currentLanguage.value as 'zh' | 'en'][key as keyof typeof messages.zh] || key
-}
+const appName = ref('FG-ABYSS 非攻-渊渟')
 
 // 主题切换
 const toggleTheme = () => {
-  isDarkTheme.value = !isDarkTheme.value
-  localStorage.setItem('theme', isDarkTheme.value ? 'dark' : 'light')
-  document.documentElement.classList.toggle('dark', isDarkTheme.value)
+  const newTheme = !props.isDarkTheme
+  localStorage.setItem('theme', newTheme ? 'dark' : 'light')
+  localStorage.setItem('themeMode', newTheme ? 'dark' : 'light')
+  document.documentElement.classList.toggle('dark', newTheme)
+  // 触发storage事件，让其他组件知道主题变化
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: 'theme',
+    newValue: newTheme ? 'dark' : 'light'
+  }))
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: 'themeMode',
+    newValue: newTheme ? 'dark' : 'light'
+  }))
 }
+
+// 监听localStorage中主题变化
+window.addEventListener('storage', (event) => {
+  if (event.key === 'theme') {
+    // 由于我们使用的是prop，这里不需要直接修改isDarkTheme
+    // 而是通过App.vue中的watch来更新prop值
+  }
+})
 
 // 语言切换
 const toggleLanguage = () => {
-  currentLanguage.value = currentLanguage.value === 'zh' ? 'en' : 'zh'
-  localStorage.setItem('language', currentLanguage.value)
-  appName.value = i18n('appName')
+  const currentLang = locale.value
+  const newLang = currentLang === 'zh-CN' ? 'en-US' : 'zh-CN'
+  locale.value = newLang
+  localStorage.setItem('locale', newLang)
 }
 
 // 窗口控制
@@ -142,22 +143,7 @@ const checkMaximizeState = async () => {
   }
 }
 
-// 监听主题和语言变化
-watch(isDarkTheme, (newTheme) => {
-  document.documentElement.classList.toggle('dark', newTheme)
-})
-
-watch(currentLanguage, (newLang) => {
-  appName.value = i18n('appName')
-})
-
 onMounted(() => {
-  // 初始化主题
-  document.documentElement.classList.toggle('dark', isDarkTheme.value)
-  
-  // 初始化语言
-  appName.value = i18n('appName')
-  
   // 检查窗口状态
   checkMaximizeState()
   window.addEventListener('resize', checkMaximizeState)
@@ -328,12 +314,14 @@ onMounted(() => {
 }
 
 .control-button:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--active-color);
+  opacity: 0.9;
   transform: translateY(-2px);
   box-shadow: 
     0 6px 16px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  border-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--active-color);
+  color: white;
 }
 
 .title-bar.dark .control-button {
@@ -349,11 +337,13 @@ onMounted(() => {
 }
 
 .title-bar.dark .control-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--active-color);
+  opacity: 0.9;
   box-shadow: 
     0 6px 16px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--active-color);
+  color: white;
 }
 
 /* 主题切换按钮 */
@@ -452,12 +442,14 @@ onMounted(() => {
 }
 
 .window-control:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--active-color);
+  opacity: 0.9;
   transform: translateY(-2px);
   box-shadow: 
     0 6px 16px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: var(--active-color);
+  color: white;
 }
 
 .title-bar.dark .window-control {
@@ -473,11 +465,13 @@ onMounted(() => {
 }
 
 .title-bar.dark .window-control:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--active-color);
+  opacity: 0.9;
   box-shadow: 
     0 6px 16px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--active-color);
+  color: white;
 }
 
 /* 最小化按钮 */

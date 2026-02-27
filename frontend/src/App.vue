@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import TitleBar from './components/TitleBar.vue'
+import StatusBar from './components/StatusBar.vue'
+import Sidebar from './components/Sidebar.vue'
+import HomeContent from './components/HomeContent.vue'
+import ProjectsContent from './components/ProjectsContent.vue'
+import PayloadsContent from './components/PayloadsContent.vue'
+import PluginsContent from './components/PluginsContent.vue'
+import SettingsContent from './components/SettingsContent.vue'
 import { ref, onMounted, computed } from 'vue'
-import { Home, Folder, Package, Plug, Settings, Server, Cpu, Database } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+import { NConfigProvider, darkTheme } from 'naive-ui'
+
+const { t, locale } = useI18n()
 
 const isDarkTheme = ref(localStorage.getItem('theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches)
+const themeMode = ref(localStorage.getItem('themeMode') || 'system')
 const currentNavItem = ref('home')
-
-// 导航项配置
-const navItems = [
-  { id: 'home', label: '首页', icon: Home },
-  { id: 'projects', label: '项目', icon: Folder },
-  { id: 'payloads', label: '载荷', icon: Package },
-  { id: 'plugins', label: '插件', icon: Plug },
-  { id: 'settings', label: '设置', icon: Settings }
-]
 
 // 系统状态数据（模拟）
 const systemStatus = ref({
@@ -33,215 +35,122 @@ const switchNavItem = (itemId: string) => {
   currentNavItem.value = itemId
 }
 
-onMounted(() => {
+// 处理主题切换
+const handleThemeChange = (mode: string) => {
+  themeMode.value = mode
+  localStorage.setItem('themeMode', themeMode.value)
+  updateTheme()
+}
+
+// 更新主题
+const updateTheme = () => {
+  if (themeMode.value === 'light') {
+    isDarkTheme.value = false
+  } else if (themeMode.value === 'dark') {
+    isDarkTheme.value = true
+  } else {
+    // 跟随系统
+    isDarkTheme.value = window.matchMedia('(prefers-color-scheme: dark)').matches
+  }
+  localStorage.setItem('theme', isDarkTheme.value ? 'dark' : 'light')
   document.documentElement.classList.toggle('dark', isDarkTheme.value)
+}
+
+// 监听系统主题变化
+const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+mediaQuery.addEventListener('change', () => {
+  if (themeMode.value === 'system') {
+    updateTheme()
+  }
+})
+
+// 监听localStorage中主题变化
+window.addEventListener('storage', (event) => {
+  if (event.key === 'theme') {
+    isDarkTheme.value = event.newValue === 'dark'
+    // 当手动切换主题时，更新themeMode为对应模式
+    themeMode.value = isDarkTheme.value ? 'dark' : 'light'
+    localStorage.setItem('themeMode', themeMode.value)
+  } else if (event.key === 'accentColor' && event.newValue) {
+    document.documentElement.style.setProperty('--active-color', event.newValue)
+  } else if (event.key === 'fontFamily' && event.newValue) {
+    document.documentElement.style.setProperty('--font-family', event.newValue)
+  } else if (event.key === 'fontSize' && event.newValue) {
+    document.documentElement.style.setProperty('--font-size', event.newValue)
+  }
+})
+
+onMounted(() => {
+  updateTheme()
+  
+  // 初始化强调色
+  const savedAccentColor = localStorage.getItem('accentColor')
+  if (savedAccentColor) {
+    document.documentElement.style.setProperty('--active-color', savedAccentColor)
+  }
+  
+  // 初始化字体
+  const savedFontFamily = localStorage.getItem('fontFamily')
+  if (savedFontFamily) {
+    document.documentElement.style.setProperty('--font-family', savedFontFamily)
+  }
+  
+  // 初始化字体大小
+  const savedFontSize = localStorage.getItem('fontSize')
+  if (savedFontSize) {
+    document.documentElement.style.setProperty('--font-size', savedFontSize)
+  }
 })
 </script>
 
 <template>
-  <div class="app-container">
-    <TitleBar />
-    <div class="main-content">
-      <!-- 左边导航区 -->
-      <div class="sidebar">
-        <div class="nav-item" 
-             v-for="item in navItems" 
-             :key="item.id"
-             :class="{ active: currentNavItem === item.id }"
-             @click="switchNavItem(item.id)"
-        >
-          <component :is="item.icon" :size="24" />
-          <span>{{ item.label }}</span>
+  <NConfigProvider :theme="isDarkTheme ? darkTheme : null">
+    <div class="app-container" :class="{ 'dark': isDarkTheme }">
+      <TitleBar :is-dark-theme="isDarkTheme" />
+      <div class="main-content">
+        <!-- 左边导航区 -->
+        <Sidebar 
+          :current-nav-item="currentNavItem"
+          @switch-nav="switchNavItem"
+        />
+        
+        <!-- 右边内容区 -->
+        <div class="content-area">
+          <!-- 首页内容 -->
+          <HomeContent 
+            v-if="currentContent === 'home'"
+            :system-status="systemStatus"
+          />
+          
+          <!-- 项目内容 -->
+          <ProjectsContent 
+            v-else-if="currentContent === 'projects'"
+          />
+          
+          <!-- 载荷内容 -->
+          <PayloadsContent 
+            v-else-if="currentContent === 'payloads'"
+          />
+          
+          <!-- 插件内容 -->
+          <PluginsContent 
+            v-else-if="currentContent === 'plugins'"
+          />
+          
+          <!-- 设置内容 -->
+          <SettingsContent 
+            v-else-if="currentContent === 'settings'"
+            :is-dark-theme="isDarkTheme"
+            :theme-mode="themeMode"
+            @update:theme-mode="handleThemeChange"
+          />
         </div>
       </div>
       
-      <!-- 右边内容区 -->
-      <div class="content-area">
-        <!-- 首页内容 -->
-        <div v-if="currentContent === 'home'" class="content-section">
-          <h1>欢迎使用 FG-ABYSS</h1>
-          <div class="home-content">
-            <div class="home-card">
-              <Server :size="48" />
-              <h3>项目介绍</h3>
-              <p>FG-ABYSS 是一个功能强大的安全工具，用于管理项目、生成载荷和使用插件。</p>
-            </div>
-            <div class="home-card">
-              <Cpu :size="48" />
-              <h3>系统状态</h3>
-              <p>内存: {{ systemStatus.memoryUsage }}</p>
-              <p>CPU: {{ systemStatus.cpuUsage }}</p>
-              <p>运行时间: {{ systemStatus.uptime }}</p>
-            </div>
-            <div class="home-card">
-              <Database :size="48" />
-              <h3>许可协议</h3>
-              <p>本软件采用 MIT 许可证开源。</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 项目内容 -->
-        <div v-else-if="currentContent === 'projects'" class="content-section">
-          <h1>项目管理</h1>
-          <div class="projects-content">
-            <div class="projects-sidebar">
-              <h3>项目目录</h3>
-              <div class="directory-tree">
-                <div class="tree-item">项目 1</div>
-                <div class="tree-item">项目 2</div>
-                <div class="tree-item">项目 3</div>
-              </div>
-            </div>
-            <div class="projects-main">
-              <h3>WebShell 列表</h3>
-              <div class="webshell-list">
-                <div class="webshell-item">
-                  <span>webshell1.php</span>
-                  <span>192.168.1.100</span>
-                  <span>2024-01-01</span>
-                  <button class="action-button">进入</button>
-                </div>
-                <div class="webshell-item">
-                  <span>webshell2.asp</span>
-                  <span>192.168.1.101</span>
-                  <span>2024-01-02</span>
-                  <button class="action-button">进入</button>
-                </div>
-                <div class="webshell-item">
-                  <span>webshell3.aspx</span>
-                  <span>192.168.1.102</span>
-                  <span>2024-01-03</span>
-                  <button class="action-button">进入</button>
-                </div>
-              </div>
-              <div class="pagination">
-                <button class="page-button">上一页</button>
-                <button class="page-button active">1</button>
-                <button class="page-button">2</button>
-                <button class="page-button">3</button>
-                <button class="page-button">下一页</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 载荷内容 -->
-        <div v-else-if="currentContent === 'payloads'" class="content-section">
-          <h1>载荷生成</h1>
-          <div class="payloads-content">
-            <div class="payload-form">
-              <div class="form-group">
-                <label>脚本类型</label>
-                <select>
-                  <option>PHP</option>
-                  <option>ASP</option>
-                  <option>ASPX</option>
-                  <option>JSP</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>功能类型</label>
-                <select>
-                  <option>基础版</option>
-                  <option>文件管理</option>
-                  <option>命令执行</option>
-                  <option>数据库管理</option>
-                  <option>完整版</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>连接密码</label>
-                <input type="password" placeholder="请输入连接密码">
-              </div>
-              <div class="form-group">
-                <label>混淆级别</label>
-                <select>
-                  <option>无混淆</option>
-                  <option>轻度混淆</option>
-                  <option>中度混淆</option>
-                  <option>高度混淆</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>文件名</label>
-                <input type="text" placeholder="shell.php">
-              </div>
-              <button class="generate-button">生成载荷</button>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 插件内容 -->
-        <div v-else-if="currentContent === 'plugins'" class="content-section">
-          <h1>插件管理</h1>
-          <div class="plugins-content">
-            <div class="plugins-tabs">
-              <button class="tab-button active">本地插件</button>
-              <button class="tab-button">插件商店</button>
-            </div>
-            <div class="plugins-list">
-              <div class="plugin-item">
-                <h3>插件 1</h3>
-                <p>这是一个本地插件，用于执行特定任务。</p>
-                <button class="plugin-button">启用</button>
-              </div>
-              <div class="plugin-item">
-                <h3>插件 2</h3>
-                <p>这是另一个本地插件，提供额外功能。</p>
-                <button class="plugin-button">启用</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 设置内容 -->
-        <div v-else-if="currentContent === 'settings'" class="content-section">
-          <h1>设置</h1>
-          <div class="settings-content">
-            <div class="settings-group">
-              <h3>外观设置</h3>
-              <div class="setting-item">
-                <label>主题</label>
-                <select>
-                  <option>浅色</option>
-                  <option>深色</option>
-                  <option>跟随系统</option>
-                </select>
-              </div>
-            </div>
-            <div class="settings-group">
-              <h3>系统设置</h3>
-              <div class="setting-item">
-                <label>自动更新</label>
-                <input type="checkbox">
-              </div>
-              <div class="setting-item">
-                <label>检查更新</label>
-                <button>立即检查</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- 底部状态栏 -->
+      <StatusBar :system-status="systemStatus" />
     </div>
-    
-    <!-- 底部状态栏 -->
-    <div class="status-bar">
-      <div class="status-item">
-        <span>内存: {{ systemStatus.memoryUsage }}</span>
-      </div>
-      <div class="status-item">
-        <span>进程 ID: {{ systemStatus.processId }}</span>
-      </div>
-      <div class="status-item">
-        <span>CPU: {{ systemStatus.cpuUsage }}</span>
-      </div>
-      <div class="status-item">
-        <span>运行时间: {{ systemStatus.uptime }}</span>
-      </div>
-    </div>
-  </div>
+  </NConfigProvider>
 </template>
 
 <style>
@@ -252,50 +161,58 @@ onMounted(() => {
   --border-color: rgba(0, 0, 0, 0.1);
   --hover-color: rgba(0, 0, 0, 0.06);
   --active-color: #667eea;
-  --sidebar-bg: rgba(255, 255, 255, 0.95);
-  --content-bg: rgba(255, 255, 255, 0.98);
-  --status-bar-bg: rgba(255, 255, 255, 0.98);
-  --card-bg: rgba(255, 255, 255, 0.98);
-  --glass-blur: blur(20px);
+  --sidebar-bg: #f8fafc;
+  --content-bg: #ffffff;
+  --status-bar-bg: #f8fafc;
+  --card-bg: #ffffff;
+  --panel-bg: #667eea;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --info-color: #3b82f6;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.4);
-  --glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(255, 255, 255, 0.2);
-  --glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
-  --glass-highlight: rgba(255, 255, 255, 0.8);
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-size: 14px;
 }
 
 .dark {
-  --bg-color: #0f172a;
+  --bg-color: #1a1a2e;
   --text-color: #e2e8f0;
   --border-color: rgba(255, 255, 255, 0.1);
   --hover-color: rgba(255, 255, 255, 0.06);
-  --active-color: #818cf8;
-  --sidebar-bg: rgba(30, 41, 59, 0.85);
-  --content-bg: rgba(15, 23, 42, 0.9);
-  --status-bar-bg: rgba(30, 41, 59, 0.95);
-  --card-bg: rgba(30, 41, 59, 0.9);
+  --sidebar-bg: #16213e;
+  --content-bg: #1a1a2e;
+  --status-bar-bg: #16213e;
+  --card-bg: #16213e;
+  --panel-bg: #0f3460;
+  --success-color: #4ade80;
+  --warning-color: #facc15;
+  --error-color: #f87171;
+  --info-color: #60a5fa;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.12);
-  --glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-  --glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-  --glass-highlight: rgba(255, 255, 255, 0.15);
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: 1.5;
+  background: var(--bg-color);
   color: var(--text-color);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+* {
+  font-size: inherit;
+}
+
 .dark body {
-  background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+  background: var(--bg-color);
 }
 
 /* 应用容器样式 */
@@ -314,22 +231,16 @@ body {
   flex: 1;
   display: flex;
   overflow: hidden;
-  gap: 12px;
-  padding: 12px;
   width: 100%;
   box-sizing: border-box;
   max-width: 100%;
 }
 
-/* 侧边栏样式 - 液态玻璃风格 */
+/* 侧边栏样式 - 深色主题风格 */
 .sidebar {
   width: 90px;
   background: var(--sidebar-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 12px;
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -337,20 +248,6 @@ body {
   gap: 12px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.sidebar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
 }
 
 .nav-item {
@@ -364,54 +261,27 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   gap: 8px;
-  position: relative;
-  overflow: hidden;
   padding: 10px 6px;
-  z-index: 1;
   box-sizing: border-box;
-}
-
-.nav-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 0;
-}
-
-.nav-item:hover::before {
-  opacity: 1;
+  border-radius: 8px;
 }
 
 .nav-item:hover {
   background: var(--hover-color);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: var(--active-color);
   color: white;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4), 0 1px 3px rgba(99, 102, 241, 0.2);
-  transform: scale(1.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.nav-item.active::before {
-  opacity: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .nav-item span {
-  font-size: 12px;
+  font-size: 0.857em; /* 12px / 14px */
   text-align: center;
   font-weight: 500;
   letter-spacing: 0.3px;
@@ -419,42 +289,22 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
-  z-index: 1;
 }
 
 .nav-item svg {
-  z-index: 1;
   flex-shrink: 0;
 }
 
-/* 内容区域样式 - 液态玻璃风格 */
+/* 内容区域样式 - 深色主题风格 */
 .content-area {
   flex: 1;
   background: var(--content-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 12px;
-  overflow-y: auto;
-  padding: 24px;
+  padding: 0;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
-  position: relative;
-}
-
-.content-area::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
+  border-right: 1px solid var(--border-color);
 }
 
 .content-section {
@@ -463,7 +313,7 @@ body {
 }
 
 .content-section h1 {
-  font-size: 24px;
+  font-size: 1.714em; /* 24px / 14px */
   font-weight: 600;
   margin-bottom: 24px;
   color: var(--text-color);
@@ -484,7 +334,6 @@ body {
   -webkit-backdrop-filter: var(--glass-blur);
   border: var(--glass-border);
   box-shadow: var(--shadow-sm), var(--glass-shadow);
-  border-radius: 12px;
   padding: 24px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -515,7 +364,7 @@ body {
 }
 
 .home-card h3 {
-  font-size: 18px;
+  font-size: 1.286em; /* 18px / 14px */
   font-weight: 600;
   margin-bottom: 12px;
   color: var(--text-color);
@@ -524,7 +373,7 @@ body {
 }
 
 .home-card p {
-  font-size: 14px;
+  font-size: 1em; /* 14px / 14px */
   line-height: 1.5;
   color: var(--text-color);
   opacity: 0.8;
@@ -544,9 +393,7 @@ body {
   background: var(--card-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-sm), var(--glass-shadow);
-  border-radius: 12px;
+  border-right: 1px solid var(--border-color);
   padding: 20px;
   overflow-y: auto;
   flex-shrink: 0;
@@ -567,7 +414,7 @@ body {
 }
 
 .projects-sidebar h3 {
-  font-size: 16px;
+  font-size: 1.143em; /* 16px / 14px */
   font-weight: 600;
   margin-bottom: 16px;
   color: var(--text-color);
@@ -598,9 +445,6 @@ body {
   background: var(--card-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-sm), var(--glass-shadow);
-  border-radius: 12px;
   padding: 20px;
   overflow-y: auto;
   position: relative;
@@ -667,13 +511,14 @@ body {
   border: none;
   border-radius: 6px;
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: 0.857em; /* 12px / 14px */
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .action-button:hover {
-  background: #5a67d8;
+  background: var(--active-color);
+  opacity: 0.9;
   transform: translateY(-1px);
 }
 
@@ -724,7 +569,6 @@ body {
   -webkit-backdrop-filter: var(--glass-blur);
   border: var(--glass-border);
   box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 12px;
   padding: 32px;
   width: 100%;
   max-width: 500px;
@@ -752,7 +596,7 @@ body {
 
 .form-group label {
   display: block;
-  font-size: 14px;
+  font-size: 1em; /* 14px / 14px */
   font-weight: 500;
   margin-bottom: 8px;
   color: var(--text-color);
@@ -793,7 +637,6 @@ body {
   background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 8px;
   padding: 14px 20px;
   font-size: 16px;
   font-weight: 500;
@@ -860,7 +703,6 @@ body {
   -webkit-backdrop-filter: var(--glass-blur);
   border: var(--glass-border);
   box-shadow: var(--shadow-sm), var(--glass-shadow);
-  border-radius: 12px;
   padding: 20px;
   transition: all 0.3s ease;
   position: relative;
@@ -907,7 +749,6 @@ body {
   background: var(--active-color);
   color: white;
   border: none;
-  border-radius: 6px;
   padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
@@ -917,7 +758,8 @@ body {
 }
 
 .plugin-button:hover {
-  background: #5a67d8;
+  background: var(--active-color);
+  opacity: 0.9;
   transform: translateY(-1px);
 }
 
@@ -934,7 +776,6 @@ body {
   -webkit-backdrop-filter: var(--glass-blur);
   border: var(--glass-border);
   box-shadow: var(--shadow-sm), var(--glass-shadow);
-  border-radius: 12px;
   padding: 24px;
   margin-bottom: 20px;
   position: relative;
@@ -1008,7 +849,8 @@ body {
 }
 
 .setting-item button:hover {
-  background: #5a67d8;
+  background: var(--active-color);
+  opacity: 0.9;
   transform: translateY(-1px);
 }
 
@@ -1160,22 +1002,16 @@ body {
   flex: 1;
   display: flex;
   overflow: hidden;
-  gap: 12px;
-  padding: 12px;
   width: 100%;
   box-sizing: border-box;
   max-width: 100%;
 }
 
-/* 侧边栏样式 - 液态玻璃风格 */
+/* 侧边栏样式 - 深色主题风格 */
 .sidebar {
   width: 90px;
   background: var(--sidebar-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 12px;
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1183,20 +1019,6 @@ body {
   gap: 12px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.sidebar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
 }
 
 .nav-item {
@@ -1210,54 +1032,27 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   gap: 8px;
-  position: relative;
-  overflow: hidden;
   padding: 10px 6px;
-  z-index: 1;
   box-sizing: border-box;
-}
-
-.nav-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 0;
-}
-
-.nav-item:hover::before {
-  opacity: 1;
+  border-radius: 8px;
 }
 
 .nav-item:hover {
   background: var(--hover-color);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: var(--active-color);
   color: white;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4), 0 1px 3px rgba(99, 102, 241, 0.2);
-  transform: scale(1.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.nav-item.active::before {
-  opacity: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .nav-item span {
-  font-size: 12px;
+  font-size: 0.857em; /* 12px / 14px */
   text-align: center;
   font-weight: 500;
   letter-spacing: 0.3px;
@@ -1265,66 +1060,85 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
-  z-index: 1;
 }
 
 .nav-item svg {
-  z-index: 1;
   flex-shrink: 0;
 }
 
-/* 内容区域样式 - 液态玻璃风格 */
+/* 内容区域样式 - 深色主题风格 */
 .content-area {
   flex: 1;
   background: var(--content-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 12px;
-  overflow-y: auto;
-  padding: 24px;
+  padding: 0;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
-  position: relative;
-}
-
-.content-area::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 12px;
+  border-right: 1px solid var(--border-color);
 }
 
 .content-section {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.content-header {
+  width: 100%;
+  padding: 16px 24px;
+  margin-bottom: 0;
+  background: var(--panel-bg);
+  border-bottom: none;
+  box-shadow: none;
 }
 
 .content-section h1 {
-  margin: 0 0 24px 0;
-  font-size: 28px;
+  margin: 0;
+  font-size: 20px;
   font-weight: 600;
-  background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-align: center;
-  width: 100%;
-  box-sizing: border-box;
+  color: var(--text-color);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.2;
 }
 
-/* 首页内容样式 - 液态玻璃风格 */
+.content-body {
+  flex: 1;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  background: var(--content-bg);
+  border-top: none;
+}
+
+.content-section h1 .title {
+  font-weight: 700;
+  color: white;
+}
+
+.content-section h1 .separator {
+  color: white;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+.content-section h1 .subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: white;
+  opacity: 0.8;
+  font-style: normal;
+}
+
+/* 首页内容样式 - 深色主题风格 */
 .home-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1336,11 +1150,8 @@ body {
 
 .home-card {
   background: var(--card-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
   padding: 28px;
   display: flex;
   flex-direction: column;
@@ -1348,28 +1159,9 @@ body {
   text-align: center;
   gap: 16px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
   width: 100%;
   box-sizing: border-box;
-}
-
-.home-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.home-card:hover::before {
-  opacity: 1;
+  border-radius: 8px;
 }
 
 .home-card:hover {
@@ -1378,9 +1170,8 @@ body {
 }
 
 .home-card svg {
-  z-index: 1;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  color: var(--active-color);
 }
 
 .home-card h3 {
@@ -1388,8 +1179,6 @@ body {
   font-size: 18px;
   font-weight: 600;
   color: var(--text-color);
-  z-index: 1;
-  position: relative;
 }
 
 .home-card p {
@@ -1398,210 +1187,82 @@ body {
   line-height: 1.6;
   color: var(--text-color);
   opacity: 0.8;
-  z-index: 1;
-  position: relative;
 }
 
-/* 项目内容样式 - 液态玻璃风格 */
+/* 项目内容样式 - 深色主题风格 */
 .projects-content {
   display: flex;
-  gap: 20px;
-  height: calc(100% - 60px);
-  max-width: 1400px;
-  margin: 0 auto;
+  gap: 1px;
   width: 100%;
   box-sizing: border-box;
+  background: var(--border-color);
 }
 
 .projects-sidebar {
   width: 200px;
-  background: var(--card-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 12px;
+  background: var(--sidebar-bg);
   padding: 20px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.projects-sidebar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 12px;
+  overflow-y: auto;
 }
 
 .directory-tree {
   margin-top: 16px;
-  position: relative;
-  z-index: 1;
 }
 
 .tree-item {
   padding: 10px 12px;
   cursor: pointer;
-  border-radius: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 14px;
-  position: relative;
-  z-index: 1;
+  border-radius: 4px;
 }
 
 .tree-item:hover {
   background: var(--hover-color);
   transform: translateX(4px);
-  box-shadow: var(--shadow-sm);
 }
 
 .tree-item.active {
-  background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
-  color: white;
-  box-shadow: var(--shadow-md);
+  background: var(--panel-bg);
+  color: var(--active-color);
+  box-shadow: var(--shadow-sm);
 }
 
 .projects-main {
   flex: 1;
   display: flex;
   flex-direction: column;
+  background: var(--content-bg);
+  padding: 20px;
+  overflow-y: auto;
 }
 
-.webshell-list {
-  background: var(--card-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 12px;
+.projects-main h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.webshell-table-card {
   margin-bottom: 16px;
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
-
-.webshell-list::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 12px;
-}
-
-.webshell-item {
-  display: flex;
-  align-items: center;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border-color);
-  gap: 16px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  z-index: 1;
-}
-
-.webshell-item:hover {
-  background: var(--hover-color);
-  transform: translateX(4px);
-  box-shadow: var(--shadow-sm);
-}
-
-.webshell-item:last-child {
-  border-bottom: none;
-}
-
-.webshell-item span {
-  flex: 1;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.action-button {
-  padding: 10px 20px;
-  background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 80px;
-}
-
-.action-button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.pagination {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  flex-wrap: wrap;
-}
-
-.page-button {
-  padding: 10px 18px;
-  border: var(--glass-border);
   background: var(--card-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 14px;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 50px;
 }
 
-.page-button:hover {
-  background: var(--hover-color);
-  transform: translateY(-2px);
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 16px;
 }
 
-.page-button.active {
-  background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
-  color: white;
-  border-color: transparent;
-  box-shadow: var(--shadow-md);
-}
-
-/* 载荷内容样式 - 液态玻璃风格 */
+/* 载荷内容样式 - 深色主题风格 */
 .payloads-content {
-  height: calc(100% - 60px);
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
@@ -1609,45 +1270,25 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-y: auto;
   overflow-x: hidden;
 }
 
 .payload-form {
   background: var(--card-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
   padding: 28px;
   max-width: 560px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
-  overflow: hidden;
-  position: relative;
-}
-
-.payload-form::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 16px;
+  border-radius: 8px;
 }
 
 .form-group {
   margin-bottom: 20px;
   width: 100%;
   box-sizing: border-box;
-  position: relative;
-  z-index: 1;
 }
 
 .form-group label {
@@ -1661,36 +1302,28 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  position: relative;
-  z-index: 1;
 }
 
 .form-group label::before {
   content: '';
   width: 4px;
   height: 16px;
-  background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
+  background: var(--active-color);
   border-radius: 2px;
   flex-shrink: 0;
-  box-shadow: 0 0 8px rgba(102, 126, 234, 0.4);
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
   padding: 12px 16px;
-  border: var(--glass-border);
-  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
   background: var(--content-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
   color: var(--text-color);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-sm);
   font-size: 14px;
   box-sizing: border-box;
-  position: relative;
-  z-index: 1;
 }
 
 .form-group input::placeholder {
@@ -1710,19 +1343,20 @@ body {
 
 .form-group select:focus {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  border-color: var(--active-color);
 }
 
 .generate-button {
   padding: 16px 36px;
-  background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
+  background: var(--active-color);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
   font-size: 16px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1738,16 +1372,17 @@ body {
 
 .generate-button:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
+  background: var(--active-color);
+  opacity: 0.9;
 }
 
 .generate-button:active {
   transform: translateY(0);
 }
 
-/* 插件内容样式 - 液态玻璃风格 */
+/* 插件内容样式 - 深色主题风格 */
 .plugins-content {
-  height: calc(100% - 60px);
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
@@ -1758,16 +1393,15 @@ body {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
-  justify-content: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
 }
 
 .tab-button {
-  padding: 12px 24px;
-  border: var(--glass-border);
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
   background: var(--card-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-radius: 10px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
@@ -1788,9 +1422,9 @@ body {
 }
 
 .tab-button.active {
-  background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
+  background: var(--active-color);
   color: white;
-  border-color: transparent;
+  border-color: var(--active-color);
   box-shadow: var(--shadow-md);
 }
 
@@ -1804,31 +1438,14 @@ body {
 
 .plugin-item {
   background: var(--card-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.plugin-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 16px;
+  border-radius: 8px;
 }
 
 .plugin-item:hover {
@@ -1841,8 +1458,6 @@ body {
   font-size: 18px;
   font-weight: 600;
   color: var(--text-color);
-  position: relative;
-  z-index: 1;
 }
 
 .plugin-item p {
@@ -1851,17 +1466,15 @@ body {
   line-height: 1.6;
   color: var(--text-color);
   opacity: 0.8;
-  position: relative;
-  z-index: 1;
 }
 
 .plugin-button {
   margin-top: 12px;
   padding: 12px 24px;
-  background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
+  background: var(--active-color);
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
   font-size: 14px;
@@ -1880,131 +1493,178 @@ body {
 .plugin-button:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+  background: var(--active-color);
+  opacity: 0.9;
 }
 
-/* 设置内容样式 - 液态玻璃风格 */
-.settings-content {
-  height: calc(100% - 60px);
-  max-width: 800px;
-  margin: 0 auto;
+/* 设置内容样式 - 深色主题风格 */
+.settings-layout {
+  display: flex;
   width: 100%;
-  box-sizing: border-box;
+  gap: 1px;
+  background: var(--border-color);
+  margin: 0;
+  padding: 0;
+  border-top: none;
 }
+
+.settings-sidebar {
+  width: 200px;
+  background: var(--sidebar-bg);
+  padding: 20px 0;
+  overflow-y: auto;
+  margin: 0;
+  border: none;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .settings-sidebar {
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.settings-nav-item {
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  border-left: 3px solid transparent;
+}
+
+.settings-nav-item:hover {
+  background: var(--hover-color);
+  border-left-color: var(--active-color);
+}
+
+.settings-nav-item.active {
+  background: var(--panel-bg);
+  color: white;
+  border-left-color: var(--active-color);
+}
+
+.settings-main {
+  flex: 1;
+  background: var(--content-bg);
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  border: none;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+  z-index: 5;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .settings-main {
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.settings-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+
 
 .settings-group {
-  background: var(--card-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md), var(--glass-shadow);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 20px;
-  max-width: 540px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
+  padding: 20px;
+  margin: 0;
 }
 
-.settings-group::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 16px;
-}
-
-.settings-group h3 {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-color);
-  position: relative;
-  z-index: 1;
-}
-
-.setting-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border-color);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  z-index: 1;
-}
-
-.setting-item:hover {
-  background: var(--hover-color);
-  margin: 0 -24px;
-  padding: 16px 24px;
-  box-shadow: var(--shadow-sm);
-}
-
-.setting-item:last-child {
-  border-bottom: none;
-}
-
-.setting-item label {
+.settings-group h4 {
+  margin: 0 0 16px 0;
+  font-size: 14px;
   font-weight: 500;
-  font-size: 14px;
   color: var(--text-color);
+  opacity: 0.8;
 }
 
-.setting-item select {
-  padding: 8px 14px;
-  border: var(--glass-border);
-  border-radius: 8px;
-  background: var(--content-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  color: var(--text-color);
-  font-size: 14px;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* 主题选项 */
+.theme-options {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.setting-item button {
-  padding: 10px 20px;
-  background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
-  color: white;
-  border: none;
+.theme-option {
+  flex: 1;
+  min-width: 0;
+  padding: 24px 20px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 14px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--text-color);
+  text-align: center;
+  position: relative;
+  min-height: 120px;
+}
+
+.theme-option:hover {
+  border-color: var(--active-color);
+}
+
+.theme-option.active {
+  background: var(--active-color);
+  color: white;
+  border-color: var(--active-color);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.theme-icon {
+  font-size: 28px;
+  display: block;
+  margin: 0 auto;
+}
+
+.theme-option span:nth-child(2) {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  margin: 0 auto;
+}
+
+.theme-check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  color: var(--active-color);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 90px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
-.setting-item button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.dark .theme-check {
+  background: var(--active-color);
+  color: white;
 }
 
-/* 状态栏样式 - 液态玻璃风格 */
+/* 状态栏样式 - 深色主题风格 */
 .status-bar {
   height: 28px;
   background: var(--status-bar-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-top: var(--glass-border);
-  box-shadow: var(--shadow-sm), var(--glass-shadow);
+  border-top: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2022,33 +1682,6 @@ body {
   display: flex;
   align-items: center;
   font-weight: 500;
-}
-
-/* 深色主题样式 - 液态玻璃风格 */
-.app-container.dark-theme {
-  background-color: #0f172a;
-  color: #e2e8f0;
-}
-
-.app-container.dark-theme .sidebar {
-  background: rgba(30, 41, 59, 0.7);
-}
-
-.app-container.dark-theme .content-area {
-  background: rgba(15, 23, 42, 0.5);
-}
-
-.app-container.dark-theme .status-bar {
-  background: rgba(30, 41, 59, 0.8);
-}
-
-.app-container.dark-theme .home-card,
-.app-container.dark-theme .projects-sidebar,
-.app-container.dark-theme .webshell-list,
-.app-container.dark-theme .payload-form,
-.app-container.dark-theme .plugin-item,
-.app-container.dark-theme .settings-group {
-  background: rgba(30, 41, 59, 0.6);
 }
 
 /* 响应式设计 */
@@ -2077,8 +1710,7 @@ body {
 
 @media (max-width: 768px) {
   .main-content {
-    padding: 8px;
-    gap: 8px;
+    gap: 0;
   }
   
   .sidebar {
@@ -2099,6 +1731,14 @@ body {
   }
   
   .content-area {
+    padding: 0;
+  }
+  
+  .content-header {
+    padding: 12px 16px;
+  }
+  
+  .content-body {
     padding: 16px;
   }
   
@@ -2119,137 +1759,12 @@ body {
   
   .projects-content {
     flex-direction: column;
-    gap: 16px;
   }
   
   .projects-sidebar {
     width: 100%;
     height: auto;
     max-height: 150px;
-  }
-  
-  .webshell-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  
-  .webshell-item span {
-    width: 100%;
-  }
-  
-  .pagination {
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  
-  .page-button {
-    padding: 8px 12px;
-    min-width: 40px;
-  }
-  
-  .plugins-tabs {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .plugins-list {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .settings-group {
-    max-width: 100%;
-  }
-  
-  .payload-form {
-    max-width: 100%;
-  }
-  
-  .form-group input,
-  .form-group select {
-    padding: 12px 16px;
-    font-size: 14px;
-  }
-  
-  .form-group label {
-    font-size: 13px;
-  }
-  
-  .generate-button {
-    padding: 14px 28px;
-    font-size: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .sidebar {
-    width: 60px;
-  }
-  
-  .nav-item {
-    width: 50px;
-    height: 55px;
-    padding: 6px 3px;
-    gap: 4px;
-  }
-  
-  .nav-item span {
-    font-size: 9px;
-  }
-  
-  .content-section h1 {
-    font-size: 22px;
-  }
-  
-  .home-card {
-    padding: 20px;
-  }
-  
-  .action-button {
-    padding: 8px 16px;
-    min-width: 70px;
-  }
-  
-  .generate-button {
-    padding: 12px 24px;
-    min-width: 100px;
-  }
-  
-  .tab-button {
-    padding: 10px 18px;
-    min-width: 70px;
-  }
-  
-  .plugin-button {
-    padding: 10px 18px;
-    min-width: 70px;
-  }
-  
-  .payload-form {
-    padding: 24px;
-    max-width: 100%;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  .form-group input,
-  .form-group select {
-    padding: 12px 16px;
-    font-size: 14px;
-  }
-  
-  .form-group label {
-    font-size: 13px;
-    margin-bottom: 10px;
-  }
-  
-  .generate-button {
-    padding: 14px 28px;
-    font-size: 15px;
-    min-width: 120px;
   }
 }
 </style>

@@ -6,38 +6,188 @@
     <div class="content-body">
       <div class="projects-content">
         <div class="projects-sidebar">
-          <h3>{{ t('projects.projectDir') }}</h3>
+          <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 16px;">
+            <Tooltip :text="t('projects.newProject')">
+              <button class="new-project-button" @click="handleNewProject">
+                +
+              </button>
+            </Tooltip>
+          </div>
+          <div style="width: 100%; height: 1px; background: var(--border-color); margin-bottom: 16px;"></div>
           <div class="directory-tree">
-            <div class="tree-item">{{ t('projects.title') }} 1</div>
-            <div class="tree-item">{{ t('projects.title') }} 2</div>
-            <div class="tree-item">{{ t('projects.title') }} 3</div>
+            <div 
+              class="tree-item" 
+              :class="{ active: selectedProject === t('projects.title') + ' 1' }"
+              @click="selectedProject = t('projects.title') + ' 1'"
+            >
+              {{ t('projects.title') }} 1
+            </div>
+            <div 
+              class="tree-item" 
+              :class="{ active: selectedProject === t('projects.title') + ' 2' }"
+              @click="selectedProject = t('projects.title') + ' 2'"
+            >
+              {{ t('projects.title') }} 2
+            </div>
+            <div 
+              class="tree-item" 
+              :class="{ active: selectedProject === t('projects.title') + ' 3' }"
+              @click="selectedProject = t('projects.title') + ' 3'"
+            >
+              {{ t('projects.title') }} 3
+            </div>
           </div>
         </div>
         <div class="projects-main">
-          <h3>{{ t('projects.webshellList') }}</h3>
           <NCard class="webshell-table-card">
             <template #header>
-              <NSpace justify="space-between" align="center">
-                <NText>{{ t('projects.webshellList') }}</NText>
-                <NSelect
-                  v-model:value="pageSize"
-                  :options="[
-                    { label: `5 ${t('projects.itemsPerPage')}`, value: 5 },
-                    { label: `10 ${t('projects.itemsPerPage')}`, value: 10 },
-                    { label: `20 ${t('projects.itemsPerPage')}`, value: 20 }
-                  ]"
-                  @update:value="handlePageSizeChange"
-                  size="small"
-                />
-              </NSpace>
+              <div style="width: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <NInput
+                    v-model:value="searchQuery"
+                    placeholder="搜索 WebShell..."
+                    size="small"
+                    style="width: 300px; border-radius: 8px;"
+                    @input="handleSearch"
+                  >
+                    <template #prefix>
+                      <span style="margin-right: 8px;">🔍</span>
+                    </template>
+                  </NInput>
+                  <NSpace align="center" style="gap: 16px;">
+                    <NSpace align="center" style="gap: 8px;">
+                      <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.total') }}: <span style="color: var(--active-color); font-weight: 500;">{{ filteredData.length }}</span></span>
+                      <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.active') }}: <span style="color: #4CAF50; font-weight: 500;">{{ activeCount }}</span></span>
+                      <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.inactive') }}: <span style="color: #FF9800; font-weight: 500;">{{ inactiveCount }}</span></span>
+                    </NSpace>
+                    <NSelect
+                      v-model:value="pageSize"
+                      :options="[
+                        { label: `5 ${t('projects.itemsPerPage')}`, value: 5 },
+                        { label: `10 ${t('projects.itemsPerPage')}`, value: 10 },
+                        { label: `20 ${t('projects.itemsPerPage')}`, value: 20 }
+                      ]"
+                      @update:value="handlePageSizeChange"
+                      size="small"
+                      style="min-width: 100px"
+                    />
+                  </NSpace>
+                </div>
+              </div>
             </template>
-            <NTable
-              :columns="columns"
-              :data="currentPageData"
-              @sort="handleSort"
-              @contextmenu="handleContextMenu"
-              row-key="id"
-            />
+            <!-- 完整表格 -->
+            <div style="overflow-x: auto; margin-bottom: 16px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px;">
+              <!-- 表格 -->
+              <table id="webshellTable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                <thead>
+                  <tr style="background: var(--hover-color);">
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 60px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('id')">
+                      ID <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('id') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 120px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('name')">
+                      {{ t('projects.filename') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('name') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 200px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('url')">
+                      {{ t('projects.url') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('url') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('payload')">
+                      {{ t('projects.payloadType') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('payload') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('cryption')">
+                      {{ t('projects.cryption') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('cryption') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 80px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('encoding')">
+                      {{ t('projects.encoding') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('encoding') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('proxyType')">
+                      {{ t('projects.proxyType') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('proxyType') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('remark')">
+                      {{ t('projects.remark') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('remark') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('createTime')">
+                      {{ t('projects.createTime') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('createTime') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('updateTime')">
+                      {{ t('projects.updateTime') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('updateTime') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 80px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('status')">
+                      {{ t('projects.status') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('status') }}</span>
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 80px; position: relative;">
+                      {{ t('projects.action') }}
+                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in sortedData" :key="item.id" 
+                    @click="handleTableRowClick(item)"
+                    :class="{ 'table-row-selected': selectedTableRow && selectedTableRow.id === item.id }"
+                    style="cursor: pointer; transition: background-color 0.2s;"
+                  >
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.id }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.name }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.url }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.payload }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.cryption }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.encoding }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.proxyType }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.remark }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.createTime }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.updateTime }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.status }}</td>
+                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: center; min-width: 200px;">
+                      <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;">
+                        <button 
+                          style="padding: 4px 8px; background: var(--active-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; text-align: center; flex: 1 1 calc(25% - 6px); min-width: 60px;"
+                          @click="console.log('Enter webshell:', item)"
+                          onmouseover="this.style.opacity='0.8'"
+                          onmouseout="this.style.opacity='1'"
+                        >
+                          {{ t('projects.enter') }}
+                        </button>
+                        <button 
+                          style="padding: 4px 8px; background: #64748b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; text-align: center; flex: 1 1 calc(25% - 6px); min-width: 60px;"
+                          @click="console.log('Cache webshell:', item)"
+                          onmouseover="this.style.opacity='0.8'"
+                          onmouseout="this.style.opacity='1'"
+                        >
+                          {{ t('projects.cache') }}
+                        </button>
+                        <button 
+                          style="padding: 4px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; text-align: center; flex: 1 1 calc(25% - 6px); min-width: 60px;"
+                          @click="console.log('Edit webshell:', item)"
+                          onmouseover="this.style.opacity='0.8'"
+                          onmouseout="this.style.opacity='1'"
+                        >
+                          {{ t('projects.edit') }}
+                        </button>
+                        <button 
+                          style="padding: 4px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; text-align: center; flex: 1 1 calc(25% - 6px); min-width: 60px;"
+                          @click="console.log('Delete webshell:', item)"
+                          onmouseover="this.style.opacity='0.8'"
+                          onmouseout="this.style.opacity='1'"
+                        >
+                          {{ t('projects.delete') }}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <template #footer>
               <div class="pagination-container">
                 <NPagination
@@ -69,9 +219,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, h } from 'vue'
+import { ref, computed, h, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NTable, NButton, NCard, NPagination, NSpace, NSelect, NDropdown, NIcon, NMenu, NText } from 'naive-ui'
+import { NButton, NCard, NPagination, NSpace, NSelect, NDropdown, NIcon, NMenu, NText, NInput } from 'naive-ui'
+import Tooltip from './Tooltip.vue'
 
 const { t } = useI18n()
 
@@ -80,11 +231,12 @@ const page = ref(1)
 const pageSize = ref(5)
 const total = ref(12)
 
+// 搜索状态
+const searchQuery = ref('')
+
 // 排序状态
-const sortState = ref({
-  columnKey: 'date',
-  order: 'descend' as 'ascend' | 'descend' | null
-})
+const sortField = ref<string>('id')
+const sortDirection = ref<'asc' | 'desc'>('asc')
 
 // 右键菜单状态
 const menuOptions = computed(() => [
@@ -97,22 +249,14 @@ const menuOptions = computed(() => [
 const selectedRow = ref<any>(null)
 const menuVisible = ref(false)
 const menuPosition = ref({ x: 0, y: 0 })
+const selectedProject = ref('项目 1')
+const selectedTableRow = ref<any>(null)
 
-// WebShell列表数据（模拟）
-const webshellData = ref([
-  { id: 1, name: 'webshell1.php', ip: '192.168.1.100', date: '2024-01-01', status: 'active' },
-  { id: 2, name: 'webshell2.asp', ip: '192.168.1.101', date: '2024-01-02', status: 'inactive' },
-  { id: 3, name: 'webshell3.aspx', ip: '192.168.1.102', date: '2024-01-03', status: 'active' },
-  { id: 4, name: 'webshell4.jsp', ip: '192.168.1.103', date: '2024-01-04', status: 'active' },
-  { id: 5, name: 'webshell5.php', ip: '192.168.1.104', date: '2024-01-05', status: 'inactive' },
-  { id: 6, name: 'webshell6.asp', ip: '192.168.1.105', date: '2024-01-06', status: 'active' },
-  { id: 7, name: 'webshell7.aspx', ip: '192.168.1.106', date: '2024-01-07', status: 'active' },
-  { id: 8, name: 'webshell8.jsp', ip: '192.168.1.107', date: '2024-01-08', status: 'inactive' },
-  { id: 9, name: 'webshell9.php', ip: '192.168.1.108', date: '2024-01-09', status: 'active' },
-  { id: 10, name: 'webshell10.asp', ip: '192.168.1.109', date: '2024-01-10', status: 'active' },
-  { id: 11, name: 'webshell11.aspx', ip: '192.168.1.110', date: '2024-01-11', status: 'inactive' },
-  { id: 12, name: 'webshell12.jsp', ip: '192.168.1.111', date: '2024-01-12', status: 'active' }
-])
+// 处理新建项目
+const handleNewProject = () => {
+  console.log('新建项目')
+  // 这里可以添加新建项目的逻辑
+}
 
 // 处理右键菜单
 const handleContextMenu = (row: any, event: MouseEvent) => {
@@ -128,17 +272,34 @@ const handleMenuClick = (key: string) => {
   menuVisible.value = false
 }
 
+// 处理表格行点击
+const handleTableRowClick = (item: any) => {
+  selectedTableRow.value = item
+}
+
+// 处理搜索
+const handleSearch = () => {
+  page.value = 1 // 搜索时重置到第一页
+}
+
 // 处理排序
-const handleSort = (columnKey: string, order: 'ascend' | 'descend' | null) => {
-  sortState.value = { columnKey, order }
-  // 这里可以实现实际的排序逻辑
-  if (order) {
-    webshellData.value.sort((a, b) => {
-      if (a[columnKey] < b[columnKey]) return order === 'ascend' ? -1 : 1
-      if (a[columnKey] > b[columnKey]) return order === 'ascend' ? 1 : -1
-      return 0
-    })
+const handleSort = (field: string) => {
+  if (sortField.value === field) {
+    // 如果点击的是当前排序字段，切换排序方向
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    // 如果点击的是新字段，设置为升序
+    sortField.value = field
+    sortDirection.value = 'asc'
   }
+}
+
+// 获取排序图标
+const getSortIcon = (field: string) => {
+  if (sortField.value !== field) {
+    return '↑↓'
+  }
+  return sortDirection.value === 'asc' ? '↑' : '↓'
 }
 
 // 处理分页
@@ -151,55 +312,205 @@ const handlePageSizeChange = (size: number) => {
   page.value = 1
 }
 
-// 计算当前页的数据
-const currentPageData = computed(() => {
-  const start = (page.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return webshellData.value.slice(start, end)
+// 项目webshell数据
+const projectWebshells = ref({
+  '项目 1': [
+    {
+      id: 1,
+      name: 'webshell1.php',
+      url: 'http://example.com/shell.php',
+      payload: 'PHP',
+      cryption: 'base64',
+      encoding: 'utf-8',
+      proxyType: 'http',
+      remark: '测试webshell',
+      createTime: '2024-01-01 10:00:00',
+      updateTime: '2024-01-01 10:00:00',
+      status: 'active'
+    },
+    {
+      id: 2,
+      name: 'webshell2.asp',
+      url: 'http://example.com/shell.asp',
+      payload: 'ASP',
+      cryption: 'none',
+      encoding: 'gb2312',
+      proxyType: 'socks5',
+      remark: '生产环境webshell',
+      createTime: '2024-01-02 11:30:00',
+      updateTime: '2024-01-02 11:30:00',
+      status: 'inactive'
+    }
+  ],
+  '项目 2': [
+    {
+      id: 3,
+      name: 'webshell3.aspx',
+      url: 'http://example.com/shell.aspx',
+      payload: 'ASPX',
+      cryption: 'aes',
+      encoding: 'utf-8',
+      proxyType: 'none',
+      remark: 'ASP.NET webshell',
+      createTime: '2024-01-03 14:20:00',
+      updateTime: '2024-01-03 14:20:00',
+      status: 'active'
+    }
+  ],
+  '项目 3': [
+    {
+      id: 4,
+      name: 'webshell4.jsp',
+      url: 'http://example.com/shell.jsp',
+      payload: 'JSP',
+      cryption: 'base64',
+      encoding: 'utf-8',
+      proxyType: 'http',
+      remark: 'Java webshell',
+      createTime: '2024-01-04 09:15:00',
+      updateTime: '2024-01-04 09:15:00',
+      status: 'active'
+    },
+    {
+      id: 5,
+      name: 'webshell5.php',
+      url: 'http://example.com/shell5.php',
+      payload: 'PHP',
+      cryption: 'none',
+      encoding: 'utf-8',
+      proxyType: 'none',
+      remark: '简单webshell',
+      createTime: '2024-01-05 16:45:00',
+      updateTime: '2024-01-05 16:45:00',
+      status: 'inactive'
+    },
+    {
+      id: 6,
+      name: 'webshell6.php',
+      url: 'http://example.com/shell6.php',
+      payload: 'PHP',
+      cryption: 'base64',
+      encoding: 'utf-8',
+      proxyType: 'http',
+      remark: '高级webshell',
+      createTime: '2024-01-06 10:30:00',
+      updateTime: '2024-01-06 10:30:00',
+      status: 'active'
+    }
+  ]
 })
 
-// 表格列配置
-const columns = computed(() => [
-  {
-    title: t('projects.filename'),
-    key: 'name',
-    sortable: true,
-    sorter: (a: any, b: any) => a.name.localeCompare(b.name)
-  },
-  {
-    title: t('projects.ipAddress'),
-    key: 'ip',
-    sortable: true,
-    sorter: (a: any, b: any) => a.ip.localeCompare(b.ip)
-  },
-  {
-    title: t('projects.createDate'),
-    key: 'date',
-    sortable: true,
-    sorter: (a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  },
-  {
-    title: t('projects.status'),
-    key: 'status',
-    sortable: true,
-    render: (row: any) => {
-      return h('span', {}, row.status === 'active' ? t('projects.active') : t('projects.inactive'))
-    }
-  },
-  {
-    title: t('projects.action'),
-    key: 'action',
-    render: (row: any) => {
-      return h(NButton, {
-        type: 'primary',
-        size: 'small',
-        onClick: () => console.log('Enter webshell:', row)
-      }, {
-        default: () => t('projects.enter')
-      })
-    }
+// 获取当前项目的webshell数据
+const webshellData = computed(() => {
+  return projectWebshells.value[selectedProject.value] || []
+})
+
+// 计算过滤后的数据
+const filteredData = computed(() => {
+  if (!searchQuery.value) {
+    return webshellData.value
   }
-])
+  const query = searchQuery.value.toLowerCase()
+  return webshellData.value.filter(item => {
+    return (
+      item.id.toString().includes(query) ||
+      item.name.toLowerCase().includes(query) ||
+      item.url.toLowerCase().includes(query) ||
+      item.payload.toLowerCase().includes(query) ||
+      item.cryption.toLowerCase().includes(query) ||
+      item.encoding.toLowerCase().includes(query) ||
+      item.proxyType.toLowerCase().includes(query) ||
+      item.remark.toLowerCase().includes(query) ||
+      item.status.toLowerCase().includes(query)
+    )
+  })
+})
+
+// 计算活跃和非活跃webshell数量
+const activeCount = computed(() => {
+  return filteredData.value.filter(item => item.status === 'active').length
+})
+
+const inactiveCount = computed(() => {
+  return filteredData.value.filter(item => item.status === 'inactive').length
+})
+
+// 计算排序后的数据
+const sortedData = computed(() => {
+  return [...filteredData.value].sort((a, b) => {
+    let aValue = a[sortField.value as keyof typeof a]
+    let bValue = b[sortField.value as keyof typeof b]
+    
+    // 处理不同类型的比较
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return sortDirection.value === 'asc' 
+        ? aValue.localeCompare(bValue) 
+        : bValue.localeCompare(aValue)
+    } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortDirection.value === 'asc' 
+        ? aValue - bValue 
+        : bValue - aValue
+    } else {
+      // 默认比较
+      return sortDirection.value === 'asc' 
+        ? String(aValue).localeCompare(String(bValue)) 
+        : String(bValue).localeCompare(String(aValue))
+    }
+  })
+})
+
+// 表格列宽调整功能
+
+let resizing = false
+let currentTh: HTMLElement | null = null
+let startX = 0
+let startWidth = 0
+
+const handleMouseDown = (e: MouseEvent, th: HTMLElement) => {
+  if (e.target instanceof HTMLElement && e.target.classList.contains('resize-handle')) {
+    resizing = true
+    currentTh = th
+    startX = e.clientX
+    startWidth = th.offsetWidth
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+  }
+}
+
+const handleMouseMove = (e: MouseEvent) => {
+  if (!resizing || !currentTh) return
+  
+  const width = startWidth + (e.clientX - startX)
+  if (width > 50) { // 最小宽度
+    currentTh.style.width = `${width}px`
+  }
+}
+
+const handleMouseUp = () => {
+  resizing = false
+  currentTh = null
+  document.body.style.cursor = ''
+  document.body.style.userSelect = ''
+}
+
+onMounted(() => {
+  const table = document.getElementById('webshellTable')
+  if (table) {
+    const thElements = table.querySelectorAll('th')
+    thElements.forEach(th => {
+      th.addEventListener('mousedown', (e) => handleMouseDown(e, th as HTMLElement))
+    })
+    
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }
+})
+
+onUnmounted(() => {
+  document.removeEventListener('mousemove', handleMouseMove)
+  document.removeEventListener('mouseup', handleMouseUp)
+})
+
 </script>
 
 <style scoped>
@@ -310,15 +621,42 @@ const columns = computed(() => [
   box-shadow: var(--shadow-sm);
 }
 
+/* 新建项目按钮样式 */
+.new-project-button {
+  background: var(--active-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  width: 60px;
+  height: 36px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+.new-project-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  scale: 1.05;
+}
+
 .projects-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   background: var(--content-bg);
   padding: 20px;
-  overflow-y: auto;
+  overflow: auto;
   height: 100%;
   box-sizing: border-box;
+  min-height: 400px;
 }
 
 .projects-main h3 {
@@ -334,6 +672,8 @@ const columns = computed(() => [
   border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
+  flex: 1;
+  min-height: 350px;
 }
 
 .pagination-container {
@@ -341,6 +681,12 @@ const columns = computed(() => [
   justify-content: flex-end;
   align-items: center;
   padding-top: 16px;
+}
+
+.table-row-selected {
+  background-color: rgba(99, 102, 241, 0.1) !important;
+  border-left: 4px solid var(--active-color) !important;
+  box-shadow: 0 0 0 1px var(--active-color) !important;
 }
 
 /* 响应式设计 */

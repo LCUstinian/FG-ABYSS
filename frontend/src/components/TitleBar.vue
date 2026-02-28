@@ -5,42 +5,46 @@
       <span class="app-name">{{ appName }}</span>
     </div>
 
-    <!-- 中间：主题和语言切换 -->
-    <Tooltip :text="isDarkTheme ? '切换到浅色主题' : '切换到深色主题'">
-      <button @click="toggleTheme" class="control-button theme-button">
-        <Sun v-if="isDarkTheme" :size="20" />
-        <Moon v-else :size="20" />
-      </button>
-    </Tooltip>
-    
     <!-- 间距元素 -->
     <div class="spacer"></div>
     
     <!-- 语言按钮和窗口控制按钮区域 -->
     <div class="button-group">
+      <!-- 主题切换按钮 -->
+      <Tooltip :text="isDarkTheme ? '切换到浅色主题' : '切换到深色主题'">
+        <button @click="toggleTheme" class="control-button theme-button">
+          <Sun v-if="isDarkTheme" :size="20" />
+          <Moon v-else :size="20" />
+        </button>
+      </Tooltip>
+      
+      <!-- 语言切换按钮 -->
       <Tooltip :text="locale === 'zh-CN' ? '切换到英文' : '切换到中文'">
         <button @click="toggleLanguage" class="control-button language-button">
           <span class="language-icon" :class="locale === 'zh-CN' ? 'china-flag' : 'us-flag'"></span>
         </button>
       </Tooltip>
+      
       <div class="divider"></div>
+      
+      <!-- 窗口控制按钮 -->
       <Tooltip :text="t('status.minimize')">
         <button @click="minimizeWindow" class="window-control minimize">
           <Minus :size="20" />
         </button>
       </Tooltip>
+      <Tooltip :text="isMaximized ? t('status.restore') : t('status.maximize')">
+        <button @click="toggleMaximize" class="window-control maximize">
+          <Maximize2 v-if="!isMaximized" :size="20" />
+          <Minimize2 v-else :size="20" />
+        </button>
+      </Tooltip>
+      <Tooltip :text="t('status.close')">
+        <button @click="closeWindow" class="window-control close">
+          <X :size="20" />
+        </button>
+      </Tooltip>
     </div>
-    <Tooltip :text="isMaximized ? t('status.restore') : t('status.maximize')">
-      <button @click="toggleMaximize" class="window-control maximize">
-        <Maximize2 v-if="!isMaximized" :size="20" />
-        <Minimize2 v-else :size="20" />
-      </button>
-    </Tooltip>
-    <Tooltip :text="t('status.close')">
-      <button @click="closeWindow" class="window-control close">
-        <X :size="20" />
-      </button>
-    </Tooltip>
   </div>
 </template>
 
@@ -98,6 +102,11 @@ const toggleLanguage = () => {
   const newLang = currentLang === 'zh-CN' ? 'en-US' : 'zh-CN'
   locale.value = newLang
   localStorage.setItem('locale', newLang)
+  // 触发storage事件，让其他组件知道语言变化
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: 'locale',
+    newValue: newLang
+  }))
 }
 
 // 窗口控制
@@ -151,54 +160,23 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 标题栏样式 - 现代风格 */
 .title-bar {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 4px;
-  height: 48px;
-  padding: 0 20px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 2px 10px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  color: #1a1a1a;
+  gap: 8px;
+  height: 52px;
+  padding: 0 24px;
+  background: var(--status-bar-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-color);
   user-select: none;
   cursor: default;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-normal);
   min-width: 0;
-  border-radius: 12px 12px 0 0;
   position: relative;
-}
-
-.title-bar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.title-bar.dark {
-  background: rgba(20, 20, 20, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 
-    0 2px 10px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  color: #e0e0e0;
-}
-
-.title-bar.dark::before {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
 
 .title-bar-left {
@@ -217,39 +195,25 @@ onMounted(() => {
 }
 
 .app-icon {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
+  margin-right: 12px;
 }
 
 .app-name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   letter-spacing: 0.5px;
-}
-
-.title-bar-center {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.title-bar-right {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
+  font-family: var(--font-family);
 }
 
 .spacer {
-  width: 12px;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 0;
   position: relative;
   z-index: 1;
 }
@@ -260,136 +224,90 @@ onMounted(() => {
   flex-shrink: 0;
   position: relative;
   z-index: 1;
-}
-
-.button-group .control-button,
-.button-group .window-control {
-  margin: 0;
+  gap: 6px;
 }
 
 .button-group .divider {
   width: 1px;
-  height: 24px;
-  background: rgba(0, 0, 0, 0.1);
+  height: 28px;
+  background: var(--border-color);
   flex-shrink: 0;
-  margin: 0 12px;
+  margin: 0 8px;
 }
 
-.title-bar.dark .button-group .divider {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.control-button {
+/* 控制按钮通用样式 */
+.control-button,
+.window-control {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  font-size: 18px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 16px;
+  transition: all var(--transition-normal);
   flex-shrink: 0;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
   position: relative;
   overflow: hidden;
+  color: var(--text-color);
 }
 
-.control-button::before {
+.control-button::before,
+.window-control::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
-  pointer-events: none;
-  z-index: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left var(--transition-slow);
 }
 
-.control-button:hover {
-  background: var(--active-color);
-  opacity: 0.9;
-  transform: translateY(-2px);
-  box-shadow: 
-    0 6px 16px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+.control-button:hover::before,
+.window-control:hover::before {
+  left: 100%;
+}
+
+.control-button:hover,
+.window-control:hover {
+  background: var(--hover-color);
   border-color: var(--active-color);
-  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
-.title-bar.dark .control-button {
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+.control-button svg,
+.window-control svg {
+  position: relative;
+  z-index: 1;
+  transition: transform var(--transition-normal);
 }
 
-.title-bar.dark .control-button::before {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
-}
-
-.title-bar.dark .control-button:hover {
-  background: var(--active-color);
-  opacity: 0.9;
-  box-shadow: 
-    0 6px 16px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border-color: var(--active-color);
-  color: white;
+.control-button:hover svg,
+.window-control:hover svg {
+  transform: scale(1.1);
 }
 
 /* 主题切换按钮 */
 .theme-button {
-  color: #ffb300; /* 黄色，代表太阳 */
-}
-
-.theme-button svg {
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-}
-
-.title-bar.dark .theme-button {
-  color: #ffd700; /* 金色，在深色模式下更明显 */
-}
-
-.title-bar.dark .theme-button svg {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  color: var(--warning-color);
 }
 
 /* 语言切换按钮 */
 .language-button {
-  color: #1e88e5; /* 蓝色，代表国际化 */
-}
-
-.language-button svg {
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-}
-
-.title-bar.dark .language-button {
-  color: #64b5f6; /* 浅蓝色，在深色模式下更明显 */
-}
-
-.title-bar.dark .language-button svg {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  color: var(--info-color);
 }
 
 .language-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 21px;
+  width: 20px;
+  height: 15px;
   position: relative;
   z-index: 1;
   flex-shrink: 0;
@@ -399,191 +317,86 @@ onMounted(() => {
 /* 中国国旗 - 使用 emoji */
 .china-flag::before {
   content: '🇨🇳';
-  font-size: 18px;
+  font-size: 16px;
 }
 
 /* 美国国旗 - 使用 emoji */
 .us-flag::before {
   content: '🇺🇸';
-  font-size: 18px;
+  font-size: 16px;
 }
 
-.window-control {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  flex-shrink: 0;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  position: relative;
-  overflow: hidden;
-}
-
-.window-control::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.window-control:hover {
-  background: var(--active-color);
-  opacity: 0.9;
-  transform: translateY(-2px);
-  box-shadow: 
-    0 6px 16px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  border-color: var(--active-color);
-  color: white;
-}
-
-.title-bar.dark .window-control {
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.title-bar.dark .window-control::before {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-}
-
-.title-bar.dark .window-control:hover {
-  background: var(--active-color);
-  opacity: 0.9;
-  box-shadow: 
-    0 6px 16px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border-color: var(--active-color);
-  color: white;
-}
-
-/* 最小化按钮 */
+/* 窗口控制按钮 */
 .window-control.minimize {
-  color: #757575; /* 灰色 */
+  color: var(--text-color);
+  opacity: 0.7;
 }
 
-.title-bar.dark .window-control.minimize {
-  color: #bdbdbd; /* 浅灰色 */
-}
-
-/* 最大化按钮 */
 .window-control.maximize {
-  color: #4caf50; /* 绿色 */
+  color: var(--text-color);
+  opacity: 0.7;
 }
 
-.title-bar.dark .window-control.maximize {
-  color: #81c784; /* 浅绿色 */
-}
-
-/* 关闭按钮 */
 .window-control.close {
-  color: #f44336; /* 红色 */
-}
-
-.title-bar.dark .window-control.close {
-  color: #e57373; /* 浅红色 */
+  color: var(--error-color);
 }
 
 .window-control.close:hover {
-  background-color: #ff5f57;
+  background: var(--error-color);
   color: white;
-}
-
-.title-bar.dark .window-control.close:hover {
-  background-color: #ff5f57;
-  color: white;
-}
-
-/* 窗口控制按钮图标 */
-.window-control svg {
-  position: relative;
-  z-index: 1;
-}
-
-/* 图标切换动画 */
-.window-control svg {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 关闭按钮特殊悬停效果 */
-.window-control.close:hover {
-  background: #ff5f57;
-  color: white;
-  border-color: #ff5f57;
-  box-shadow: 
-    0 4px 12px rgba(255, 95, 87, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border-color: var(--error-color);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .window-control.close:hover::before {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
-}
-
-.title-bar.dark .window-control.close:hover {
-  background: #ff5f57;
-  color: white;
-  border-color: #ff5f57;
-  box-shadow: 
-    0 4px 12px rgba(255, 95, 87, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-.title-bar.dark .window-control.close:hover::before {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
   .title-bar {
-    padding: 0 8px;
+    padding: 0 16px;
+    height: 48px;
   }
   
   .app-name {
-    font-size: 11px;
+    font-size: 14px;
   }
   
   .control-button,
   .window-control {
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
   }
   
-  .title-bar-center {
-    gap: 4px;
+  .button-group {
+    gap: 6px;
+  }
+  
+  .button-group .divider {
+    height: 24px;
+    margin: 0 6px;
   }
 }
 
 /* 小窗口适配 */
 @media (max-width: 480px) {
   .app-name {
-    font-size: 10px;
+    font-size: 12px;
   }
   
   .control-button,
   .window-control {
-    width: 18px;
-    height: 18px;
+    width: 28px;
+    height: 28px;
   }
   
   .title-bar {
-    padding: 0 6px;
+    padding: 0 12px;
+  }
+  
+  .button-group {
+    gap: 4px;
   }
 }
 

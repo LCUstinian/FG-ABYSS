@@ -77,11 +77,19 @@ window.addEventListener('storage', (event) => {
     document.documentElement.style.setProperty('--font-family', event.newValue)
   } else if (event.key === 'fontSize' && event.newValue) {
     document.documentElement.style.setProperty('--font-size', event.newValue)
+  } else if (event.key === 'locale' && event.newValue) {
+    locale.value = event.newValue
   }
 })
 
 onMounted(() => {
   updateTheme()
+  
+  // 初始化语言
+  const savedLanguage = localStorage.getItem('locale')
+  if (savedLanguage) {
+    locale.value = savedLanguage
+  }
   
   // 初始化强调色
   const savedAccentColor = localStorage.getItem('accentColor')
@@ -154,46 +162,55 @@ onMounted(() => {
 </template>
 
 <style>
-/* 全局样式 - 液态玻璃风格 */
+/* 全局样式 - 现代极客风格 */
 :root {
   --bg-color: #ffffff;
-  --text-color: #1e293b;
-  --border-color: rgba(0, 0, 0, 0.1);
-  --hover-color: rgba(0, 0, 0, 0.06);
-  --active-color: #667eea;
-  --sidebar-bg: #f8fafc;
-  --content-bg: #ffffff;
-  --status-bar-bg: #f8fafc;
+  --text-color: #1f2937;
+  --border-color: #e5e7eb;
+  --hover-color: #f3f4f6;
+  --active-color: #3b82f6;
+  --sidebar-bg: #ffffff;
+  --content-bg: #f9fafb;
+  --status-bar-bg: #ffffff;
   --card-bg: #ffffff;
-  --panel-bg: #667eea;
+  --panel-bg: #3b82f6;
   --success-color: #10b981;
   --warning-color: #f59e0b;
   --error-color: #ef4444;
   --info-color: #3b82f6;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   --font-size: 14px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 200ms ease-in-out;
+  --transition-slow: 300ms ease-in-out;
 }
 
 .dark {
-  --bg-color: #1a1a2e;
-  --text-color: #e2e8f0;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --hover-color: rgba(255, 255, 255, 0.06);
-  --sidebar-bg: #16213e;
-  --content-bg: #1a1a2e;
-  --status-bar-bg: #16213e;
-  --card-bg: #16213e;
-  --panel-bg: #0f3460;
-  --success-color: #4ade80;
-  --warning-color: #facc15;
-  --error-color: #f87171;
-  --info-color: #60a5fa;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --bg-color: #0f172a;
+  --text-color: #f1f5f9;
+  --border-color: #334155;
+  --hover-color: #1e293b;
+  --sidebar-bg: #1e293b;
+  --content-bg: #0f172a;
+  --status-bar-bg: #1e293b;
+  --card-bg: #1e293b;
+  --panel-bg: #3b82f6;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --info-color: #3b82f6;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
 }
 
 body {

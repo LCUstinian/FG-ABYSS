@@ -13,7 +13,7 @@
           </div>
           <div class="settings-nav-item" :class="{ active: currentSettingsTab === 'proxy' }" @click="currentSettingsTab = 'proxy'">
             <Globe :size="18" />
-            <span>代理</span>
+            <span>{{ t('settings.proxy') }}</span>
           </div>
           <div class="settings-nav-item" :class="{ active: currentSettingsTab === 'network' }" @click="currentSettingsTab = 'network'">
             <Wifi :size="18" />
@@ -133,7 +133,7 @@
                             min="8" 
                             max="24" 
                             class="font-size-input"
-                            placeholder="建议8-24px"
+                            :placeholder="t('settings.fontSizePlaceholder')"
                           >
                           <span class="font-size-unit">px</span>
                         </div>
@@ -148,14 +148,14 @@
             <!-- 代理设置 -->
             <template v-else-if="currentSettingsTab === 'proxy'">
               <div class="settings-card">
-                <h4>代理设置</h4>
+                <h4>{{ t('settings.proxySettings') }}</h4>
                 <div class="placeholder-content">
                   <div class="placeholder-icon">🌐</div>
-                  <p>代理设置功能正在开发中...</p>
-                  <p>这里将提供HTTP代理、SOCKS代理等配置选项</p>
+                  <p>{{ t('settings.proxyUnderDevelopment') }}</p>
+                  <p>{{ t('settings.proxyOptions') }}</p>
                   <div class="placeholder-tips">
-                    <span>提示：</span>
-                    <p>您可以在这里设置代理服务器，用于网络请求的转发</p>
+                    <span>{{ t('settings.tip') }}</span>
+                    <p>{{ t('settings.proxyTip') }}</p>
                   </div>
                 </div>
               </div>
@@ -164,14 +164,14 @@
             <!-- 网络设置 -->
             <template v-else-if="currentSettingsTab === 'network'">
               <div class="settings-card">
-                <h4>网络设置</h4>
+                <h4>{{ t('settings.networkSettings') }}</h4>
                 <div class="placeholder-content">
                   <div class="placeholder-icon">📡</div>
-                  <p>网络设置功能正在开发中...</p>
-                  <p>这里将提供网络连接、超时设置等配置选项</p>
+                  <p>{{ t('settings.networkUnderDevelopment') }}</p>
+                  <p>{{ t('settings.networkOptions') }}</p>
                   <div class="placeholder-tips">
-                    <span>提示：</span>
-                    <p>您可以在这里配置网络连接参数，优化网络性能</p>
+                    <span>{{ t('settings.tip') }}</span>
+                    <p>{{ t('settings.networkTip') }}</p>
                   </div>
                 </div>
               </div>
@@ -180,15 +180,15 @@
             <!-- 关于 -->
             <template v-else-if="currentSettingsTab === 'about'">
               <div class="settings-card">
-                <h4>关于</h4>
+                <h4>{{ t('settings.aboutTitle') }}</h4>
                 <div class="placeholder-content">
                   <div class="placeholder-icon">ℹ️</div>
                   <p>FG-ABYSS</p>
-                  <p>版本：1.0.0</p>
-                  <p>一个功能强大的网络安全工具</p>
+                  <p>{{ t('settings.version') }}1.0.0</p>
+                  <p>{{ t('settings.appDescription') }}</p>
                   <div class="placeholder-tips">
-                    <span>提示：</span>
-                    <p>这里将显示软件版本信息、更新日志和相关链接</p>
+                    <span>{{ t('settings.tip') }}</span>
+                    <p>{{ t('settings.aboutTip') }}</p>
                   </div>
                 </div>
               </div>
@@ -224,47 +224,47 @@ const localThemeMode = ref(props.themeMode)
 const currentLanguage = ref(locale.value)
 const currentSettingsTab = ref('appearance')
 
-// 强调色选项
+// 强调色选项 - 极客风格
 const accentColors = [
-  { value: '#667eea' }, // 默认蓝色
-  { value: '#764ba2' }, // 紫色
-  { value: '#f093fb' }, // 粉色
-  { value: '#f5576c' }, // 红色
-  { value: '#4facfe' }, // 浅蓝色
-  { value: '#43e97b' }, // 绿色
-  { value: '#fa709a' }, // 玫红色
-  { value: '#fee140' }, // 黄色
-  { value: '#30cfd0' }, // 青色
-  { value: '#949494' }, // 灰色
-  { value: '#1e40af' }, // 深蓝色
-  { value: '#059669' }, // 深绿色
-  { value: '#f97316' }, // 橙色
-  { value: '#7e22ce' }, // 深紫色
-  { value: '#92400e' }  // 棕褐色
+  { value: '#3182ce' }, // 科技蓝
+  { value: '#48bb78' }, // 代码绿
+  { value: '#805ad5' }, // 极客紫
+  { value: '#f56565' }, // 错误红
+  { value: '#4299e1' }, // 信息蓝
+  { value: '#38a169' }, // 成功绿
+  { value: '#dd6b20' }, // 警告橙
+  { value: '#d53f8c' }, // 粉色
+  { value: '#319795' }, // 青色
+  { value: '#718096' }, // 灰色
+  { value: '#2c5282' }, // 深蓝
+  { value: '#0f766e' }, // 深绿
+  { value: '#c05621' }, // 深橙
+  { value: '#553c9a' }, // 深紫
+  { value: '#b83280' }  // 深粉
 ]
 
 // 当前强调色
-const currentAccentColor = ref(localStorage.getItem('accentColor') || '#667eea')
+const currentAccentColor = ref(localStorage.getItem('accentColor') || '#3182ce')
 
-// 字体选项
+// 字体选项 - 极客风格
 const fontFamilies = [
-  { name: '系统默认', value: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif' },
-  { name: '微软雅黑', value: '"Microsoft YaHei", sans-serif' },
-  { name: '宋体', value: 'SimSun, serif' },
-  { name: '黑体', value: 'SimHei, sans-serif' },
-  { name: 'Arial', value: 'Arial, sans-serif' },
-  { name: 'Helvetica', value: 'Helvetica, sans-serif' },
-  { name: 'Times New Roman', value: '"Times New Roman", serif' },
-  { name: 'Courier New', value: '"Courier New", monospace' }
+  { name: t('settings.fontDefault'), value: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif' },
+  { name: t('settings.fontMonospace'), value: 'SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace' },
+  { name: 'Courier New', value: '"Courier New", monospace' },
+  { name: 'Monaco', value: 'Monaco, monospace' },
+  { name: 'Fira Code', value: '"Fira Code", monospace' },
+  { name: 'Source Code Pro', value: '"Source Code Pro", monospace' },
+  { name: 'Roboto Mono', value: '"Roboto Mono", monospace' },
+  { name: 'Ubuntu Mono', value: '"Ubuntu Mono", monospace' }
 ]
 
 // 字体大小选项
 const fontSizes = [
-  { label: '极小', value: '10px' },
-  { label: '小', value: '12px' },
-  { label: '中', value: '14px' },
-  { label: '大', value: '16px' },
-  { label: '极大', value: '18px' }
+  { label: t('settings.fontSizeTiny'), value: '10px' },
+  { label: t('settings.fontSizeSmall'), value: '12px' },
+  { label: t('settings.fontSizeMedium'), value: '14px' },
+  { label: t('settings.fontSizeLarge'), value: '16px' },
+  { label: t('settings.fontSizeHuge'), value: '18px' }
 ]
 
 // 当前字体和字体大小
@@ -286,7 +286,12 @@ const handleThemeChange = () => {
 const changeLanguage = (lang: string) => {
   locale.value = lang
   currentLanguage.value = lang
-  localStorage.setItem('language', lang)
+  localStorage.setItem('locale', lang)
+  // 触发storage事件，让其他组件知道语言变化
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: 'locale',
+    newValue: lang
+  }))
 }
 
 // 处理强调色切换
@@ -337,7 +342,7 @@ const applyFontSize = () => {
 
 // 初始化语言、强调色、字体和字体大小
 onMounted(() => {
-  const savedLanguage = localStorage.getItem('language')
+  const savedLanguage = localStorage.getItem('locale')
   if (savedLanguage) {
     locale.value = savedLanguage
     currentLanguage.value = savedLanguage
@@ -384,6 +389,9 @@ onMounted(() => {
       currentFontSize.value = event.newValue
       fontSizeValue.value = parseInt(event.newValue)
       document.documentElement.style.setProperty('--font-size', event.newValue)
+    } else if (event.key === 'locale' && event.newValue) {
+      locale.value = event.newValue
+      currentLanguage.value = event.newValue
     }
   })
 })

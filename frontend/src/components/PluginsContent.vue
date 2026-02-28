@@ -11,9 +11,9 @@
         </div>
         <div class="empty-state">
           <Plug :size="64" />
-          <h3>暂无插件</h3>
-          <p>您还没有安装任何插件</p>
-          <p>从插件商店中浏览并安装插件来扩展功能</p>
+          <h3>{{ t('plugins.noPlugins') }}</h3>
+          <p>{{ t('plugins.noPluginsDescription1') }}</p>
+          <p>{{ t('plugins.noPluginsDescription2') }}</p>
         </div>
       </div>
     </div>

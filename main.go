@@ -65,8 +65,8 @@ func main() {
 		Frameless:        true,
 		Width:            1200,
 		Height:           800,
-		MinWidth:         1000,
-		MinHeight:        750,
+		MinWidth:         1200,
+		MinHeight:        800,
 	})
 
 	// Create a goroutine that emits an event containing the current time every second.

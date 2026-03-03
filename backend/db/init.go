@@ -70,5 +70,42 @@ func InitDB() (*gorm.DB, error) {
 		fmt.Println("默认项目创建成功")
 	}
 
+	// 创建示例 WebShell 数据
+	var webshellCount int64
+	db.Model(&models.WebShell{}).Count(&webshellCount)
+	if webshellCount == 0 {
+		exampleWebShells := []models.WebShell{
+			{
+				ProjectID: defaultProject.ID,
+				Name:      "示例 WebShell 1",
+				Url:       "http://example.com/shell.php",
+				Payload:   "cmd",
+				Cryption:  "base64",
+				Encoding:  "utf-8",
+				ProxyType: "none",
+				Remark:    "示例 WebShell，用于测试",
+				Status:    "active",
+			},
+			{
+				ProjectID: defaultProject.ID,
+				Name:      "示例 WebShell 2",
+				Url:       "http://test.com/backdoor.asp",
+				Payload:   "exec",
+				Cryption:  "xor",
+				Encoding:  "utf-8",
+				ProxyType: "none",
+				Remark:    "另一个示例 WebShell",
+				Status:    "active",
+			},
+		}
+
+		for _, ws := range exampleWebShells {
+			if err := db.Create(&ws).Error; err != nil {
+				return nil, fmt.Errorf("failed to create example webshell: %w", err)
+			}
+		}
+		fmt.Println("示例 WebShell 数据创建成功")
+	}
+
 	return db, nil
 }

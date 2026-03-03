@@ -15,6 +15,13 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as models$0 from "./backend/models/models.js";
 
 /**
+ * CreateProject 创建项目
+ */
+export function CreateProject(name: string, description: string): $CancellablePromise<void> {
+    return $Call.ByID(969543070, name, description);
+}
+
+/**
  * CreateWebShell 创建 WebShell
  */
 export function CreateWebShell(shell: models$0.WebShell): $CancellablePromise<void> {
@@ -36,11 +43,20 @@ export function DeleteWebShell(id: string): $CancellablePromise<void> {
 }
 
 /**
+ * GetProjects 获取项目列表
+ */
+export function GetProjects(): $CancellablePromise<models$0.Project[]> {
+    return $Call.ByID(540785005).then(($result: any) => {
+        return $$createType1($result);
+    });
+}
+
+/**
  * GetWebShells 获取 WebShell 列表
  */
 export function GetWebShells(projectName: string, page: number, pageSize: number, searchQuery: string, sortField: string, sortDir: string): $CancellablePromise<[models$0.WebShell[], number]> {
     return $Call.ByID(95418832, projectName, page, pageSize, searchQuery, sortField, sortDir).then(($result: any) => {
-        $result[0] = $$createType1($result[0]);
+        $result[0] = $$createType3($result[0]);
         return $result;
     });
 }
@@ -53,5 +69,7 @@ export function UpdateWebShell(shell: models$0.WebShell): $CancellablePromise<vo
 }
 
 // Private type creation functions
-const $$createType0 = models$0.WebShell.createFrom;
+const $$createType0 = models$0.Project.createFrom;
 const $$createType1 = $Create.Array($$createType0);
+const $$createType2 = models$0.WebShell.createFrom;
+const $$createType3 = $Create.Array($$createType2);

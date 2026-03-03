@@ -16,25 +16,13 @@
           <div style="width: 100%; height: 1px; background: var(--border-color); margin-bottom: 16px;"></div>
           <div class="directory-tree">
             <div 
+              v-for="project in projects" 
+              :key="project.id"
               class="tree-item" 
-              :class="{ active: selectedProject === '默认项目' }"
-              @click="selectedProject = '默认项目'"
+              :class="{ active: selectedProject === project.name }"
+              @click="selectedProject = project.name"
             >
-              默认项目
-            </div>
-            <div 
-              class="tree-item" 
-              :class="{ active: selectedProject === t('projects.title') + ' 2' }"
-              @click="selectedProject = t('projects.title') + ' 2'"
-            >
-              {{ t('projects.title') }} 2
-            </div>
-            <div 
-              class="tree-item" 
-              :class="{ active: selectedProject === t('projects.title') + ' 3' }"
-              @click="selectedProject = t('projects.title') + ' 3'"
-            >
-              {{ t('projects.title') }} 3
+              {{ project.name }}
             </div>
           </div>
         </div>
@@ -184,6 +172,12 @@
         </div>
       </div>
     </div>
+    <!-- 新建项目弹窗 -->
+    <CreateProjectModal 
+      v-model="newProjectDialogVisible" 
+      @created="handleProjectCreated"
+    />
+
   </div>
 </template>
 
@@ -192,6 +186,7 @@ import { ref, computed, h, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NButton, NCard, NPagination, NSpace, NSelect, NDropdown, NIcon, NMenu, NText, NInput } from 'naive-ui'
 import Tooltip from './Tooltip.vue'
+import CreateProjectModal from './CreateProjectModal.vue'
 
 // 导入 Wails 运行时和绑定
 import { Events } from '@wailsio/runtime'
@@ -279,6 +274,12 @@ const menuPosition = ref({ x: 0, y: 0 })
 const selectedProject = ref('默认项目')
 const selectedTableRow = ref<WebShell | null>(null)
 
+// 项目列表
+const projects = ref<any[]>([])
+
+// 新建项目弹窗
+const newProjectDialogVisible = ref(false)
+
 // 表格数据
 const tableData = ref<WebShell[]>([])
 
@@ -293,8 +294,23 @@ const inactiveCount = computed(() => {
 
 // 处理新建项目
 const handleNewProject = () => {
-  console.log('新建项目')
-  // 这里可以添加新建项目的逻辑
+  newProjectDialogVisible.value = true
+}
+
+// 处理项目创建成功
+const handleProjectCreated = async () => {
+  await fetchProjects()
+  newProjectDialogVisible.value = false
+}
+
+// 获取项目列表
+const fetchProjects = async () => {
+  try {
+    const projectList = await App.GetProjects()
+    projects.value = projectList
+  } catch (error) {
+    console.error('获取项目列表失败:', error)
+  }
 }
 
 // 处理右键菜单
@@ -464,7 +480,7 @@ const handleMouseUp = () => {
   document.body.style.userSelect = ''
 }
 
-onMounted(() => {
+onMounted(async () => {
   const table = document.getElementById('webshellTable')
   if (table) {
     const thElements = table.querySelectorAll('th')
@@ -481,6 +497,7 @@ onMounted(() => {
   document.addEventListener('contextmenu', handleContextMenuOutside)
   
   // 初始加载数据
+  await fetchProjects()
   fetchData()
 })
 

@@ -101,6 +101,33 @@ func (a *App) DeleteWebShell(id string) error {
 	return a.db.Delete(&models.WebShell{}, "id = ?", id).Error
 }
 
+// CreateProject 创建项目
+func (a *App) CreateProject(name string, description string) error {
+	// 检查项目是否已存在
+	var existingProject models.Project
+	if err := a.db.Where("name = ?", name).First(&existingProject).Error; err == nil {
+		return fmt.Errorf("项目名称已存在")
+	}
+
+	// 创建新项目
+	project := models.Project{
+		Name:        name,
+		Description: description,
+		Status:      0,
+	}
+
+	return a.db.Create(&project).Error
+}
+
+// GetProjects 获取项目列表
+func (a *App) GetProjects() ([]models.Project, error) {
+	var projects []models.Project
+	if err := a.db.Find(&projects).Error; err != nil {
+		return nil, err
+	}
+	return projects, nil
+}
+
 // DeleteProject 删除项目
 func (a *App) DeleteProject(projectName string) error {
 	// 检查是否为默认项目

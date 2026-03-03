@@ -5,6 +5,58 @@
 // @ts-ignore: Unused imports
 import { Create as $Create } from "@wailsio/runtime";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import * as time$0 from "../../../time/models.js";
+
+/**
+ * Project 项目模型
+ */
+export class Project {
+    "id": string;
+    "name": string;
+    "description": string;
+
+    /**
+     * 0=Active, 1=Archived
+     */
+    "status": number;
+    "created_at": time$0.Time;
+    "updated_at": time$0.Time;
+
+    /** Creates a new Project instance. */
+    constructor($$source: Partial<Project> = {}) {
+        if (!("id" in $$source)) {
+            this["id"] = "";
+        }
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+        if (!("description" in $$source)) {
+            this["description"] = "";
+        }
+        if (!("status" in $$source)) {
+            this["status"] = 0;
+        }
+        if (!("created_at" in $$source)) {
+            this["created_at"] = null;
+        }
+        if (!("updated_at" in $$source)) {
+            this["updated_at"] = null;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new Project instance from a string or object.
+     */
+    static createFrom($$source: any = {}): Project {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new Project($$parsedSource as Partial<Project>);
+    }
+}
+
 /**
  * WebShell WebShell 模型
  */

@@ -51,7 +51,7 @@ func InitDB() (*gorm.DB, error) {
 	}
 
 	// 自动迁移
-	if err := db.AutoMigrate(&models.Project{}); err != nil {
+	if err := db.AutoMigrate(&models.Project{}, &models.WebShell{}); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
 

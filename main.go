@@ -59,6 +59,9 @@ func main() {
 
 	log.Println("Database initialized successfully (Pure Go SQLite)")
 
+	// 创建 App 实例
+	appInstance := NewApp(dbInstance)
+
 	// Create a new Wails application by providing the necessary options.
 	// Variables 'Name' and 'Description' are for application metadata.
 	// 'Assets' configures the asset server with the 'FS' variable pointing to the frontend files.
@@ -68,7 +71,7 @@ func main() {
 		Name:        "FG-ABYSS",
 		Description: "A demo of using raw HTML & CSS",
 		Services: []application.Service{
-			application.NewService(&GreetService{}),
+			application.NewService(appInstance),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),

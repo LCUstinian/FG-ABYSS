@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue(), wails("./bindings")],
   build: {
     rollupOptions: {
-      external: ["@wailsapp/runtime"]
+      external: ["@wailsio/runtime"]
     }
   }
 });

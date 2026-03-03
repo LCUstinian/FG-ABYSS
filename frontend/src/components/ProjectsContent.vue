@@ -56,7 +56,7 @@
                   </NInput>
                   <NSpace align="center" style="gap: 16px;">
                     <NSpace align="center" style="gap: 8px;">
-                      <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.total') }}: <span style="color: var(--active-color); font-weight: 500;">{{ filteredData.length }}</span></span>
+                      <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.total') }}: <span style="color: var(--active-color); font-weight: 500;">{{ total }}</span></span>
                       <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.active') }}: <span style="color: #4CAF50; font-weight: 500;">{{ activeCount }}</span></span>
                       <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.inactive') }}: <span style="color: #FF9800; font-weight: 500;">{{ inactiveCount }}</span></span>
                     </NSpace>
@@ -128,7 +128,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in sortedData" :key="item.id" 
+                  <tr v-for="item in tableData" :key="item.id" 
                     @click="handleTableRowClick(item)"
                     @contextmenu="(event) => handleContextMenu(item, event)"
                     :class="{ 'table-row-selected': selectedTableRow && selectedTableRow.id === item.id }"
@@ -188,13 +188,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, h, onMounted, onUnmounted } from 'vue'
+import { ref, computed, h, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NButton, NCard, NPagination, NSpace, NSelect, NDropdown, NIcon, NMenu, NText, NInput } from 'naive-ui'
 import Tooltip from './Tooltip.vue'
 
-// 导入 Wails 运行时
+// 导入 Wails 运行时和绑定
 import { Events } from '@wailsio/runtime'
+import { App } from '../../bindings/fg-abyss'
+
+// 定义 WebShell 接口
+interface WebShell {
+  id: string
+  projectId: string
+  name: string
+  url: string
+  payload: string
+  cryption: string
+  encoding: string
+  proxyType: string
+  remark: string
+  createTime: string
+  updateTime: string
+  status: string
+}
 
 // 统一的事件发送函数
 const emitEvent = (event: string, data?: any) => {
@@ -215,7 +232,7 @@ const { t } = useI18n()
 // 分页状态
 const page = ref(1)
 const pageSize = ref(5)
-const total = ref(12)
+const total = ref(0)
 
 // 搜索状态
 const searchQuery = ref('')
@@ -227,28 +244,52 @@ const sortDirection = ref<'asc' | 'desc'>('asc')
 // 右键菜单状态
 const menuOptions = computed(() => [
   { 
-    label: t('projects.control'), 
+    label: () => h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, [
+      h('span', '🖥️'),
+      t('projects.control')
+    ]), 
     key: 'enter'
   },
   { 
-    label: t('projects.cache'), 
+    label: () => h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, [
+      h('span', '💾'),
+      t('projects.cache')
+    ]), 
     key: 'cache'
   },
   { 
-    label: t('projects.edit'), 
+    label: () => h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, [
+      h('span', '✏️'),
+      t('projects.edit')
+    ]), 
     key: 'edit'
   },
   { 
-    label: t('projects.delete'), 
+    label: () => h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, [
+      h('span', '🗑️'),
+      t('projects.delete')
+    ]), 
     key: 'delete'
   }
 ])
 
-const selectedRow = ref<any>(null)
+const selectedRow = ref<WebShell | null>(null)
 const menuVisible = ref(false)
 const menuPosition = ref({ x: 0, y: 0 })
 const selectedProject = ref('项目 1')
-const selectedTableRow = ref<any>(null)
+const selectedTableRow = ref<WebShell | null>(null)
+
+// 表格数据
+const tableData = ref<WebShell[]>([])
+
+// 计算活跃和非活跃webshell数量
+const activeCount = computed(() => {
+  return tableData.value.filter(item => item.status === 'active').length
+})
+
+const inactiveCount = computed(() => {
+  return tableData.value.filter(item => item.status === 'inactive').length
+})
 
 // 处理新建项目
 const handleNewProject = () => {
@@ -257,7 +298,7 @@ const handleNewProject = () => {
 }
 
 // 处理右键菜单
-const handleContextMenu = (row: any, event: MouseEvent) => {
+const handleContextMenu = (row: WebShell, event: MouseEvent) => {
   event.preventDefault()
   selectedRow.value = row
   menuPosition.value = { x: event.clientX, y: event.clientY }
@@ -266,6 +307,8 @@ const handleContextMenu = (row: any, event: MouseEvent) => {
 
 // 处理菜单点击
 const handleMenuClick = (key: string) => {
+  if (!selectedRow.value) return
+  
   switch (key) {
     case 'enter':
       console.log('Enter webshell:', selectedRow.value)
@@ -302,19 +345,31 @@ const handleMenuClick = (key: string) => {
       break
     case 'delete':
       console.log('Delete webshell:', selectedRow.value)
+      // 确认删除
+      if (confirm('确定要删除这个 WebShell 吗？')) {
+        // 调用后端删除方法
+        App.DeleteWebShell(selectedRow.value.id).then(() => {
+          // 刷新数据
+          fetchData()
+        }).catch(error => {
+          console.error('删除失败:', error)
+          alert('删除失败: ' + error)
+        })
+      }
       break
   }
   menuVisible.value = false
 }
 
 // 处理表格行点击
-const handleTableRowClick = (item: any) => {
+const handleTableRowClick = (item: WebShell) => {
   selectedTableRow.value = item
 }
 
 // 处理搜索
 const handleSearch = () => {
   page.value = 1 // 搜索时重置到第一页
+  fetchData()
 }
 
 // 处理排序
@@ -327,6 +382,7 @@ const handleSort = (field: string) => {
     sortField.value = field
     sortDirection.value = 'asc'
   }
+  fetchData()
 }
 
 // 获取排序图标
@@ -340,158 +396,38 @@ const getSortIcon = (field: string) => {
 // 处理分页
 const handlePageChange = (pageNum: number) => {
   page.value = pageNum
+  fetchData()
 }
 
 const handlePageSizeChange = (size: number) => {
   pageSize.value = size
   page.value = 1
+  fetchData()
 }
 
-// 项目webshell数据
-const projectWebshells = ref({
-  '项目 1': [
-    {
-      id: 1,
-      name: 'webshell1.php',
-      url: 'http://example.com/shell.php',
-      payload: 'PHP',
-      cryption: 'base64',
-      encoding: 'utf-8',
-      proxyType: 'http',
-      remark: '测试webshell',
-      createTime: '2024-01-01 10:00:00',
-      updateTime: '2024-01-01 10:00:00',
-      status: 'active'
-    },
-    {
-      id: 2,
-      name: 'webshell2.asp',
-      url: 'http://example.com/shell.asp',
-      payload: 'ASP',
-      cryption: 'none',
-      encoding: 'gb2312',
-      proxyType: 'socks5',
-      remark: '生产环境webshell',
-      createTime: '2024-01-02 11:30:00',
-      updateTime: '2024-01-02 11:30:00',
-      status: 'inactive'
-    }
-  ],
-  '项目 2': [
-    {
-      id: 3,
-      name: 'webshell3.aspx',
-      url: 'http://example.com/shell.aspx',
-      payload: 'ASPX',
-      cryption: 'aes',
-      encoding: 'utf-8',
-      proxyType: 'none',
-      remark: 'ASP.NET webshell',
-      createTime: '2024-01-03 14:20:00',
-      updateTime: '2024-01-03 14:20:00',
-      status: 'active'
-    }
-  ],
-  '项目 3': [
-    {
-      id: 4,
-      name: 'webshell4.jsp',
-      url: 'http://example.com/shell.jsp',
-      payload: 'JSP',
-      cryption: 'base64',
-      encoding: 'utf-8',
-      proxyType: 'http',
-      remark: 'Java webshell',
-      createTime: '2024-01-04 09:15:00',
-      updateTime: '2024-01-04 09:15:00',
-      status: 'active'
-    },
-    {
-      id: 5,
-      name: 'webshell5.php',
-      url: 'http://example.com/shell5.php',
-      payload: 'PHP',
-      cryption: 'none',
-      encoding: 'utf-8',
-      proxyType: 'none',
-      remark: '简单webshell',
-      createTime: '2024-01-05 16:45:00',
-      updateTime: '2024-01-05 16:45:00',
-      status: 'inactive'
-    },
-    {
-      id: 6,
-      name: 'webshell6.php',
-      url: 'http://example.com/shell6.php',
-      payload: 'PHP',
-      cryption: 'base64',
-      encoding: 'utf-8',
-      proxyType: 'http',
-      remark: '高级webshell',
-      createTime: '2024-01-06 10:30:00',
-      updateTime: '2024-01-06 10:30:00',
-      status: 'active'
-    }
-  ]
-})
-
-// 获取当前项目的webshell数据
-const webshellData = computed(() => {
-  return projectWebshells.value[selectedProject.value] || []
-})
-
-// 计算过滤后的数据
-const filteredData = computed(() => {
-  if (!searchQuery.value) {
-    return webshellData.value
-  }
-  const query = searchQuery.value.toLowerCase()
-  return webshellData.value.filter(item => {
-    return (
-      item.id.toString().includes(query) ||
-      item.name.toLowerCase().includes(query) ||
-      item.url.toLowerCase().includes(query) ||
-      item.payload.toLowerCase().includes(query) ||
-      item.cryption.toLowerCase().includes(query) ||
-      item.encoding.toLowerCase().includes(query) ||
-      item.proxyType.toLowerCase().includes(query) ||
-      item.remark.toLowerCase().includes(query) ||
-      item.status.toLowerCase().includes(query)
+// 从后端获取数据
+const fetchData = async () => {
+  try {
+    const [data, count] = await App.GetWebShells(
+      selectedProject.value,
+      page.value,
+      pageSize.value,
+      searchQuery.value,
+      sortField.value,
+      sortDirection.value
     )
-  })
-})
-
-// 计算活跃和非活跃webshell数量
-const activeCount = computed(() => {
-  return filteredData.value.filter(item => item.status === 'active').length
-})
-
-const inactiveCount = computed(() => {
-  return filteredData.value.filter(item => item.status === 'inactive').length
-})
-
-// 计算排序后的数据
-const sortedData = computed(() => {
-  return [...filteredData.value].sort((a, b) => {
-    let aValue = a[sortField.value as keyof typeof a]
-    let bValue = b[sortField.value as keyof typeof b]
     
-    // 处理不同类型的比较
-    if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return sortDirection.value === 'asc' 
-        ? aValue.localeCompare(bValue) 
-        : bValue.localeCompare(aValue)
-    } else if (typeof aValue === 'number' && typeof bValue === 'number') {
-      return sortDirection.value === 'asc' 
-        ? aValue - bValue 
-        : bValue - aValue
-    } else {
-      // 默认比较
-      return sortDirection.value === 'asc' 
-        ? String(aValue).localeCompare(String(bValue)) 
-        : String(bValue).localeCompare(String(aValue))
-    }
-  })
+    tableData.value = data
+    total.value = count
+  } catch (error) {
+    console.error('获取数据失败:', error)
+  }
+}
+
+// 监听项目变化
+watch(selectedProject, () => {
+  page.value = 1
+  fetchData()
 })
 
 // 表格列宽调整功能
@@ -543,6 +479,9 @@ onMounted(() => {
   // 添加点击空白处关闭菜单的事件
   document.addEventListener('click', handleClickOutside)
   document.addEventListener('contextmenu', handleContextMenuOutside)
+  
+  // 初始加载数据
+  fetchData()
 })
 
 onUnmounted(() => {

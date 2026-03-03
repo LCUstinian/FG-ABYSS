@@ -5,3 +5,7 @@ import * as GreetService from "./greetservice.js";
 export {
     GreetService
 };
+
+export {
+    WindowCreateEvent
+} from "./models.js";

@@ -125,15 +125,12 @@
                       {{ t('projects.status') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('status') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 80px; position: relative;">
-                      {{ t('projects.action') }}
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
-                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="item in sortedData" :key="item.id" 
                     @click="handleTableRowClick(item)"
+                    @contextmenu="(event) => handleContextMenu(item, event)"
                     :class="{ 'table-row-selected': selectedTableRow && selectedTableRow.id === item.id }"
                     style="cursor: pointer; transition: background-color 0.2s;"
                   >
@@ -148,42 +145,6 @@
                     <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.createTime }}</td>
                     <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.updateTime }}</td>
                     <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.status }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: center; min-width: 200px;">
-                      <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;">
-                        <button 
-                          style="padding: 4px 8px; background: var(--active-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; text-align: center; flex: 1 1 calc(25% - 6px); min-width: 60px;"
-                          @click="console.log('Enter webshell:', item)"
-                          onmouseover="this.style.opacity='0.8'"
-                          onmouseout="this.style.opacity='1'"
-                        >
-                          {{ t('projects.enter') }}
-                        </button>
-                        <button 
-                          style="padding: 4px 8px; background: #64748b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; text-align: center; flex: 1 1 calc(25% - 6px); min-width: 60px;"
-                          @click="console.log('Cache webshell:', item)"
-                          onmouseover="this.style.opacity='0.8'"
-                          onmouseout="this.style.opacity='1'"
-                        >
-                          {{ t('projects.cache') }}
-                        </button>
-                        <button 
-                          style="padding: 4px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; text-align: center; flex: 1 1 calc(25% - 6px); min-width: 60px;"
-                          @click="console.log('Edit webshell:', item)"
-                          onmouseover="this.style.opacity='0.8'"
-                          onmouseout="this.style.opacity='1'"
-                        >
-                          {{ t('projects.edit') }}
-                        </button>
-                        <button 
-                          style="padding: 4px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; text-align: center; flex: 1 1 calc(25% - 6px); min-width: 60px;"
-                          @click="console.log('Delete webshell:', item)"
-                          onmouseover="this.style.opacity='0.8'"
-                          onmouseout="this.style.opacity='1'"
-                        >
-                          {{ t('projects.delete') }}
-                        </button>
-                      </div>
-                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -206,12 +167,20 @@
             :x="menuPosition.x"
             :y="menuPosition.y"
             trigger="manual"
-          >
-            <NMenu
-              :options="menuOptions"
-              @select="handleMenuClick"
-            />
-          </NDropdown>
+            :options="menuOptions"
+            @select="handleMenuClick"
+            placement="bottom"
+            :width="150"
+            :max-width="200"
+            :z-index="1000"
+            :bordered="false"
+            :show-icon="true"
+            :animation="{
+              name: 'fade',
+              duration: 200
+            }"
+
+          />
         </div>
       </div>
     </div>
@@ -223,6 +192,23 @@ import { ref, computed, h, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NButton, NCard, NPagination, NSpace, NSelect, NDropdown, NIcon, NMenu, NText, NInput } from 'naive-ui'
 import Tooltip from './Tooltip.vue'
+
+// 导入 Wails 运行时
+import { Events } from '@wailsio/runtime'
+
+// 统一的事件发送函数
+const emitEvent = (event: string, data?: any) => {
+  console.log('Attempting to emit event:', event, 'with data:', data);
+  try {
+    console.log('Using Wails 3 Events from @wailsio/runtime');
+    Events.Emit(event, data);
+  } catch (error) {
+    console.error('Error emitting event:', error);
+    // 显示详细的错误信息，帮助调试
+    alert('Wails 运行时不可用，无法创建原生窗口。请检查 Wails 配置和版本。');
+  }
+};
+
 
 const { t } = useI18n()
 
@@ -240,10 +226,22 @@ const sortDirection = ref<'asc' | 'desc'>('asc')
 
 // 右键菜单状态
 const menuOptions = computed(() => [
-  { label: t('projects.control'), key: 'control' },
-  { label: t('projects.cache'), key: 'cache' },
-  { label: t('projects.edit'), key: 'edit' },
-  { label: t('projects.delete'), key: 'delete' }
+  { 
+    label: t('projects.control'), 
+    key: 'enter'
+  },
+  { 
+    label: t('projects.cache'), 
+    key: 'cache'
+  },
+  { 
+    label: t('projects.edit'), 
+    key: 'edit'
+  },
+  { 
+    label: t('projects.delete'), 
+    key: 'delete'
+  }
 ])
 
 const selectedRow = ref<any>(null)
@@ -268,7 +266,44 @@ const handleContextMenu = (row: any, event: MouseEvent) => {
 
 // 处理菜单点击
 const handleMenuClick = (key: string) => {
-  console.log('Menu clicked:', key, 'for row:', selectedRow.value)
+  switch (key) {
+    case 'enter':
+      console.log('Enter webshell:', selectedRow.value)
+      // 发送事件到后端创建Wails 3原生窗口
+      emitEvent('createWindow', {
+        title: '控制 WebShell',
+        width: 800,
+        height: 600,
+        x: 100,
+        y: 100
+      })
+      break
+    case 'cache':
+      console.log('Cache webshell:', selectedRow.value)
+      // 发送事件到后端创建Wails 3原生窗口
+      emitEvent('createWindow', {
+        title: '缓存 WebShell',
+        width: 800,
+        height: 600,
+        x: 150,
+        y: 150
+      })
+      break
+    case 'edit':
+      console.log('Edit webshell:', selectedRow.value)
+      // 发送事件到后端创建Wails 3原生窗口
+      emitEvent('createWindow', {
+        title: '编辑 WebShell',
+        width: 800,
+        height: 600,
+        x: 200,
+        y: 200
+      })
+      break
+    case 'delete':
+      console.log('Delete webshell:', selectedRow.value)
+      break
+  }
   menuVisible.value = false
 }
 
@@ -504,12 +539,41 @@ onMounted(() => {
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
   }
+  
+  // 添加点击空白处关闭菜单的事件
+  document.addEventListener('click', handleClickOutside)
+  document.addEventListener('contextmenu', handleContextMenuOutside)
 })
 
 onUnmounted(() => {
   document.removeEventListener('mousemove', handleMouseMove)
   document.removeEventListener('mouseup', handleMouseUp)
+  
+  // 移除事件监听器
+  document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('contextmenu', handleContextMenuOutside)
 })
+
+// 处理点击空白处关闭菜单
+const handleClickOutside = (event: MouseEvent) => {
+  // 只有在左键点击时才关闭菜单，避免右键点击时关闭
+  if (event.button === 0) {
+    menuVisible.value = false
+  }
+}
+
+// 处理右键点击空白处关闭菜单
+const handleContextMenuOutside = (event: MouseEvent) => {
+  // 只有在菜单可见时才处理，并且点击不是来自表格行
+  if (menuVisible.value) {
+    // 检查点击目标是否是表格行或其子元素
+    const target = event.target as HTMLElement
+    const isTableRow = target.closest('tr')
+    if (!isTableRow) {
+      menuVisible.value = false
+    }
+  }
+}
 
 </script>
 
@@ -708,5 +772,78 @@ onUnmounted(() => {
     height: auto;
     max-height: 150px;
   }
+}
+
+/* 右键菜单样式 */
+.menu-item-enter {
+  color: var(--active-color);
+}
+
+.menu-item-cache {
+  color: #64748b;
+}
+
+.menu-item-edit {
+  color: #3b82f6;
+}
+
+.menu-item-delete {
+  color: #ef4444;
+}
+
+/* 菜单容器样式 */
+.n-dropdown {
+  animation: menuFadeIn 0.2s ease-out;
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+@keyframes menuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 菜单项样式 */
+.n-menu-item {
+  background-color: transparent !important;
+  color: var(--text-color) !important;
+  padding: 8px 12px !important;
+  transition: all 0.2s ease;
+  border-radius: 4px !important;
+  margin: 2px 4px !important;
+}
+
+/* 菜单项悬停效果 */
+.n-menu-item:hover {
+  background-color: var(--hover-color) !important;
+  color: var(--text-color) !important;
+}
+
+/* 菜单项选中效果 */
+.n-menu-item.n-menu-item--selected {
+  background-color: var(--active-color) !important;
+  color: white !important;
+}
+
+/* 菜单项图标样式 */
+.n-menu-item-icon {
+  margin-right: 10px;
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+}
+
+/* 菜单项文字样式 */
+.n-menu-item-content {
+  font-size: 14px !important;
+  font-weight: 500 !important;
 }
 </style>

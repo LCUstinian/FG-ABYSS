@@ -17,11 +17,21 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
+// WindowCreateEvent is the event data for creating a new window
+type WindowCreateEvent struct {
+	Title  string `json:"title"`
+	Width  int    `json:"width"`
+	Height int    `json:"height"`
+	X      int    `json:"x"`
+	Y      int    `json:"y"`
+}
+
 func init() {
 	// Register a custom event whose associated data type is string.
 	// This is not required, but the binding generator will pick up registered events
 	// and provide a strongly typed JS/TS API for them.
 	application.RegisterEvent[string]("time")
+	application.RegisterEvent[WindowCreateEvent]("createWindow")
 }
 
 // main function serves as the application's entry point. It initializes the application, creates a window,
@@ -64,7 +74,7 @@ func main() {
 		URL:              "/",
 		Frameless:        true,
 		Width:            1200,
-		Height:           800,
+		Height:           900,
 		MinWidth:         1200,
 		MinHeight:        800,
 	})
@@ -78,6 +88,20 @@ func main() {
 			time.Sleep(time.Second)
 		}
 	}()
+
+	// Listen for createWindow events from the frontend
+	app.Event.On("createWindow", func(event *application.CustomEvent) {
+		// Handle the event
+		app.Window.NewWithOptions(application.WebviewWindowOptions{
+			Title:            "New Window",
+			BackgroundColour: application.NewRGB(27, 38, 54),
+			URL:              "about:blank",
+			Width:            800,
+			Height:           600,
+			X:                100,
+			Y:                100,
+		})
+	})
 
 	// Run the application. This blocks until the application has been exited.
 	err := app.Run()

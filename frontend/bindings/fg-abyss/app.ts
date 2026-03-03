@@ -22,6 +22,13 @@ export function CreateWebShell(shell: models$0.WebShell): $CancellablePromise<vo
 }
 
 /**
+ * DeleteProject 删除项目
+ */
+export function DeleteProject(projectName: string): $CancellablePromise<void> {
+    return $Call.ByID(3379369923, projectName);
+}
+
+/**
  * DeleteWebShell 删除 WebShell
  */
 export function DeleteWebShell(id: string): $CancellablePromise<void> {

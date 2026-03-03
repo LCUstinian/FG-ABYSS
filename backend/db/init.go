@@ -55,5 +55,20 @@ func InitDB() (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
 
+	// 创建默认项目
+	var defaultProject models.Project
+	result := db.Where("name = ?", "默认项目").First(&defaultProject)
+	if result.Error == gorm.ErrRecordNotFound {
+		defaultProject = models.Project{
+			Name:        "默认项目",
+			Description: "默认项目，无法删除",
+			Status:      0,
+		}
+		if err := db.Create(&defaultProject).Error; err != nil {
+			return nil, fmt.Errorf("failed to create default project: %w", err)
+		}
+		fmt.Println("默认项目创建成功")
+	}
+
 	return db, nil
 }

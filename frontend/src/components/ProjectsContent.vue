@@ -17,10 +17,10 @@
           <div class="directory-tree">
             <div 
               class="tree-item" 
-              :class="{ active: selectedProject === t('projects.title') + ' 1' }"
-              @click="selectedProject = t('projects.title') + ' 1'"
+              :class="{ active: selectedProject === '默认项目' }"
+              @click="selectedProject = '默认项目'"
             >
-              {{ t('projects.title') }} 1
+              默认项目
             </div>
             <div 
               class="tree-item" 
@@ -276,7 +276,7 @@ const menuOptions = computed(() => [
 const selectedRow = ref<WebShell | null>(null)
 const menuVisible = ref(false)
 const menuPosition = ref({ x: 0, y: 0 })
-const selectedProject = ref('项目 1')
+const selectedProject = ref('默认项目')
 const selectedTableRow = ref<WebShell | null>(null)
 
 // 表格数据

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"fg-abyss/backend/models"
 
 	"gorm.io/gorm"
@@ -98,4 +99,21 @@ func (a *App) UpdateWebShell(shell models.WebShell) error {
 func (a *App) DeleteWebShell(id string) error {
 	// 删除 WebShell
 	return a.db.Delete(&models.WebShell{}, "id = ?", id).Error
+}
+
+// DeleteProject 删除项目
+func (a *App) DeleteProject(projectName string) error {
+	// 检查是否为默认项目
+	if projectName == "默认项目" {
+		return fmt.Errorf("默认项目无法删除")
+	}
+	
+	// 先根据项目名称查询项目
+	var project models.Project
+	if err := a.db.Where("name = ?", projectName).First(&project).Error; err != nil {
+		return err
+	}
+	
+	// 删除项目
+	return a.db.Delete(&project).Error
 }

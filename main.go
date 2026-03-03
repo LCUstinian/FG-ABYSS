@@ -6,6 +6,8 @@ import (
 	"log"
 	"time"
 
+	"fg-abyss/backend/db"
+
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
@@ -38,6 +40,24 @@ func init() {
 // and starts a goroutine that emits a time-based event every second. It subsequently runs the application and
 // logs any error that might occur.
 func main() {
+	// 初始化数据库
+	dbInstance, err := db.InitDB()
+	if err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
+	}
+
+	// 获取底层的 sql.DB 实例以检查连接
+	sqlDB, err := dbInstance.DB()
+	if err != nil {
+		log.Fatalf("Failed to get database instance: %v", err)
+	}
+
+	// 检查连接
+	if err := sqlDB.Ping(); err != nil {
+		log.Fatalf("Failed to ping database: %v", err)
+	}
+
+	log.Println("Database initialized successfully (Pure Go SQLite)")
 
 	// Create a new Wails application by providing the necessary options.
 	// Variables 'Name' and 'Description' are for application metadata.
@@ -73,7 +93,7 @@ func main() {
 		BackgroundColour: application.NewRGB(27, 38, 54),
 		URL:              "/",
 		Frameless:        true,
-		Width:            1200,
+		Width:            1600,
 		Height:           900,
 		MinWidth:         1200,
 		MinHeight:        800,
@@ -104,7 +124,7 @@ func main() {
 	})
 
 	// Run the application. This blocks until the application has been exited.
-	err := app.Run()
+	err = app.Run()
 
 	// If an error occurred while running the application, log it and exit.
 	if err != nil {

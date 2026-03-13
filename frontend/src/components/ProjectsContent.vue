@@ -731,8 +731,10 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 .webshell-table-cell {
   padding: 10px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color) !important; /* 浅色模式 1px 边框 */
   text-align: left;
+  background-color: transparent !important; /* 确保单元格背景透明 */
+  color: var(--text-color) !important; /* 确保文字颜色正确 */
 }
 
 .webshell-table-cell-truncate {
@@ -741,17 +743,34 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   white-space: nowrap;
 }
 
-/* 深色主题下增强表格边框对比度，确保边框清晰可见 */
+/* 深色主题下优化表格样式，确保边框清晰可见 */
 .dark .webshell-table-container {
-  border: 2px solid var(--border-strong);
+  border: 1px solid var(--border-strong) !important; /* 使用高对比度边框颜色 */
 }
 
 .dark .webshell-table-header {
-  border: 2px solid var(--border-strong);
+  border: 1px solid var(--border-strong) !important; /* 使用高对比度边框颜色 */
+  background-color: var(--bg-tertiary) !important; /* 表头背景色 */
+  color: var(--text-primary) !important; /* 表头文字颜色 */
 }
 
 .dark .webshell-table-cell {
-  border: 2px solid var(--border-strong);
+  border: 1px solid var(--border-strong) !important; /* 使用高对比度边框颜色 */
+  background-color: transparent !important; /* 单元格背景透明 */
+  color: var(--text-primary) !important; /* 单元格文字颜色 */
+}
+
+/* 深色模式下增强表头与单元格的视觉区分 */
+.dark .webshell-table-header .webshell-table-cell {
+  background-color: var(--bg-tertiary) !important; /* 表头单元格稍深的背景 */
+  font-weight: var(--font-semibold) !important; /* 表头文字加粗 */
+  border-bottom: 2px solid var(--border-strong) !important; /* 表头底部加粗边框 */
+}
+
+/* 深色模式下悬停效果优化 */
+.dark .webshell-table-row:hover {
+  background-color: var(--bg-hover) !important;
+  transition: background-color 0.2s ease;
 }
 
 .pagination-container {
@@ -761,10 +780,33 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   padding-top: 16px;
 }
 
+/* 表格行选中状态 - 浅色模式 */
 .table-row-selected {
-  background-color: rgba(99, 102, 241, 0.1) !important;
+  background-color: rgba(var(--active-color-rgb), 0.1) !important; /* 使用系统强调色的淡色背景 */
   border-left: 4px solid var(--active-color) !important;
-  box-shadow: 0 0 0 1px var(--active-color) !important;
+  border-top: 2px solid var(--active-color) !important;
+  border-bottom: 2px solid var(--active-color) !important;
+  box-shadow: 0 0 0 1px var(--active-color) !important; /* 外发光效果 */
+}
+
+/* 深色主题下选中行样式 - 与浅色模式保持一致的样式参数 */
+.dark .table-row-selected {
+  background-color: rgba(var(--active-color-rgb), 0.15) !important; /* 深色模式下适度增加背景透明度 */
+  border-left: 4px solid var(--active-color) !important; /* 使用系统强调色 */
+  border-top: 2px solid var(--active-color) !important; /* 与浅色模式一致的边框粗细 */
+  border-bottom: 2px solid var(--active-color) !important; /* 与浅色模式一致的边框粗细 */
+  box-shadow: 0 0 0 1px var(--active-color) !important; /* 与浅色模式一致的外发光效果 */
+}
+
+/* 选中行单元格边框优化 - 移除单元格边框，让行的边框显示 */
+.table-row-selected .webshell-table-cell {
+  border: none !important; /* 移除所有单元格边框 */
+}
+
+/* 选中行第一个单元格的左边框优化 */
+.dark .table-row-selected .webshell-table-cell:first-child,
+.table-row-selected .webshell-table-cell:first-child {
+  border-left: none !important; /* 移除单元格左边框，让行的左边框显示 */
 }
 
 /* 响应式设计 */
@@ -838,17 +880,23 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 /* 菜单容器样式 - 紧凑布局 */
 .n-dropdown {
   animation: menuFadeIn 0.2s ease-out;
+  background-color: transparent !important; /* 容器本身透明 */
+  border: none !important;
+}
+
+/* 菜单内部容器 - 实际显示背景的区域 */
+.n-dropdown-menu {
   background-color: var(--card-bg) !important;
   border: 1px solid var(--border-strong) !important;
   border-radius: var(--radius-lg) !important;
   box-shadow: var(--shadow-lg) !important;
   backdrop-filter: blur(8px);
-  padding: 4px !important; /* 减小容器内边距 */
-  min-width: fit-content !important; /* 最小宽度适配内容 */
+  padding: 4px !important;
+  min-width: fit-content !important;
 }
 
 /* 深色主题下优化菜单背景色，使用精确的深蓝色调确保与整体主题协调 */
-.dark .n-dropdown {
+.dark .n-dropdown-menu {
   border: 1px solid #475569 !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
   background-color: #1e293b !important; /* 使用精确的深空蓝 #1e293b，与侧边栏一致 */
@@ -944,5 +992,24 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 /* 深色主题下增强分隔线对比度 */
 .dark .n-dropdown-menu-item-divider {
   background-color: var(--border-strong) !important;
+}
+</style>
+
+<!-- 全局样式 - 右键菜单背景色（必须在 scoped 外，因为菜单被 teleport 到 body） -->
+<style>
+/* 深色主题下强制应用正确的背景色 */
+.dark .n-dropdown-menu {
+  background-color: #1e293b !important; /* 精确的深空蓝 */
+  border: 1px solid #475569 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+/* 浅色主题下的背景色 */
+.n-dropdown-menu {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(8px) !important;
 }
 </style>

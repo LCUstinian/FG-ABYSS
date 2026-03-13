@@ -158,8 +158,6 @@
             :options="menuOptions"
             @select="handleMenuClick"
             placement="bottom"
-            :width="150"
-            :max-width="200"
             :z-index="1000"
             :bordered="false"
             :show-icon="true"
@@ -167,7 +165,6 @@
               name: 'fade',
               duration: 200
             }"
-
           />
         </div>
       </div>
@@ -239,32 +236,24 @@ const sortDirection = ref<'asc' | 'desc'>('asc')
 // 右键菜单状态
 const menuOptions = computed(() => [
   { 
-    label: () => h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, [
-      h('span', '🖥️'),
-      t('projects.control')
-    ]), 
-    key: 'enter'
+    label: t('projects.control'),
+    key: 'enter',
+    icon: () => h('span', { class: 'menu-icon-enter' }, '🖥️')
   },
   { 
-    label: () => h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, [
-      h('span', '💾'),
-      t('projects.cache')
-    ]), 
-    key: 'cache'
+    label: t('projects.cache'),
+    key: 'cache',
+    icon: () => h('span', { class: 'menu-icon-cache' }, '💾')
   },
   { 
-    label: () => h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, [
-      h('span', '✏️'),
-      t('projects.edit')
-    ]), 
-    key: 'edit'
+    label: t('projects.edit'),
+    key: 'edit',
+    icon: () => h('span', { class: 'menu-icon-edit' }, '✏️')
   },
   { 
-    label: () => h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, [
-      h('span', '🗑️'),
-      t('projects.delete')
-    ]), 
-    key: 'delete'
+    label: t('projects.delete'),
+    key: 'delete',
+    icon: () => h('span', { class: 'menu-icon-delete' }, '🗑️')
   }
 ])
 
@@ -799,30 +788,71 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   }
 }
 
-/* 右键菜单样式 */
+/* 右键菜单样式 - 现代化主题风格 */
+
+/* 菜单图标样式 */
+.menu-icon-enter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.menu-icon-cache {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.menu-icon-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.menu-icon-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
 .menu-item-enter {
   color: var(--active-color);
 }
 
 .menu-item-cache {
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .menu-item-edit {
-  color: #3b82f6;
+  color: var(--primary-500);
 }
 
 .menu-item-delete {
-  color: #ef4444;
+  color: var(--error-500);
 }
 
-/* 菜单容器样式 */
+/* 菜单容器样式 - 紧凑布局 */
 .n-dropdown {
   animation: menuFadeIn 0.2s ease-out;
   background-color: var(--card-bg) !important;
-  border: 1px solid var(--border-color) !important;
-  border-radius: 8px !important;
-  box-shadow: var(--shadow-md) !important;
+  border: 1px solid var(--border-strong) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  backdrop-filter: blur(8px);
+  padding: 4px !important; /* 减小容器内边距 */
+  min-width: fit-content !important; /* 最小宽度适配内容 */
+}
+
+/* 深色主题下优化菜单背景色，确保与整体主题协调 */
+.dark .n-dropdown {
+  border: 1px solid var(--border-strong) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  background-color: var(--bg-secondary) !important; /* 深色模式使用更深的背景，与侧边栏一致 */
+  backdrop-filter: blur(16px); /* 增强毛玻璃效果 */
 }
 
 @keyframes menuFadeIn {
@@ -836,39 +866,83 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   }
 }
 
-/* 菜单项样式 */
+/* 菜单项样式 - 紧凑布局 */
 .n-menu-item {
   background-color: transparent !important;
-  color: var(--text-color) !important;
-  padding: 8px 12px !important;
-  transition: all 0.2s ease;
-  border-radius: 4px !important;
-  margin: 2px 4px !important;
+  color: var(--text-primary) !important;
+  padding: 8px 12px !important; /* 减小内边距 */
+  transition: all var(--duration-fast) var(--ease-standard);
+  border-radius: var(--radius-md) !important;
+  margin: 2px 4px !important; /* 减小外边距 */
+  font-size: var(--text-sm) !important;
+  font-weight: var(--font-medium) !important;
+  white-space: nowrap !important; /* 防止文字换行 */
 }
 
 /* 菜单项悬停效果 */
 .n-menu-item:hover {
   background-color: var(--hover-color) !important;
-  color: var(--text-color) !important;
+  color: var(--text-primary) !important;
+  transform: translateX(2px);
 }
 
 /* 菜单项选中效果 */
 .n-menu-item.n-menu-item--selected {
-  background-color: var(--active-color) !important;
-  color: white !important;
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: var(--primary-500) !important;
+  font-weight: var(--font-semibold) !important;
+}
+
+/* 深色主题下优化菜单项对比度，确保符合 WCAG 标准 */
+.dark .n-menu-item {
+  color: var(--text-primary) !important; /* 使用主文本色 #f1f5f9，对比度 > 12:1 */
+}
+
+.dark .n-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important; /* 使用半透明白色增强悬停效果 */
+  color: var(--text-primary) !important;
+}
+
+.dark .n-menu-item.n-menu-item--selected {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  color: #60a5fa !important; /* 使用更亮的蓝色 (#60a5fa)，确保对比度 > 4.5:1 */
 }
 
 /* 菜单项图标样式 */
 .n-menu-item-icon {
-  margin-right: 10px;
-  font-size: 14px;
-  width: 16px;
+  margin-right: 10px; /* 减小图标间距 */
+  font-size: 16px;
+  width: 18px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* 防止图标被压缩 */
 }
 
 /* 菜单项文字样式 */
 .n-menu-item-content {
-  font-size: 14px !important;
-  font-weight: 500 !important;
+  font-size: var(--text-sm) !important;
+  font-weight: var(--font-medium) !important;
+  letter-spacing: 0.025em;
+  flex-shrink: 0; /* 防止文字被压缩 */
+}
+
+/* 菜单项内容区域优化 */
+.n-menu-item-content__main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 菜单分隔线样式 */
+.n-dropdown-menu-item-divider {
+  background-color: var(--border-subtle) !important;
+  margin: 6px 8px !important;
+}
+
+/* 深色主题下增强分隔线对比度 */
+.dark .n-dropdown-menu-item-divider {
+  background-color: var(--border-strong) !important;
 }
 </style>

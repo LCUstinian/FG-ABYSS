@@ -847,11 +847,11 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   min-width: fit-content !important; /* 最小宽度适配内容 */
 }
 
-/* 深色主题下优化菜单背景色，确保与整体主题协调 */
+/* 深色主题下优化菜单背景色，使用精确的深蓝色调确保与整体主题协调 */
 .dark .n-dropdown {
-  border: 1px solid var(--border-strong) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
-  background-color: var(--bg-secondary) !important; /* 深色模式使用更深的背景，与侧边栏一致 */
+  border: 1px solid #475569 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+  background-color: #1e293b !important; /* 使用精确的深空蓝 #1e293b，与侧边栏一致 */
   backdrop-filter: blur(16px); /* 增强毛玻璃效果 */
 }
 
@@ -893,19 +893,19 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   font-weight: var(--font-semibold) !important;
 }
 
-/* 深色主题下优化菜单项对比度，确保符合 WCAG 标准 */
+/* 深色主题下优化菜单项对比度和背景色，使用精确颜色值 */
 .dark .n-menu-item {
-  color: var(--text-primary) !important; /* 使用主文本色 #f1f5f9，对比度 > 12:1 */
+  color: #f1f5f9 !important; /* 使用精确的浅灰色 #f1f5f9 */
 }
 
 .dark .n-menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.08) !important; /* 使用半透明白色增强悬停效果 */
-  color: var(--text-primary) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important; /* 半透明白色增强悬停效果 */
+  color: #f1f5f9 !important;
 }
 
 .dark .n-menu-item.n-menu-item--selected {
   background-color: rgba(59, 130, 246, 0.2) !important;
-  color: #60a5fa !important; /* 使用更亮的蓝色 (#60a5fa)，确保对比度 > 4.5:1 */
+  color: #60a5fa !important; /* 使用更亮的蓝色 #60a5fa */
 }
 
 /* 菜单项图标样式 */

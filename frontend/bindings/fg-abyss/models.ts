@@ -6,6 +6,42 @@
 import { Create as $Create } from "@wailsio/runtime";
 
 /**
+ * SystemStatus 系统状态结构体
+ */
+export class SystemStatus {
+    "memoryUsage": string;
+    "processId": string;
+    "cpuUsage": string;
+    "uptime": string;
+
+    /** Creates a new SystemStatus instance. */
+    constructor($$source: Partial<SystemStatus> = {}) {
+        if (!("memoryUsage" in $$source)) {
+            this["memoryUsage"] = "";
+        }
+        if (!("processId" in $$source)) {
+            this["processId"] = "";
+        }
+        if (!("cpuUsage" in $$source)) {
+            this["cpuUsage"] = "";
+        }
+        if (!("uptime" in $$source)) {
+            this["uptime"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new SystemStatus instance from a string or object.
+     */
+    static createFrom($$source: any = {}): SystemStatus {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new SystemStatus($$parsedSource as Partial<SystemStatus>);
+    }
+}
+
+/**
  * WindowCreateEvent is the event data for creating a new window
  */
 export class WindowCreateEvent {

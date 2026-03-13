@@ -224,15 +224,27 @@ onMounted(() => {
   flex-shrink: 0;
   position: relative;
   z-index: 1;
-  gap: 6px;
 }
 
+/* 所有按钮之间的统一间距 */
+.button-group .control-button,
+.button-group .window-control {
+  margin-right: 6px;
+}
+
+/* 移除最后一个按钮的右边距 */
+.button-group .window-control:last-child {
+  margin-right: 0;
+}
+
+/* 分隔线样式 - 左右间距精确相等 */
 .button-group .divider {
   width: 1px;
   height: 28px;
   background: var(--border-color);
   flex-shrink: 0;
-  margin: 0 8px;
+  margin-left: 6px;
+  margin-right: 6px;
 }
 
 /* 控制按钮通用样式 */
@@ -369,13 +381,10 @@ onMounted(() => {
     height: 32px;
   }
   
-  .button-group {
-    gap: 6px;
-  }
-  
   .button-group .divider {
     height: 24px;
-    margin: 0 6px;
+    margin-left: 6px;
+    margin-right: 6px;
   }
 }
 
@@ -395,8 +404,21 @@ onMounted(() => {
     padding: 0 12px;
   }
   
-  .button-group {
-    gap: 4px;
+  /* 所有按钮之间的统一间距 */
+  .button-group .control-button,
+  .button-group .window-control {
+    margin-right: 4px;
+  }
+  
+  /* 移除最后一个按钮的右边距 */
+  .button-group .window-control:last-child {
+    margin-right: 0;
+  }
+  
+  /* 分隔线样式 - 左右间距精确相等 */
+  .button-group .divider {
+    margin-left: 4px;
+    margin-right: 4px;
   }
 }
 

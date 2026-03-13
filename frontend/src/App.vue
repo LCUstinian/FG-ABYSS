@@ -7,9 +7,10 @@ import ProjectsContent from './components/ProjectsContent.vue'
 import PayloadsContent from './components/PayloadsContent.vue'
 import PluginsContent from './components/PluginsContent.vue'
 import SettingsContent from './components/SettingsContent.vue'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NConfigProvider, darkTheme } from 'naive-ui'
+import { getSystemStatus, type SystemStatus } from './api/system'
 
 const { t, locale } = useI18n()
 
@@ -17,13 +18,16 @@ const isDarkTheme = ref(localStorage.getItem('theme') === 'dark' || window.match
 const themeMode = ref(localStorage.getItem('themeMode') || 'system')
 const currentNavItem = ref('home')
 
-// 系统状态数据（模拟）
-const systemStatus = ref({
-  memoryUsage: '1.2 GB / 8 GB',
-  processId: '12345',
-  cpuUsage: '15%',
-  uptime: '2 hours'
+// 系统状态数据
+const systemStatus = ref<SystemStatus>({
+  memoryUsage: '0 GB / 0 GB',
+  processId: '0',
+  cpuUsage: '0%',
+  uptime: '0 秒'
 })
+
+// 定时器引用
+let updateTimer: number | null = null
 
 // 计算当前内容组件
 const currentContent = computed(() => {
@@ -64,11 +68,11 @@ mediaQuery.addEventListener('change', () => {
   }
 })
 
-// 监听localStorage中主题变化
+// 监听 localStorage 中主题变化
 window.addEventListener('storage', (event) => {
   if (event.key === 'theme') {
     isDarkTheme.value = event.newValue === 'dark'
-    // 当手动切换主题时，更新themeMode为对应模式
+    // 当手动切换主题时，更新 themeMode 为对应模式
     themeMode.value = isDarkTheme.value ? 'dark' : 'light'
     localStorage.setItem('themeMode', themeMode.value)
   } else if (event.key === 'accentColor' && event.newValue) {
@@ -81,6 +85,35 @@ window.addEventListener('storage', (event) => {
     locale.value = event.newValue
   }
 })
+
+// 获取系统状态信息
+const fetchSystemStatus = async () => {
+  try {
+    const status = await getSystemStatus()
+    systemStatus.value = status
+  } catch (error) {
+    console.error('Failed to fetch system status:', error)
+  }
+}
+
+// 启动定时更新
+const startStatusUpdates = () => {
+  // 立即获取一次数据
+  fetchSystemStatus()
+  
+  // 每秒更新一次
+  updateTimer = window.setInterval(() => {
+    fetchSystemStatus()
+  }, 1000)
+}
+
+// 停止定时更新
+const stopStatusUpdates = () => {
+  if (updateTimer) {
+    window.clearInterval(updateTimer)
+    updateTimer = null
+  }
+}
 
 onMounted(() => {
   updateTheme()
@@ -108,6 +141,14 @@ onMounted(() => {
   if (savedFontSize) {
     document.documentElement.style.setProperty('--font-size', savedFontSize)
   }
+  
+  // 启动系统状态定时更新
+  startStatusUpdates()
+})
+
+// 组件卸载时清理定时器
+onUnmounted(() => {
+  stopStatusUpdates()
 })
 </script>
 

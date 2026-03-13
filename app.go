@@ -3,19 +3,37 @@ package main
 import (
 	"fmt"
 	"fg-abyss/backend/models"
+	"os"
+	"time"
+
+	"github.com/shirou/gopsutil/v3/mem"
+	"github.com/shirou/gopsutil/v3/process"
 
 	"gorm.io/gorm"
 )
 
 // App 应用结构体
 type App struct {
-	db *gorm.DB
+	db          *gorm.DB
+	startTime   time.Time
+	process     *process.Process
+	processID   int32
 }
 
 // NewApp 创建应用实例
 func NewApp(db *gorm.DB) *App {
+	// 获取当前进程信息
+	pid := os.Getpid()
+	proc, err := process.NewProcess(int32(pid))
+	if err != nil {
+		fmt.Printf("Warning: Failed to get process info: %v\n", err)
+	}
+
 	return &App{
-		db: db,
+		db:        db,
+		startTime: time.Now(),
+		process:   proc,
+		processID: int32(pid),
 	}
 }
 
@@ -143,4 +161,56 @@ func (a *App) DeleteProject(projectName string) error {
 	
 	// 删除项目
 	return a.db.Delete(&project).Error
+}
+
+// SystemStatus 系统状态结构体
+type SystemStatus struct {
+	MemoryUsage   string `json:"memoryUsage"`
+	ProcessID     string `json:"processId"`
+	CPUUsage      string `json:"cpuUsage"`
+	Uptime        string `json:"uptime"`
+}
+
+// GetSystemStatus 获取系统状态信息
+func (a *App) GetSystemStatus() SystemStatus {
+	status := SystemStatus{
+		ProcessID: fmt.Sprintf("%d", a.processID),
+		Uptime:    formatDuration(time.Since(a.startTime)),
+	}
+
+	// 获取内存使用信息
+	if memInfo, err := mem.VirtualMemory(); err == nil {
+		usedGB := float64(memInfo.Used) / 1024 / 1024 / 1024
+		totalGB := float64(memInfo.Total) / 1024 / 1024 / 1024
+		status.MemoryUsage = fmt.Sprintf("%.2f GB / %.2f GB", usedGB, totalGB)
+	} else {
+		status.MemoryUsage = "N/A"
+	}
+
+	// 获取进程 CPU 使用率
+	if a.process != nil {
+		if cpuPercent, err := a.process.CPUPercent(); err == nil {
+			status.CPUUsage = fmt.Sprintf("%.2f%%", cpuPercent)
+		} else {
+			status.CPUUsage = "N/A"
+		}
+	} else {
+		status.CPUUsage = "N/A"
+	}
+
+	return status
+}
+
+// formatDuration 格式化时间间隔
+func formatDuration(d time.Duration) string {
+	hours := int(d.Hours())
+	minutes := int(d.Minutes()) % 60
+	seconds := int(d.Seconds()) % 60
+
+	if hours > 0 {
+		return fmt.Sprintf("%d小时 %d分钟 %d秒", hours, minutes, seconds)
+	} else if minutes > 0 {
+		return fmt.Sprintf("%d分钟 %d秒", minutes, seconds)
+	}
+	return fmt.Sprintf("%d秒", seconds)
 }

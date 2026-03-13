@@ -14,6 +14,10 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 // @ts-ignore: Unused imports
 import * as models$0 from "./backend/models/models.js";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import * as $models from "./models.js";
+
 /**
  * CreateProject 创建项目
  */
@@ -52,11 +56,20 @@ export function GetProjects(): $CancellablePromise<models$0.Project[]> {
 }
 
 /**
+ * GetSystemStatus 获取系统状态信息
+ */
+export function GetSystemStatus(): $CancellablePromise<$models.SystemStatus> {
+    return $Call.ByID(1366046352).then(($result: any) => {
+        return $$createType2($result);
+    });
+}
+
+/**
  * GetWebShells 获取 WebShell 列表
  */
 export function GetWebShells(projectName: string, page: number, pageSize: number, searchQuery: string, sortField: string, sortDir: string): $CancellablePromise<[models$0.WebShell[], number]> {
     return $Call.ByID(95418832, projectName, page, pageSize, searchQuery, sortField, sortDir).then(($result: any) => {
-        $result[0] = $$createType3($result[0]);
+        $result[0] = $$createType4($result[0]);
         return $result;
     });
 }
@@ -71,5 +84,6 @@ export function UpdateWebShell(shell: models$0.WebShell): $CancellablePromise<vo
 // Private type creation functions
 const $$createType0 = models$0.Project.createFrom;
 const $$createType1 = $Create.Array($$createType0);
-const $$createType2 = models$0.WebShell.createFrom;
-const $$createType3 = $Create.Array($$createType2);
+const $$createType2 = $models.SystemStatus.createFrom;
+const $$createType3 = models$0.WebShell.createFrom;
+const $$createType4 = $Create.Array($$createType3);

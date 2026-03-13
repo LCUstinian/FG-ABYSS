@@ -7,5 +7,6 @@ export {
 };
 
 export {
+    SystemStatus,
     WindowCreateEvent
 } from "./models.js";

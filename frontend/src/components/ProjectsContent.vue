@@ -64,52 +64,52 @@
               </div>
             </template>
             <!-- 完整表格 -->
-            <div style="overflow-x: auto; margin-bottom: 16px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px;">
+            <div class="webshell-table-container" style="overflow-x: auto; margin-bottom: 16px; background: var(--card-bg); border-radius: 8px; padding: 16px;">
               <!-- 表格 -->
-              <table id="webshellTable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+              <table id="webshellTable" class="webshell-table" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                 <thead>
-                  <tr style="background: var(--hover-color);">
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 60px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('id')">
+                  <tr class="webshell-table-header-row">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 60px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('id')">
                       ID <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('id') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 120px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('name')">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 120px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('name')">
                       {{ t('projects.filename') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('name') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 200px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('url')">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 200px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('url')">
                       {{ t('projects.url') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('url') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('payload')">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('payload')">
                       {{ t('projects.payloadType') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('payload') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('cryption')">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('cryption')">
                       {{ t('projects.cryption') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('cryption') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 80px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('encoding')">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 80px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('encoding')">
                       {{ t('projects.encoding') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('encoding') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('proxyType')">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('proxyType')">
                       {{ t('projects.proxyType') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('proxyType') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('remark')">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('remark')">
                       {{ t('projects.remark') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('remark') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('createTime')">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('createTime')">
                       {{ t('projects.createTime') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('createTime') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('updateTime')">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('updateTime')">
                       {{ t('projects.updateTime') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('updateTime') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th style="padding: 10px; border: 1px solid var(--border-color); text-align: left; min-width: 80px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('status')">
+                    <th class="webshell-table-header" style="text-align: left; min-width: 80px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('status')">
                       {{ t('projects.status') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('status') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
@@ -120,19 +120,19 @@
                     @click="handleTableRowClick(item)"
                     @contextmenu="(event) => handleContextMenu(item, event)"
                     :class="{ 'table-row-selected': selectedTableRow && selectedTableRow.id === item.id }"
-                    style="cursor: pointer; transition: background-color 0.2s;"
+                    class="webshell-table-row"
                   >
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.id }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.name }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.url }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.payload }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.cryption }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.encoding }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.proxyType }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.remark }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.createTime }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.updateTime }}</td>
-                    <td style="padding: 10px; border: 1px solid var(--border-color); text-align: left;">{{ item.status }}</td>
+                    <td class="webshell-table-cell">{{ item.id }}</td>
+                    <td class="webshell-table-cell">{{ item.name }}</td>
+                    <td class="webshell-table-cell webshell-table-cell-truncate">{{ item.url }}</td>
+                    <td class="webshell-table-cell">{{ item.payload }}</td>
+                    <td class="webshell-table-cell">{{ item.cryption }}</td>
+                    <td class="webshell-table-cell">{{ item.encoding }}</td>
+                    <td class="webshell-table-cell">{{ item.proxyType }}</td>
+                    <td class="webshell-table-cell webshell-table-cell-truncate">{{ item.remark }}</td>
+                    <td class="webshell-table-cell">{{ item.createTime }}</td>
+                    <td class="webshell-table-cell">{{ item.updateTime }}</td>
+                    <td class="webshell-table-cell">{{ item.status }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -694,6 +694,75 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   overflow: hidden;
   flex: 1;
   min-height: 350px;
+}
+
+/* 深色主题下增强表格卡片边框 */
+.dark .webshell-table-card {
+  border: 1px solid var(--border-strong);
+}
+
+/* WebShell 表格样式 */
+.webshell-table-container {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.webshell-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.webshell-table-header-row {
+  background: var(--hover-color);
+}
+
+.webshell-table-header {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.webshell-table-header:hover {
+  background: var(--bg-hover);
+}
+
+.webshell-table-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.webshell-table-row:hover {
+  background: var(--bg-hover);
+}
+
+.webshell-table-cell {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.webshell-table-cell-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 深色主题下增强表格边框对比度，确保边框清晰可见 */
+.dark .webshell-table-container {
+  border: 2px solid var(--border-strong);
+}
+
+.dark .webshell-table-header {
+  border: 2px solid var(--border-strong);
+}
+
+.dark .webshell-table-cell {
+  border: 2px solid var(--border-strong);
 }
 
 .pagination-container {

@@ -133,6 +133,13 @@ const { t } = useI18n()
   justify-content: center;
   padding: 20px;
   overflow-x: hidden;
+  /* 确保背景纯净，无渐变或花纹 */
+  background: transparent;
+}
+
+/* 深色主题下确保背景纯净 */
+.dark .payloads-content {
+  background: transparent;
 }
 
 .payload-form {
@@ -145,6 +152,15 @@ const { t } = useI18n()
   width: 100%;
   box-sizing: border-box;
   border-radius: 8px;
+  /* 确保表单背景为纯色 */
+  background-image: none !important;
+}
+
+/* 深色主题下优化表单背景 */
+.dark .payload-form {
+  background: var(--bg-tertiary);
+  border-color: var(--border-strong);
+  background-image: none !important;
 }
 
 .form-group {
@@ -186,11 +202,29 @@ const { t } = useI18n()
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 14px;
   box-sizing: border-box;
+  /* 确保输入框背景纯净，无渐变或花纹 */
+  background-image: none !important;
+}
+
+/* 深色主题下优化输入框和选择框 */
+.dark .form-group input,
+.dark .form-group select {
+  background: var(--bg-tertiary);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  /* 深色主题下确保背景纯净 */
+  background-image: none !important;
 }
 
 .form-group input::placeholder {
   color: var(--text-color);
   opacity: 0.5;
+}
+
+/* 深色主题下优化占位符 */
+.dark .form-group input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
 }
 
 .form-group select {
@@ -203,9 +237,27 @@ const { t } = useI18n()
   padding-right: 40px;
 }
 
+/* 深色主题下优化下拉箭头颜色 */
+.dark .form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
 .form-group select:focus {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   border-color: var(--active-color);
+}
+
+/* 深色主题下优化选中状态 */
+.dark .form-group select:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* 优化下拉选项在深色主题下的显示 */
+.dark .form-group select option {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 .generate-button {

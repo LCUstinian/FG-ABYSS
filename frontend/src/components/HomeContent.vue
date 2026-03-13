@@ -81,44 +81,23 @@ const props = defineProps({
 
 .content-header {
   width: 100%;
-  padding: 20px 24px;
+  padding: 16px 24px;
   margin-bottom: 0;
-  background: linear-gradient(135deg, var(--panel-bg), #2563eb);
+  background: var(--panel-bg);
   border-bottom: none;
-  box-shadow: var(--shadow-md);
-  position: relative;
-  overflow: hidden;
-}
-
-.content-header::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-  animation: pulse 6s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.1); opacity: 0.8; }
-  100% { transform: scale(1); opacity: 0.5; }
+  box-shadow: none;
 }
 
 .content-section h1 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-color);
   text-align: left;
   display: flex;
   align-items: center;
   gap: 12px;
   line-height: 1.2;
-  position: relative;
-  z-index: 1;
 }
 
 .content-body {
@@ -136,20 +115,19 @@ const props = defineProps({
 .content-section h1 .title {
   font-weight: 700;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .content-section h1 .separator {
   color: white;
-  opacity: 0.8;
+  opacity: 0.7;
   font-weight: 400;
 }
 
 .content-section h1 .subtitle {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: white;
-  opacity: 0.9;
+  opacity: 0.8;
   font-style: normal;
 }
 

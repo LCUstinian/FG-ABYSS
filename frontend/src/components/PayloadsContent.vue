@@ -71,7 +71,7 @@ const { t } = useI18n()
   width: 100%;
   padding: 16px 24px;
   margin-bottom: 0;
-  background: var(--panel-bg);
+  background: var(--active-color);
   border-bottom: none;
   box-shadow: none;
 }

@@ -266,6 +266,14 @@ onUnmounted(() => {
             :theme-mode="themeMode"
             @update:theme-mode="handleThemeChange"
           />
+          
+          <!-- 默认内容（当没有匹配任何条件时显示） -->
+          <div v-else class="default-content">
+            <div class="default-content-inner">
+              <h2>{{ t('common.loading') }}</h2>
+              <p>正在加载内容...</p>
+            </div>
+          </div>
         </div>
       </div>
       

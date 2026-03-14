@@ -107,9 +107,9 @@ const navItems = computed(() => [
   transform: scale(1.15);
 }
 
-/* 激活状态 - 使用渐变背景 */
+/* 激活状态 - 使用统一强调色 */
 .nav-item.active {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  background: var(--active-color);
   color: white;
   box-shadow: var(--shadow-lg), 0 0 0 2px rgba(59, 130, 246, 0.2);
   transform: translateY(-2px);

@@ -4,6 +4,7 @@ import (
 	"fg-abyss/backend/models"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/shirou/gopsutil/v3/mem"
@@ -55,8 +56,7 @@ func (a *App) GetWebShells(projectName string, page int, pageSize int, searchQue
 	// 搜索
 	if searchQuery != "" {
 		query = query.Where(
-			"name LIKE ? OR url LIKE ? OR payload LIKE ? OR cryption LIKE ? OR encoding LIKE ? OR proxy_type LIKE ? OR remark LIKE ? OR status LIKE ?",
-			"%"+searchQuery+"%",
+			"url LIKE ? OR payload LIKE ? OR cryption LIKE ? OR encoding LIKE ? OR proxy_type LIKE ? OR remark LIKE ? OR status LIKE ?",
 			"%"+searchQuery+"%",
 			"%"+searchQuery+"%",
 			"%"+searchQuery+"%",
@@ -74,7 +74,18 @@ func (a *App) GetWebShells(projectName string, page int, pageSize int, searchQue
 
 	// 排序
 	if sortField != "" {
-		order := sortField
+		// 将驼峰命名字段转换为下划线命名（GORM 默认行为）
+		snakeField := ""
+		for i, r := range sortField {
+			if i > 0 && r >= 'A' && r <= 'Z' {
+				snakeField += "_"
+				snakeField += string(r + 32) // 转为小写
+			} else {
+				snakeField += string(r)
+			}
+		}
+
+		order := snakeField
 		if sortDir == "desc" {
 			order += " DESC"
 		} else {
@@ -213,4 +224,18 @@ func formatDuration(d time.Duration) string {
 		return fmt.Sprintf("%d分钟 %d秒", minutes, seconds)
 	}
 	return fmt.Sprintf("%d秒", seconds)
+}
+
+// camelToSnake 将驼峰命名转换为下划线命名
+func camelToSnake(s string) string {
+	var result strings.Builder
+	for i, r := range s {
+		if i > 0 && r >= 'A' && r <= 'Z' {
+			result.WriteRune('_')
+			result.WriteRune(r + 32) // 转为小写
+		} else {
+			result.WriteRune(r)
+		}
+	}
+	return result.String()
 }

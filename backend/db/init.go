@@ -58,6 +58,7 @@ func InitDB() (*gorm.DB, error) {
 	if err := db.AutoMigrate(&models.Project{}, &models.WebShell{}); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
+
 	fmt.Println("数据库表结构迁移完成")
 
 	// 创建默认项目
@@ -108,6 +109,12 @@ func InitDB() (*gorm.DB, error) {
 			}
 		}
 		fmt.Println("示例 WebShell 数据创建成功")
+	}
+
+	// 检查并删除使用旧字段名的遗留数据（数据迁移）
+	// 删除所有没有 created_at 的旧数据
+	if err := db.Where("created_at IS NULL OR created_at = '0001-01-01 00:00:00'").Delete(&models.WebShell{}).Error; err != nil {
+		fmt.Printf("清理旧数据警告：%v\n", err)
 	}
 
 	return db, nil

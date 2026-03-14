@@ -109,12 +109,12 @@
                       {{ t('projects.remark') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('remark') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th class="webshell-table-header" style="text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('createTime')">
-                      {{ t('projects.createTime') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('createTime') }}</span>
+                    <th class="webshell-table-header" style="text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('createdAt')">
+                      {{ t('projects.createTime') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('createdAt') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
-                    <th class="webshell-table-header" style="text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('updateTime')">
-                      {{ t('projects.updateTime') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('updateTime') }}</span>
+                    <th class="webshell-table-header" style="text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('updatedAt')">
+                      {{ t('projects.updateTime') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('updatedAt') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 80px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('status')">
@@ -137,8 +137,8 @@
                     <td class="webshell-table-cell">{{ item.encoding }}</td>
                     <td class="webshell-table-cell">{{ item.proxyType }}</td>
                     <td class="webshell-table-cell webshell-table-cell-truncate">{{ item.remark }}</td>
-                    <td class="webshell-table-cell">{{ item.createTime }}</td>
-                    <td class="webshell-table-cell">{{ item.updateTime }}</td>
+                    <td class="webshell-table-cell">{{ formatTime(item.createdAt) }}</td>
+                    <td class="webshell-table-cell">{{ formatTime(item.updatedAt) }}</td>
                     <td class="webshell-table-cell">{{ item.status }}</td>
                   </tr>
                 </tbody>
@@ -203,6 +203,9 @@ import CreateWebShellModal from './CreateWebShellModal.vue'
 import { Events } from '@wailsio/runtime'
 import { App } from '../../bindings/fg-abyss'
 
+// 导入时间格式化工具
+import { formatTime } from '@/utils/formatTime'
+
 // 定义 WebShell 接口
 interface WebShell {
   id: string
@@ -213,8 +216,8 @@ interface WebShell {
   encoding: string
   proxyType: string
   remark: string
-  createTime: string
-  updateTime: string
+  createdAt: string
+  updatedAt: string
   status: string
 }
 

@@ -21,8 +21,8 @@ export class Project {
      * 0=Active, 1=Archived
      */
     "status": number;
-    "created_at": time$0.Time;
-    "updated_at": time$0.Time;
+    "createdAt": time$0.Time;
+    "updatedAt": time$0.Time;
 
     /** Creates a new Project instance. */
     constructor($$source: Partial<Project> = {}) {
@@ -38,11 +38,11 @@ export class Project {
         if (!("status" in $$source)) {
             this["status"] = 0;
         }
-        if (!("created_at" in $$source)) {
-            this["created_at"] = null;
+        if (!("createdAt" in $$source)) {
+            this["createdAt"] = null;
         }
-        if (!("updated_at" in $$source)) {
-            this["updated_at"] = null;
+        if (!("updatedAt" in $$source)) {
+            this["updatedAt"] = null;
         }
 
         Object.assign(this, $$source);
@@ -69,9 +69,9 @@ export class WebShell {
     "encoding": string;
     "proxyType": string;
     "remark": string;
-    "createTime": string;
-    "updateTime": string;
     "status": string;
+    "createdAt": time$0.Time;
+    "updatedAt": time$0.Time;
 
     /** Creates a new WebShell instance. */
     constructor($$source: Partial<WebShell> = {}) {
@@ -99,14 +99,14 @@ export class WebShell {
         if (!("remark" in $$source)) {
             this["remark"] = "";
         }
-        if (!("createTime" in $$source)) {
-            this["createTime"] = "";
-        }
-        if (!("updateTime" in $$source)) {
-            this["updateTime"] = "";
-        }
         if (!("status" in $$source)) {
             this["status"] = "";
+        }
+        if (!("createdAt" in $$source)) {
+            this["createdAt"] = null;
+        }
+        if (!("updatedAt" in $$source)) {
+            this["updatedAt"] = null;
         }
 
         Object.assign(this, $$source);

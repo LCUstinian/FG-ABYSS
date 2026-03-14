@@ -204,8 +204,6 @@ const handleCreate = async () => {
       encoding: webshell.encoding || 'UTF-8',
       proxyType: webshell.proxyType || 'none',
       remark: webshell.remark || '',
-      createTime: new Date().toISOString(),
-      updateTime: new Date().toISOString(),
       status: webshell.status || 'active'
     }
 

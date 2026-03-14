@@ -9,12 +9,12 @@ import (
 
 // Project 项目模型
 type Project struct {
-	ID          string         `gorm:"type:text;primaryKey" json:"id"`
+	ID          string         `gorm:"type:text;uniqueIndex;not null" json:"id"`
 	Name        string         `gorm:"type:text;uniqueIndex;not null" json:"name"`
 	Description string         `gorm:"type:text" json:"description"`
 	Status      int            `gorm:"type:integer;default:0" json:"status"` // 0=Active, 1=Archived
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
+	CreatedAt   time.Time      `json:"createdAt"`
+	UpdatedAt   time.Time      `json:"updatedAt"`
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
 }
 

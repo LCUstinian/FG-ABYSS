@@ -71,17 +71,21 @@
                         </template>
                       </NButton>
                     </Tooltip>
-                    <NSelect
-                      v-model:value="pageSize"
-                      :options="[
-                        { label: `5 ${t('projects.itemsPerPage')}`, value: 5 },
-                        { label: `10 ${t('projects.itemsPerPage')}`, value: 10 },
-                        { label: `20 ${t('projects.itemsPerPage')}`, value: 20 }
-                      ]"
-                      @update:value="handlePageSizeChange"
-                      size="small"
-                      style="min-width: 100px"
-                    />
+                    <!-- 每页条数选择器容器 -->
+                    <div class="page-size-container">
+                      <div class="page-size-divider"></div>
+                      <NSelect
+                        v-model:value="pageSize"
+                        :options="[
+                          { label: `5 ${t('projects.itemsPerPage')}`, value: 5 },
+                          { label: `10 ${t('projects.itemsPerPage')}`, value: 10 },
+                          { label: `20 ${t('projects.itemsPerPage')}`, value: 20 }
+                        ]"
+                        @update:value="handlePageSizeChange"
+                        size="small"
+                        class="page-size-select"
+                      />
+                    </div>
                   </NSpace>
                 </div>
               </div>
@@ -223,6 +227,7 @@ import {
   NButton, 
   NCard, 
   NPagination, 
+  NSelect,
   NSpace, 
   NDropdown, 
   NIcon, 
@@ -1044,6 +1049,93 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   letter-spacing: 0.5px !important;
 }
 
+/* 分页条数选择器容器 */
+.page-size-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 4px;
+}
+
+/* 分隔线样式 - 统一主题表现 */
+.page-size-divider {
+  width: 1px;
+  height: 20px;
+  background-color: rgba(128, 128, 128, 0.3);
+  border-radius: 1px;
+  flex-shrink: 0;
+  /* 确保在深色和浅色模式下都有一致的视觉效果 */
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+/* 分页条数选择框样式 */
+.page-size-select {
+  min-width: 95px !important;
+  width: auto !important;
+  height: 32px !important;
+  vertical-align: middle !important;
+  font-size: 13px !important;
+  /* 确保与按钮高度一致 */
+  line-height: 32px !important;
+}
+
+.page-size-select :deep(.n-base-selection) {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 6px !important;
+  color: var(--text-color) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  height: 32px !important;
+  font-size: 13px !important;
+}
+
+.page-size-select :deep(.n-base-selection:hover) {
+  background-color: var(--hover-color) !important;
+  border-color: var(--active-color) !important;
+}
+
+.page-size-select :deep(.n-base-selection--active) {
+  border-color: var(--active-color) !important;
+  box-shadow: 0 0 0 2px rgba(var(--active-color-rgb), 0.1) !important;
+}
+
+.page-size-select :deep(.n-base-selection-label) {
+  color: var(--text-color) !important;
+  font-size: 13px !important;
+  padding: 0 8px !important;
+  display: flex;
+  align-items: center;
+}
+
+.page-size-select :deep(.n-base-selection-arrow) {
+  color: var(--text-color-3) !important;
+  font-size: 14px !important;
+  transition: all 0.3s ease !important;
+  margin-right: 8px !important;
+}
+
+.page-size-select :deep(.n-base-selection:hover .n-base-selection-arrow) {
+  color: var(--active-color) !important;
+}
+
+.page-size-select :deep(.n-base-option) {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+  font-size: 13px !important;
+  padding: 8px 12px !important;
+}
+
+.page-size-select :deep(.n-base-option:hover) {
+  background-color: var(--hover-color) !important;
+}
+
+.page-size-select :deep(.n-base-option.n-base-option--selected) {
+  background-color: var(--active-color-suppressed) !important;
+  color: var(--active-color) !important;
+  font-weight: 500 !important;
+}
+
 .projects-main {
   flex: 1;
   display: flex;
@@ -1230,6 +1322,28 @@ const handleContextMenuOutside = (event: MouseEvent) => {
     min-width: 32px !important;
     font-size: 18px !important;
   }
+  
+  /* 移动端分页选择框优化 */
+  .page-size-container {
+    gap: 10px !important;
+    margin-left: 2px !important;
+  }
+  
+  .page-size-divider {
+    height: 18px !important;
+  }
+  
+  .page-size-select {
+    min-width: 85px !important;
+    height: 30px !important;
+    font-size: 12px !important;
+    line-height: 30px !important;
+  }
+  
+  .page-size-select :deep(.n-base-selection) {
+    height: 30px !important;
+    font-size: 12px !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1247,6 +1361,28 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   
   .recycle-text {
     font-size: 12px !important;
+  }
+  
+  /* 小屏幕分页选择框优化 */
+  .page-size-container {
+    gap: 8px !important;
+    margin-left: 0 !important;
+  }
+  
+  .page-size-divider {
+    height: 16px !important;
+  }
+  
+  .page-size-select {
+    min-width: 75px !important;
+    height: 28px !important;
+    font-size: 11px !important;
+    line-height: 28px !important;
+  }
+  
+  .page-size-select :deep(.n-base-selection) {
+    height: 28px !important;
+    font-size: 11px !important;
   }
 }
 

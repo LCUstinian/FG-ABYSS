@@ -63,7 +63,6 @@ export class Project {
 export class WebShell {
     "id": string;
     "projectId": string;
-    "name": string;
     "url": string;
     "payload": string;
     "cryption": string;
@@ -81,9 +80,6 @@ export class WebShell {
         }
         if (!("projectId" in $$source)) {
             this["projectId"] = "";
-        }
-        if (!("name" in $$source)) {
-            this["name"] = "";
         }
         if (!("url" in $$source)) {
             this["url"] = "";

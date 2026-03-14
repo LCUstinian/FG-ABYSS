@@ -54,7 +54,18 @@ export default {
     cache: '缓存',
     edit: '编辑',
     delete: '删除',
-    newProject: '新建项目'
+    newProject: '新建项目',
+    newWebShell: '新建 WebShell',
+    webShellName: '名称',
+    webShellUrl: '目标 URL',
+    webShellPayload: 'Payload 类型',
+    webShellCryption: '加密方式',
+    webShellEncoding: '编码方式',
+    webShellProxy: '代理类型',
+    webShellRemark: '备注',
+    createWebShell: '创建 WebShell',
+    creating: '创建中...',
+    cancel: '取消'
   },
   payloads: {
     title: '载荷',

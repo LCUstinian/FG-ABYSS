@@ -54,7 +54,18 @@ export default {
     cache: 'Cache',
     edit: 'Edit',
     delete: 'Delete',
-    newProject: 'New Project'
+    newProject: 'New Project',
+    newWebShell: 'New WebShell',
+    webShellName: 'Name',
+    webShellUrl: 'Target URL',
+    webShellPayload: 'Payload Type',
+    webShellCryption: 'Encryption',
+    webShellEncoding: 'Encoding',
+    webShellProxy: 'Proxy Type',
+    webShellRemark: 'Remark',
+    createWebShell: 'Create WebShell',
+    creating: 'Creating...',
+    cancel: 'Cancel'
   },
   payloads: {
     title: 'Payloads',

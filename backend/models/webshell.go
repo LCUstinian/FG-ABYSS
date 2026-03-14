@@ -11,7 +11,6 @@ import (
 type WebShell struct {
 	ID         string         `gorm:"type:text;primaryKey" json:"id"`
 	ProjectID  string         `gorm:"type:text;index" json:"projectId"`
-	Name       string         `gorm:"type:text;not null" json:"name"`
 	Url        string         `gorm:"type:text;not null" json:"url"`
 	Payload    string         `gorm:"type:text" json:"payload"`
 	Cryption   string         `gorm:"type:text" json:"cryption"`

@@ -50,6 +50,11 @@ func InitDB() (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to enable WAL mode: %w", err)
 	}
 
+	// 先执行删除 name 字段的迁移
+	if err := MigrateRemoveWebShellNameField(db); err != nil {
+		fmt.Printf("警告：迁移失败：%v\n", err)
+	}
+
 	// 自动迁移
 	if err := db.AutoMigrate(&models.Project{}, &models.WebShell{}); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
@@ -77,24 +82,22 @@ func InitDB() (*gorm.DB, error) {
 		exampleWebShells := []models.WebShell{
 			{
 				ProjectID: defaultProject.ID,
-				Name:      "示例 WebShell 1",
 				Url:       "http://example.com/shell.php",
-				Payload:   "cmd",
+				Payload:   "php",
 				Cryption:  "base64",
 				Encoding:  "utf-8",
 				ProxyType: "none",
-				Remark:    "示例 WebShell，用于测试",
+				Remark:    "示例 PHP WebShell，用于测试",
 				Status:    "active",
 			},
 			{
 				ProjectID: defaultProject.ID,
-				Name:      "示例 WebShell 2",
-				Url:       "http://test.com/backdoor.asp",
-				Payload:   "exec",
+				Url:       "http://test.com/backdoor.aspx",
+				Payload:   "aspx",
 				Cryption:  "xor",
 				Encoding:  "utf-8",
 				ProxyType: "none",
-				Remark:    "另一个示例 WebShell",
+				Remark:    "示例 ASPX WebShell",
 				Status:    "active",
 			},
 		}

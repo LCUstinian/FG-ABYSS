@@ -48,6 +48,18 @@
                       <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.active') }}: <span style="color: #4CAF50; font-weight: 500;">{{ activeCount }}</span></span>
                       <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.inactive') }}: <span style="color: #FF9800; font-weight: 500;">{{ inactiveCount }}</span></span>
                     </NSpace>
+                    <Tooltip :text="t('projects.newWebShell')" placement="bottom">
+                      <NButton 
+                        type="primary" 
+                        size="small"
+                        @click="handleNewWebShell"
+                        class="new-webshell-btn"
+                      >
+                        <template #icon>
+                          <span class="btn-icon">+</span>
+                        </template>
+                      </NButton>
+                    </Tooltip>
                     <NSelect
                       v-model:value="pageSize"
                       :options="[
@@ -71,10 +83,6 @@
                   <tr class="webshell-table-header-row">
                     <th class="webshell-table-header" style="text-align: left; min-width: 60px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('id')">
                       ID <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('id') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
-                    </th>
-                    <th class="webshell-table-header" style="text-align: left; min-width: 120px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('name')">
-                      {{ t('projects.filename') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('name') }}</span>
                       <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 200px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('url')">
@@ -123,7 +131,6 @@
                     class="webshell-table-row"
                   >
                     <td class="webshell-table-cell">{{ item.id }}</td>
-                    <td class="webshell-table-cell">{{ item.name }}</td>
                     <td class="webshell-table-cell webshell-table-cell-truncate">{{ item.url }}</td>
                     <td class="webshell-table-cell">{{ item.payload }}</td>
                     <td class="webshell-table-cell">{{ item.cryption }}</td>
@@ -174,6 +181,12 @@
       v-model="newProjectDialogVisible" 
       @created="handleProjectCreated"
     />
+    
+    <!-- 新建 WebShell 弹窗 -->
+    <CreateWebShellModal 
+      v-model="newWebShellDialogVisible" 
+      @created="handleWebShellCreated"
+    />
 
   </div>
 </template>
@@ -184,6 +197,7 @@ import { useI18n } from 'vue-i18n'
 import { NButton, NCard, NPagination, NSpace, NSelect, NDropdown, NIcon, NMenu, NText, NInput } from 'naive-ui'
 import Tooltip from './Tooltip.vue'
 import CreateProjectModal from './CreateProjectModal.vue'
+import CreateWebShellModal from './CreateWebShellModal.vue'
 
 // 导入 Wails 运行时和绑定
 import { Events } from '@wailsio/runtime'
@@ -193,7 +207,6 @@ import { App } from '../../bindings/fg-abyss'
 interface WebShell {
   id: string
   projectId: string
-  name: string
   url: string
   payload: string
   cryption: string
@@ -269,6 +282,9 @@ const projects = ref<any[]>([])
 // 新建项目弹窗
 const newProjectDialogVisible = ref(false)
 
+// 新建 WebShell 弹窗
+const newWebShellDialogVisible = ref(false)
+
 // 表格数据
 const tableData = ref<WebShell[]>([])
 
@@ -284,6 +300,16 @@ const inactiveCount = computed(() => {
 // 处理新建项目
 const handleNewProject = () => {
   newProjectDialogVisible.value = true
+}
+
+// 处理新建 WebShell
+const handleNewWebShell = () => {
+  newWebShellDialogVisible.value = true
+}
+
+// 处理 WebShell 创建成功
+const handleWebShellCreated = async () => {
+  await fetchData()
 }
 
 // 处理项目创建成功
@@ -654,6 +680,48 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   scale: 1.05;
+}
+
+/* 新建 WebShell 按钮样式 - 与主题和其他元素保持一致 */
+.new-webshell-btn {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  background: var(--active-color) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  vertical-align: middle !important;
+}
+
+.new-webshell-btn .btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.new-webshell-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-md) !important;
+  opacity: 0.95 !important;
+}
+
+.new-webshell-btn:active {
+  transform: translateY(0) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
 .projects-main {

@@ -236,17 +236,141 @@
             
             <!-- 关于 -->
             <template v-else-if="currentSettingsTab === 'about'">
-              <div class="settings-card">
-                <h4>{{ t('settings.aboutTitle') }}</h4>
-                <div class="placeholder-content">
-                  <div class="placeholder-icon">ℹ️</div>
-                  <p>FG-ABYSS</p>
-                  <p>{{ t('settings.version') }}1.0.0</p>
-                  <p>{{ t('settings.appDescription') }}</p>
-                  <div class="placeholder-tips">
-                    <span>{{ t('settings.tip') }}</span>
-                    <p>{{ t('settings.aboutTip') }}</p>
+              <div class="about-page-container">
+                <!-- 应用标志和版本信息 -->
+                <div class="about-header">
+                  <div class="app-logo">
+                    <div class="logo-icon">
+                      <Info :size="48" />
+                    </div>
                   </div>
+                  <h2 class="app-name">FG-ABYSS</h2>
+                  <p class="app-version">
+                    {{ t('settings.currentVersion') }} v1.0.0
+                  </p>
+                  <p class="app-description">{{ t('settings.appDescription') }}</p>
+                </div>
+
+                <!-- 主要内容区域 -->
+                <div class="about-content">
+                  <!-- 作者信息卡片 -->
+                  <div class="about-card author-card">
+                    <div class="card-header">
+                      <h3>{{ t('settings.author') }}</h3>
+                    </div>
+                    <div class="card-body">
+                      <div class="author-info">
+                        <div class="author-avatar">
+                          <span>👨‍💻</span>
+                        </div>
+                        <div class="author-details">
+                          <h4>{{ t('settings.authorName') }}</h4>
+                          <p class="author-intro">{{ t('settings.authorIntro') }}</p>
+                          <p class="author-field">{{ t('settings.authorField') }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- GitHub 链接卡片 -->
+                  <div class="about-card github-card">
+                    <div class="card-header">
+                      <h3>{{ t('settings.githubRepo') }}</h3>
+                    </div>
+                    <div class="card-body">
+                      <div class="github-links">
+                        <a 
+                          href="https://github.com/FG-ABYSS" 
+                          target="_blank" 
+                          class="github-link-btn"
+                          @click.prevent="openGithubRepo"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="github-icon">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                          </svg>
+                          <span>{{ t('settings.visitGithub') }}</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 项目信息卡片 -->
+                  <div class="about-card info-card">
+                    <div class="card-header">
+                      <h3>{{ t('settings.projectVersion') }}</h3>
+                    </div>
+                    <div class="card-body">
+                      <div class="info-grid">
+                        <div class="info-item">
+                          <span class="info-label">{{ t('settings.currentVersion') }}</span>
+                          <span class="info-value">v1.0.0</span>
+                        </div>
+                        <div class="info-item">
+                          <span class="info-label">{{ t('settings.buildDate') }}</span>
+                          <span class="info-value">2024-01-15</span>
+                        </div>
+                        <div class="info-item">
+                          <span class="info-label">{{ t('settings.updateDate') }}</span>
+                          <span class="info-value">2024-01-15</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 技术栈卡片 -->
+                  <div class="about-card tech-card">
+                    <div class="card-header">
+                      <h3>{{ t('settings.technology') }}</h3>
+                    </div>
+                    <div class="card-body">
+                      <div class="tech-tags">
+                        <span class="tech-tag">Wails v3</span>
+                        <span class="tech-tag">Vue 3</span>
+                        <span class="tech-tag">TypeScript</span>
+                        <span class="tech-tag">Naive UI</span>
+                        <span class="tech-tag">Go</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 许可证卡片 -->
+                  <div class="about-card license-card">
+                    <div class="card-header">
+                      <h3>{{ t('settings.license') }}</h3>
+                    </div>
+                    <div class="card-body">
+                      <div class="license-info">
+                        <div class="license-icon">📄</div>
+                        <div class="license-details">
+                          <h4>{{ t('settings.licenseType') }}</h4>
+                          <p>{{ t('settings.copyright') }} © 2024 FG-ABYSS Team. {{ t('settings.allRightsReserved') }}.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 特别感谢卡片 -->
+                  <div class="about-card thanks-card">
+                    <div class="card-header">
+                      <h3>{{ t('settings.thanks') }}</h3>
+                    </div>
+                    <div class="card-body">
+                      <p class="thanks-text">{{ t('settings.thanksSupport') }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 页脚 -->
+                <div class="about-footer">
+                  <div class="footer-links">
+                    <a href="#" class="footer-link">{{ t('settings.documentation') }}</a>
+                    <a href="#" class="footer-link">{{ t('settings.changelog') }}</a>
+                    <a href="#" class="footer-link">{{ t('settings.privacyPolicy') }}</a>
+                    <a href="#" class="footer-link">{{ t('settings.termsOfService') }}</a>
+                  </div>
+                  <p class="copyright">
+                    {{ t('settings.copyright') }} © 2024 FG-ABYSS Team
+                  </p>
                 </div>
               </div>
             </template>
@@ -463,6 +587,11 @@ const applyFontSize = () => {
   changeFontSize(size)
 }
 
+// 打开 GitHub 仓库
+const openGithubRepo = () => {
+  window.open('https://github.com/FG-ABYSS', '_blank')
+}
+
 // 初始化语言、强调色、字体和字体大小
 onMounted(() => {
   const savedLanguage = localStorage.getItem('locale')
@@ -500,7 +629,7 @@ onMounted(() => {
     document.documentElement.style.setProperty('--font-size', currentFontSize.value)
   }
   
-  // 监听localStorage中变化
+  // 监听 localStorage 中变化
   window.addEventListener('storage', (event) => {
     if (event.key === 'accentColor' && event.newValue) {
       currentAccentColor.value = event.newValue
@@ -1723,6 +1852,454 @@ onMounted(() => {
   
   .apply-button {
     width: 100%;
+  }
+}
+
+/* ==================== 关于页面样式 ==================== */
+.about-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 关于页面头部 */
+.about-header {
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, var(--card-bg), rgba(255, 255, 255, 0.02));
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+}
+
+.dark .about-header {
+  border-color: var(--border-strong);
+}
+
+.app-logo {
+  margin-bottom: 20px;
+}
+
+.logo-icon {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, var(--active-color), var(--active-color-suppl));
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo-icon:hover {
+  transform: scale(1.05) rotate(5deg);
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4);
+}
+
+.app-name {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-color);
+  margin: 0 0 12px 0;
+  letter-spacing: -0.5px;
+}
+
+.app-version {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--active-color);
+  margin: 0 0 12px 0;
+}
+
+.app-description {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* 关于内容区域 */
+.about-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+/* 关于卡片 */
+.about-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .about-card {
+  border-color: var(--border-strong);
+}
+
+.about-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--active-color);
+}
+
+.dark .about-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.dark .card-header {
+  border-bottom-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* 作者信息 */
+.author-info {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.author-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--active-color), var(--active-color-suppl));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.author-details h4 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.author-intro,
+.author-field {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.author-field {
+  margin-bottom: 0;
+}
+
+/* GitHub 链接按钮 */
+.github-links {
+  display: flex;
+  gap: 12px;
+}
+
+.github-link-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, var(--bg-secondary), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  justify-content: center;
+}
+
+.dark .github-link-btn {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.github-link-btn:hover {
+  background: #24292e;
+  border-color: #24292e;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(36, 41, 46, 0.4);
+}
+
+.dark .github-link-btn:hover {
+  box-shadow: 0 6px 20px rgba(36, 41, 46, 0.5);
+}
+
+.github-icon {
+  transition: transform 0.3s ease;
+}
+
+.github-link-btn:hover .github-icon {
+  transform: scale(1.1) rotate(-5deg);
+}
+
+/* 信息网格 */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+/* 技术标签 */
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tech-tag {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, var(--bg-secondary), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.dark .tech-tag {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tech-tag:hover {
+  border-color: var(--active-color);
+  color: var(--active-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* 许可证信息 */
+.license-info {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.license-icon {
+  font-size: 40px;
+  flex-shrink: 0;
+}
+
+.license-details h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.license-details p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* 特别感谢 */
+.thanks-text {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* 页脚 */
+.about-footer {
+  text-align: center;
+  padding: 24px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 20px;
+}
+
+.dark .about-footer {
+  border-top-color: var(--border-strong);
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-link {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--active-color);
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover {
+  color: var(--active-color);
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
+
+.copyright {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .about-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-page-container {
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .about-header {
+    padding: 30px 16px;
+  }
+  
+  .logo-icon {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .app-name {
+    font-size: 26px;
+  }
+  
+  .app-version {
+    font-size: 14px;
+  }
+  
+  .card-header {
+    padding: 14px 16px;
+  }
+  
+  .card-body {
+    padding: 16px;
+  }
+  
+  .author-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .license-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .footer-links {
+    gap: 16px;
+    flex-direction: column;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-icon {
+    width: 64px;
+    height: 64px;
+  }
+  
+  .app-name {
+    font-size: 22px;
+  }
+  
+  .github-links {
+    flex-direction: column;
+  }
+  
+  .tech-tags {
+    justify-content: center;
   }
 }
 </style>

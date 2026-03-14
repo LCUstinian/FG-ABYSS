@@ -72,7 +72,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to load frontend assets: %v", err)
 	}
-	
+
 	// 调试：列出嵌入的文件
 	log.Println("=== Embedded files in frontend/dist ===")
 	entries, err := fs.ReadDir(frontendAssets, ".")

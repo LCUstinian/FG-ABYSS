@@ -137,14 +137,17 @@ export default {
     version: '版本：',
     appDescription: '一个功能强大的网络安全工具',
     aboutTip: '这里将显示软件版本信息、更新日志和相关链接',
-    fontSizePlaceholder: '建议8-24px',
+    fontSizePlaceholder: '建议 8-24px',
     fontDefault: '系统默认',
     fontMonospace: '等宽默认',
     fontSizeTiny: '极小',
     fontSizeSmall: '小',
     fontSizeMedium: '中',
     fontSizeLarge: '大',
-    fontSizeHuge: '极大'
+    fontSizeHuge: '极大',
+    customColor: '自定义颜色',
+    applyColor: '应用颜色',
+    resetToDefault: '重置为默认'
   },
   status: {
     memory: '内存',

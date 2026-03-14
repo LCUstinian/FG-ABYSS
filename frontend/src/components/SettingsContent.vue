@@ -99,6 +99,63 @@
                     <span v-if="currentAccentColor === color.value" class="accent-color-check">✓</span>
                   </button>
                 </div>
+                
+                <!-- 自定义颜色选择器 - 紧凑单行版本 -->
+                <div class="custom-color-picker-compact">
+                  <div class="color-picker-row">
+                    <!-- 颜色预览 -->
+                    <div class="color-preview-compact">
+                      <div 
+                        class="color-dot" 
+                        :style="{ backgroundColor: customColorValue }"
+                      ></div>
+                      <span class="color-hex">{{ customColorValue.toUpperCase() }}</span>
+                    </div>
+                    
+                    <!-- 颜色选择器和输入 -->
+                    <div class="color-controls-compact">
+                      <input
+                        type="color"
+                        v-model="customColorValue"
+                        class="color-picker-btn"
+                        @input="handleCustomColorPick"
+                      />
+                      <input
+                        type="text"
+                        v-model="customColorValue"
+                        class="color-text-input"
+                        placeholder="#3182CE"
+                        @input="validateHexColor"
+                        @blur="applyCustomColor"
+                      />
+                    </div>
+                    
+                    <!-- 操作按钮 -->
+                    <div class="color-actions-compact">
+                      <NButton 
+                        type="primary" 
+                        size="small"
+                        @click="applyCustomColor"
+                        class="btn-apply"
+                      >
+                        <template #icon>
+                          <span class="btn-icon">✓</span>
+                        </template>
+                        {{ t('settings.applyColor') }}
+                      </NButton>
+                      <NButton 
+                        size="small"
+                        @click="resetToDefaultColor"
+                        class="btn-reset"
+                      >
+                        <template #icon>
+                          <span class="btn-icon">↺</span>
+                        </template>
+                        {{ t('settings.resetToDefault') }}
+                      </NButton>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="settings-card">
                 <h4>{{ t('settings.font') }}</h4>
@@ -246,6 +303,11 @@ const accentColors = [
 // 当前强调色
 const currentAccentColor = ref(localStorage.getItem('accentColor') || '#3182ce')
 
+// 自定义颜色选择器
+const customColorValue = ref(currentAccentColor.value)
+const defaultAccentColor = '#3182ce'
+const colorError = ref(false)
+
 // 字体选项 - 极客风格
 const fontFamilies = [
   { name: t('settings.fontDefault'), value: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif' },
@@ -297,13 +359,74 @@ const changeLanguage = (lang: string) => {
 // 处理强调色切换
 const changeAccentColor = (color: string) => {
   currentAccentColor.value = color
+  customColorValue.value = color
   localStorage.setItem('accentColor', color)
   document.documentElement.style.setProperty('--active-color', color)
-  // 触发storage事件，让其他组件知道颜色变化
+  // 触发 storage 事件，让其他组件知道颜色变化
   window.dispatchEvent(new StorageEvent('storage', {
     key: 'accentColor',
     newValue: color
   }))
+}
+
+// 验证 HEX 颜色格式
+const validateHexColor = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const value = target.value.trim()
+  
+  // 简单的 HEX 颜色验证
+  const hexColorRegex = /^#?([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$/
+  
+  if (hexColorRegex.test(value)) {
+    colorError.value = false
+    // 格式化颜色值（添加#号）
+    if (!value.startsWith('#')) {
+      customColorValue.value = '#' + value
+    }
+  } else {
+    colorError.value = true
+  }
+}
+
+// 处理自定义颜色选择器输入
+const handleCustomColorPick = () => {
+  colorError.value = false
+  // 实时更新预览，但不应用
+}
+
+// 应用自定义颜色
+const applyCustomColor = () => {
+  if (colorError.value) {
+    // 如果颜色值无效，恢复为当前强调色
+    customColorValue.value = currentAccentColor.value
+    colorError.value = false
+    return
+  }
+  
+  let color = customColorValue.value.trim()
+  
+  // 确保颜色值以#开头
+  if (!color.startsWith('#')) {
+    color = '#' + color
+    customColorValue.value = color
+  }
+  
+  // 验证颜色格式
+  const hexColorRegex = /^#?([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$/
+  if (!hexColorRegex.test(color)) {
+    // 颜色格式无效，恢复为当前强调色
+    customColorValue.value = currentAccentColor.value
+    return
+  }
+  
+  // 应用颜色
+  changeAccentColor(color)
+}
+
+// 重置为默认颜色
+const resetToDefaultColor = () => {
+  customColorValue.value = defaultAccentColor
+  changeAccentColor(defaultAccentColor)
 }
 
 // 处理字体切换
@@ -748,10 +871,18 @@ onMounted(() => {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
+.dark .accent-color-option:hover {
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+}
+
 .accent-color-option.active {
   border-color: var(--text-color);
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
   transform: scale(1.15);
+}
+
+.dark .accent-color-option.active {
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
 }
 
 .accent-color-check {
@@ -759,6 +890,351 @@ onMounted(() => {
   font-size: 16px;
   font-weight: bold;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 自定义颜色选择器 - 紧凑单行版本 */
+.custom-color-picker-compact {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .custom-color-picker-compact {
+  border-color: var(--border-strong);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+/* 颜色预览 - 紧凑版 */
+.color-preview-compact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.color-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease, border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .color-dot {
+  border-color: var(--border-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.color-dot:hover {
+  transform: scale(1.1);
+}
+
+.color-hex {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  min-width: 70px;
+  transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .color-hex {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* 颜色控制 - 紧凑版 */
+.color-controls-compact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.color-picker-btn {
+  width: 36px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+}
+
+.color-picker-btn::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 6px;
+}
+
+.color-picker-btn::-webkit-color-swatch {
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+.color-picker-btn::-moz-color-swatch {
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+.color-picker-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dark .color-picker-btn:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.dark .color-picker-btn::-webkit-color-swatch {
+  border-color: var(--border-strong);
+}
+
+.dark .color-picker-btn::-moz-color-swatch {
+  border-color: var(--border-strong);
+}
+
+.color-text-input {
+  flex: 1;
+  min-width: 100px;
+  padding: 6px 10px;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 13px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.color-text-input:focus {
+  border-color: var(--active-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dark .color-text-input {
+  background: var(--bg-tertiary);
+  border-color: var(--border-strong);
+}
+
+.dark .color-text-input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.color-text-input.error {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.dark .color-text-input.error {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.color-text-input::placeholder {
+  color: var(--text-tertiary);
+  opacity: 0.6;
+}
+
+.dark .color-text-input::placeholder {
+  opacity: 0.5;
+}
+
+/* 操作按钮 - 紧凑版 */
+.color-actions-compact {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-apply,
+.btn-reset {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 应用按钮 - 主操作 */
+.btn-apply {
+  background: var(--active-color);
+  color: white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.btn-apply::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-apply:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+  filter: brightness(1.1);
+}
+
+.btn-apply:hover::before {
+  left: 100%;
+}
+
+.btn-apply:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  filter: brightness(0.95);
+}
+
+/* 深色模式下的应用按钮 - 增强对比度 */
+.dark .btn-apply {
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+  filter: brightness(1.05);
+}
+
+.dark .btn-apply:hover {
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5);
+  filter: brightness(1.15);
+}
+
+.dark .btn-apply:active {
+  filter: brightness(1);
+}
+
+/* 重置按钮 - 次操作 */
+.btn-reset {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-reset::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-reset:hover {
+  transform: translateY(-2px);
+  border-color: var(--active-color);
+  color: var(--active-color);
+  background: var(--bg-hover);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-reset:hover::before {
+  left: 100%;
+}
+
+.btn-reset:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 深色模式下的重置按钮 - 增强对比度 */
+.dark .btn-reset {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark .btn-reset:hover {
+  border-color: var(--active-color);
+  color: var(--active-color);
+  background: var(--bg-hover);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.1);
+}
+
+.dark .btn-reset:active {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 按钮图标 */
+.btn-icon {
+  font-size: 14px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+}
+
+.btn-apply .btn-icon {
+  color: white;
+}
+
+.btn-reset .btn-icon {
+  color: currentColor;
+  transition: transform 0.3s ease;
+}
+
+.btn-reset:hover .btn-icon {
+  transform: rotate(-180deg);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .color-picker-row {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .color-preview-compact {
+    width: 100%;
+    justify-content: center;
+    min-width: auto;
+  }
+  
+  .color-controls-compact {
+    width: 100%;
+  }
+  
+  .color-actions-compact {
+    width: 100%;
+  }
+  
+  .btn-apply,
+  .btn-reset {
+    flex: 1;
+  }
 }
 
 /* 字体设置 */

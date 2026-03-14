@@ -144,7 +144,10 @@ export default {
     fontSizeSmall: 'Small',
     fontSizeMedium: 'Medium',
     fontSizeLarge: 'Large',
-    fontSizeHuge: 'Huge'
+    fontSizeHuge: 'Huge',
+    customColor: 'Custom Color',
+    applyColor: 'Apply Color',
+    resetToDefault: 'Reset to Default'
   },
   status: {
     memory: 'Memory',

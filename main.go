@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	_ "embed"
+	"io/fs"
 	"log"
 	"time"
 
@@ -39,6 +39,9 @@ func init() {
 // main function serves as the application's entry point. It initializes the application, creates a window,
 // and starts a goroutine that emits a time-based event every second. It subsequently runs the application and
 // logs any error that might occur.
+
+//go:generate go tool golang.org/x/tools/cmd/stringer -type=WindowCreateEvent
+
 func main() {
 	// 初始化数据库
 	dbInstance, err := db.InitDB()
@@ -62,11 +65,41 @@ func main() {
 	// 创建 App 实例
 	appInstance := NewApp(dbInstance)
 
+	// 使用 fs.Sub 提取前端资源子目录
+	// 这是 Wails 3 推荐的方式，用于从嵌入的文件系统中提取子目录
+	log.Println("Loading frontend assets...")
+	frontendAssets, err := fs.Sub(assets, "frontend/dist")
+	if err != nil {
+		log.Fatalf("Failed to load frontend assets: %v", err)
+	}
+	
+	// 调试：列出嵌入的文件
+	log.Println("Checking embedded files in frontend/dist:")
+	entries, err := fs.ReadDir(frontendAssets, ".")
+	if err != nil {
+		log.Printf("Warning: Could not read embedded files: %v", err)
+	} else {
+		for _, entry := range entries {
+			if entry.IsDir() {
+				log.Printf("  [DIR]  %s", entry.Name())
+			} else {
+				log.Printf("  [FILE] %s (%d bytes)", entry.Name(), func() int64 {
+					file, err := entry.Info()
+					if err != nil {
+						return 0
+					}
+					return file.Size()
+				}())
+			}
+		}
+	}
+
 	// Create a new Wails application by providing the necessary options.
 	// Variables 'Name' and 'Description' are for application metadata.
 	// 'Assets' configures the asset server with the 'FS' variable pointing to the frontend files.
 	// 'Bind' is a list of Go struct instances. The frontend has access to the methods of these instances.
 	// 'Mac' options tailor the application when running an macOS.
+	log.Println("Creating Wails application...")
 	app := application.New(application.Options{
 		Name:        "FG-ABYSS",
 		Description: "A demo of using raw HTML & CSS",
@@ -74,12 +107,13 @@ func main() {
 			application.NewService(appInstance),
 		},
 		Assets: application.AssetOptions{
-			Handler: application.AssetFileServerFS(assets),
+			Handler: application.AssetFileServerFS(frontendAssets),
 		},
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: true,
 		},
 	})
+	log.Println("Wails application created successfully")
 
 	// Create a new window with the necessary options.
 	// 'Title' is the title of the window.

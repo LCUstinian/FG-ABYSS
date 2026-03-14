@@ -45,20 +45,20 @@ func InitDB() (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to enable foreign keys: %w", err)
 	}
 
-	// 开启WAL模式
+	// 开启 WAL 模式
 	if _, err := sqlDB.Exec("PRAGMA journal_mode = WAL"); err != nil {
 		return nil, fmt.Errorf("failed to enable WAL mode: %w", err)
 	}
 
-	// 先执行删除 name 字段的迁移
-	if err := MigrateRemoveWebShellNameField(db); err != nil {
-		fmt.Printf("警告：迁移失败：%v\n", err)
-	}
+	fmt.Println("开始检查数据库结构...")
 
-	// 自动迁移
+	// 自动迁移数据库表结构
+	// 这会在表不存在时自动创建，或更新现有表结构
+	fmt.Println("正在执行数据库表结构迁移...")
 	if err := db.AutoMigrate(&models.Project{}, &models.WebShell{}); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
+	fmt.Println("数据库表结构迁移完成")
 
 	// 创建默认项目
 	var defaultProject models.Project

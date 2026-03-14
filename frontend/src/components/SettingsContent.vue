@@ -556,7 +556,7 @@ onMounted(() => {
 .content-body {
   flex: 1;
   width: 100%;
-  height: 100%;
+  min-height: 0;  /* 关键修复：允许 flex 子项缩小 */
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -564,6 +564,7 @@ onMounted(() => {
   border-top: none;
   display: flex;
   align-items: stretch;
+  overflow-y: auto;  /* 添加垂直滚动 */
 }
 
 .content-section h1 .title {
@@ -596,6 +597,8 @@ onMounted(() => {
   padding: 0;
   border-top: none;
   border-right: 1px solid var(--border-color);
+  overflow: hidden;  /* 防止内容溢出 */
+  flex-direction: row;
 }
 
 .settings-sidebar {
@@ -642,16 +645,19 @@ onMounted(() => {
 
 .settings-main {
   flex: 1;
-  height: 100%;
+  width: 100%;
+  min-height: 0;  /* 关键修复：允许 flex 子项缩小 */
   background: var(--content-bg);
   padding: 0;
   margin: 0;
-  overflow: hidden;
+  overflow: hidden;  /* 防止内容溢出 */
   border: none;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
   z-index: 5;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .dark .settings-main {
@@ -666,7 +672,7 @@ onMounted(() => {
   gap: 20px;
   padding: 20px;
   border: none;
-  overflow: hidden;
+  overflow-y: auto;  /* 添加垂直滚动 */
   box-sizing: border-box;
 }
 

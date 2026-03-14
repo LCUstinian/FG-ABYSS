@@ -111,43 +111,43 @@
                   <tr class="webshell-table-header-row">
                     <th class="webshell-table-header" style="text-align: left; min-width: 60px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('id')">
                       ID <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('id') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                      <div class="resize-handle" @mousedown.stop="handleResizeStart($event, 'id')" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 10;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 200px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('url')">
                       {{ t('projects.url') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('url') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                      <div class="resize-handle" @mousedown.stop="handleResizeStart($event, 'url')" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 10;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('payload')">
                       {{ t('projects.payloadType') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('payload') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                      <div class="resize-handle" @mousedown.stop="handleResizeStart($event, 'payload')" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 10;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('cryption')">
                       {{ t('projects.cryption') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('cryption') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                      <div class="resize-handle" @mousedown.stop="handleResizeStart($event, 'cryption')" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 10;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 80px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('encoding')">
                       {{ t('projects.encoding') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('encoding') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                      <div class="resize-handle" @mousedown.stop="handleResizeStart($event, 'encoding')" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 10;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 100px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('proxyType')">
                       {{ t('projects.proxyType') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('proxyType') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                      <div class="resize-handle" @mousedown.stop="handleResizeStart($event, 'proxyType')" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 10;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('remark')">
                       {{ t('projects.remark') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('remark') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                      <div class="resize-handle" @mousedown.stop="handleResizeStart($event, 'remark')" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 10;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('createdAt')">
                       {{ t('projects.createTime') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('createdAt') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                      <div class="resize-handle" @mousedown.stop="handleResizeStart($event, 'createdAt')" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 10;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 150px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('updatedAt')">
                       {{ t('projects.updateTime') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('updatedAt') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                      <div class="resize-handle" @mousedown.stop="handleResizeStart($event, 'updatedAt')" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 10;"></div>
                     </th>
                     <th class="webshell-table-header" style="text-align: left; min-width: 80px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('status')">
                       {{ t('projects.status') }} <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('status') }}</span>
-                      <div class="resize-handle" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize;"></div>
+                      <div class="resize-handle" @mousedown.stop="handleResizeStart($event, 'status')" style="position: absolute; right: 0; top: 0; bottom: 0; width: 5px; cursor: col-resize; z-index: 10;"></div>
                     </th>
                   </tr>
                 </thead>
@@ -159,12 +159,27 @@
                     class="webshell-table-row"
                   >
                     <td class="webshell-table-cell">{{ item.id }}</td>
-                    <td class="webshell-table-cell webshell-table-cell-truncate">{{ item.url }}</td>
+                    <td class="webshell-table-cell webshell-table-cell-truncate">
+                      <NTooltip trigger="hover" :show-arrow="true">
+                        <template #trigger>
+                          <span>{{ item.url }}</span>
+                        </template>
+                        {{ item.url }}
+                      </NTooltip>
+                    </td>
                     <td class="webshell-table-cell">{{ item.payload }}</td>
                     <td class="webshell-table-cell">{{ item.cryption }}</td>
                     <td class="webshell-table-cell">{{ item.encoding }}</td>
                     <td class="webshell-table-cell">{{ item.proxyType }}</td>
-                    <td class="webshell-table-cell webshell-table-cell-truncate">{{ item.remark }}</td>
+                    <td class="webshell-table-cell webshell-table-cell-truncate">
+                      <NTooltip trigger="hover" :show-arrow="true" v-if="item.remark">
+                        <template #trigger>
+                          <span>{{ item.remark }}</span>
+                        </template>
+                        {{ item.remark }}
+                      </NTooltip>
+                      <span v-else>-</span>
+                    </td>
                     <td class="webshell-table-cell">{{ formatTime(item.createdAt) }}</td>
                     <td class="webshell-table-cell">{{ formatTime(item.updatedAt) }}</td>
                     <td class="webshell-table-cell">{{ item.status }}</td>
@@ -234,6 +249,7 @@ import {
   NMenu, 
   NText, 
   NInput,
+  NTooltip,
   NDialogProvider,
   useDialog,
   useMessage
@@ -677,30 +693,40 @@ watch(selectedProject, () => {
 })
 
 // 表格列宽调整功能
-
 let resizing = false
 let currentTh: HTMLElement | null = null
 let startX = 0
 let startWidth = 0
 
-const handleMouseDown = (e: MouseEvent, th: HTMLElement) => {
-  if (e.target instanceof HTMLElement && e.target.classList.contains('resize-handle')) {
-    resizing = true
-    currentTh = th
-    startX = e.clientX
-    startWidth = th.offsetWidth
-    document.body.style.cursor = 'col-resize'
-    document.body.style.userSelect = 'none'
+const handleResizeStart = (e: MouseEvent, field: string) => {
+  resizing = true
+  // 根据 field 名称找到对应的 th 元素
+  const th = document.querySelector(`th[style*="min-width"]`)  // 这只是示例，实际需要更精确的匹配
+  if (e.target instanceof HTMLElement) {
+    currentTh = e.target.parentElement as HTMLElement
   }
+  startX = e.clientX
+  startWidth = currentTh?.offsetWidth || 100
+  document.body.style.cursor = 'col-resize'
+  document.body.style.userSelect = 'none'
 }
 
 const handleMouseMove = (e: MouseEvent) => {
   if (!resizing || !currentTh) return
   
-  const width = startWidth + (e.clientX - startX)
-  if (width > 50) { // 最小宽度
-    currentTh.style.width = `${width}px`
-  }
+  const width = Math.max(60, startWidth + (e.clientX - startX))
+  currentTh.style.width = `${width}px`
+  
+  // 同步更新同列的所有单元格
+  const columnIndex = Array.from(currentTh.parentNode?.children || []).indexOf(currentTh)
+  const rows = document.querySelectorAll('.webshell-table-row')
+  
+  rows.forEach((row) => {
+    const cell = row.children[columnIndex] as HTMLElement
+    if (cell) {
+      cell.style.width = `${width}px`
+    }
+  })
 }
 
 const handleMouseUp = () => {
@@ -711,16 +737,9 @@ const handleMouseUp = () => {
 }
 
 onMounted(async () => {
-  const table = document.getElementById('webshellTable')
-  if (table) {
-    const thElements = table.querySelectorAll('th')
-    thElements.forEach(th => {
-      th.addEventListener('mousedown', (e) => handleMouseDown(e, th as HTMLElement))
-    })
-    
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
-  }
+  // 添加全局鼠标事件监听用于列宽拖动
+  document.addEventListener('mousemove', handleMouseMove)
+  document.addEventListener('mouseup', handleMouseUp)
   
   // 添加点击空白处关闭菜单的事件
   document.addEventListener('click', handleClickOutside)
@@ -1203,6 +1222,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 .webshell-table-row {
   cursor: pointer;
   transition: background-color 0.2s;
+  height: 48px !important; /* 固定行高 48px，适合单行内容 */
 }
 
 .webshell-table-row:hover {
@@ -1210,17 +1230,41 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 }
 
 .webshell-table-cell {
-  padding: 10px;
-  border: 1px solid var(--border-color) !important; /* 浅色模式 1px 边框 */
+  padding: 8px 12px !important; /* 上下 8px，左右 12px，保持紧凑 */
+  border: 1px solid var(--border-color) !important;
   text-align: left;
-  background-color: transparent !important; /* 确保单元格背景透明 */
-  color: var(--text-color) !important; /* 确保文字颜色正确 */
+  background-color: transparent !important;
+  color: var(--text-color) !important;
+  height: 48px !important; /* 固定单元格高度 */
+  vertical-align: middle !important; /* 垂直居中 */
+  line-height: 1.5 !important; /* 行高 1.5 倍，确保文字清晰 */
 }
 
 .webshell-table-cell-truncate {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 0;
+}
+
+/* 列宽拖动手柄样式优化 */
+.resize-handle {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background-color: var(--active-color);
+}
+
+.resize-handle:hover,
+.resize-handle:active {
+  opacity: 0.5;
+}
+
+.webshell-table-header:hover .resize-handle {
+  opacity: 0.3;
+}
+
+.webshell-table-header:hover .resize-handle:hover {
+  opacity: 0.5;
 }
 
 /* 深色主题下优化表格样式，确保边框清晰可见 */
@@ -1344,6 +1388,16 @@ const handleContextMenuOutside = (event: MouseEvent) => {
     height: 30px !important;
     font-size: 12px !important;
   }
+  
+  /* 移动端表格行高优化 */
+  .webshell-table-row {
+    height: 44px !important;
+  }
+  
+  .webshell-table-cell {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1382,6 +1436,16 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   
   .page-size-select :deep(.n-base-selection) {
     height: 28px !important;
+    font-size: 11px !important;
+  }
+  
+  /* 小屏幕表格行高进一步优化 */
+  .webshell-table-row {
+    height: 40px !important;
+  }
+  
+  .webshell-table-cell {
+    padding: 5px 8px !important;
     font-size: 11px !important;
   }
 }

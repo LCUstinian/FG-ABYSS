@@ -534,23 +534,46 @@ onMounted(() => {
 
 .content-header {
   width: 100%;
-  padding: 16px 24px;
+  padding: 24px 24px 20px 24px;
   margin-bottom: 0;
-  background: var(--active-color);
-  border-bottom: none;
-  box-shadow: none;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.dark .content-header {
+  border-bottom-color: var(--border-strong);
 }
 
 .content-section h1 {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 0;
+  line-height: 1;
   color: var(--text-color);
   text-align: left;
   display: flex;
   align-items: center;
   gap: 12px;
-  line-height: 1.2;
+}
+
+.content-section h1 .title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--active-color);
+  letter-spacing: 0;
+}
+
+.content-section h1 .separator {
+  color: var(--text-tertiary);
+  font-weight: 300;
+  font-size: 20px;
+}
+
+.content-section h1 .subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  letter-spacing: 0;
 }
 
 .content-body {
@@ -565,25 +588,6 @@ onMounted(() => {
   display: flex;
   align-items: stretch;
   overflow-y: auto;  /* 添加垂直滚动 */
-}
-
-.content-section h1 .title {
-  font-weight: 700;
-  color: white;
-}
-
-.content-section h1 .separator {
-  color: white;
-  opacity: 0.7;
-  font-weight: 400;
-}
-
-.content-section h1 .subtitle {
-  font-size: 14px;
-  font-weight: 400;
-  color: white;
-  opacity: 0.8;
-  font-style: normal;
 }
 
 /* 设置内容样式 - 深色主题风格 */
@@ -666,7 +670,7 @@ onMounted(() => {
 
 .settings-panel {
   width: 100%;
-  height: 100%;
+  min-height: 0;  /* 关键修复：允许 flex 子项缩小 */
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -674,6 +678,7 @@ onMounted(() => {
   border: none;
   overflow-y: auto;  /* 添加垂直滚动 */
   box-sizing: border-box;
+  flex: 1;  /* 占据剩余空间 */
 }
 
 .settings-card {
@@ -683,6 +688,8 @@ onMounted(() => {
   padding: 20px;
   box-shadow: var(--shadow-sm);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;  /* 确保占满宽度 */
+  box-sizing: border-box;  /* 包含 padding 在宽度内 */
 }
 
 .dark .settings-card {
@@ -1584,11 +1591,15 @@ onMounted(() => {
   padding: 60px 20px;
   text-align: center;
   gap: 16px;
+  width: 100%;  /* 确保占满宽度 */
+  box-sizing: border-box;  /* 包含 padding 在宽度内 */
+  min-height: 300px;  /* 最小高度，避免内容过少时显得空洞 */
 }
 
 .placeholder-icon {
   font-size: 48px;
   margin-bottom: 16px;
+  flex-shrink: 0;  /* 防止图标被压缩 */
 }
 
 .placeholder-content p {
@@ -1596,6 +1607,8 @@ onMounted(() => {
   color: var(--text-color);
   opacity: 0.8;
   line-height: 1.6;
+  max-width: 600px;  /* 限制文本最大宽度，提高可读性 */
+  width: 100%;  /* 确保在小屏幕上也能正常显示 */
 }
 
 .placeholder-tips {
@@ -1603,14 +1616,23 @@ onMounted(() => {
   padding: 16px;
   background: var(--hover-color);
   border-radius: 8px;
-  width: 100%;
-  max-width: 400px;
+  width: 100%;  /* 占满父容器宽度 */
+  max-width: 600px;  /* 限制最大宽度，提高可读性 */
   text-align: left;
+  box-sizing: border-box;  /* 包含 padding 在宽度内 */
 }
 
 .placeholder-tips span {
   font-weight: 600;
   color: var(--text-color);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.placeholder-tips p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 13px;
 }
 
 .placeholder-tips p {

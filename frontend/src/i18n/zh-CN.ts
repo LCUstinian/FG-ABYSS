@@ -12,9 +12,10 @@ export default {
     projectIntro: 'FG-ABYSS 是一个功能强大的安全工具，用于管理项目、生成载荷和使用插件。',
     projectDescription: '这里将展示项目的主要功能和使用方法。',
     systemStatus: '系统状态',
-    memoryUsage: '内存使用:',
-    cpuUsage: 'CPU使用率:',
-    uptime: '运行时间:',
+    memoryUsage: '内存使用',
+    cpuUsage: 'CPU 使用率',
+    uptime: '运行时间',
+    processId: '进程 ID',
     license: '许可证',
     licenseText: '本软件采用 MIT 许可证开源。',
     licenseDescription: '您可以自由使用、修改和分发本软件。',
@@ -26,7 +27,21 @@ export default {
     securityTip2: '遵守相关法律法规，保护网络安全。',
     helpSupport: '帮助与支持',
     helpSupport1: '查看文档了解更多功能细节。',
-    helpSupport2: '加入社区获取技术支持。'
+    helpSupport2: '加入社区获取技术支持。',
+    // 数据看板
+    totalProjects: '项目总数',
+    totalWebShells: 'WebShell 总数',
+    totalPlugins: '插件总数',
+    totalPayloads: 'Payload 总数',
+    quickActions: '快速操作',
+    recentActivity: '最近活动',
+    usageStatistics: '使用统计',
+    newProject: '新建项目',
+    newWebShell: '新建 WebShell',
+    newPlugin: '新建插件',
+    newPayload: '新建 Payload',
+    projectsByType: '项目类型分布',
+    shellByLanguage: 'Shell 语言分布'
   },
   projects: {
     title: '项目',
@@ -100,7 +115,8 @@ export default {
     enable: '启用',
     noPlugins: '暂无插件',
     noPluginsDescription1: '您还没有安装任何插件',
-    noPluginsDescription2: '从插件商店中浏览并安装插件来扩展功能'
+    noPluginsDescription2: '从插件商店中浏览并安装插件来扩展功能',
+    newPlugin: '新建插件'
   },
   settings: {
     title: '设置',

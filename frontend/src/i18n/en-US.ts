@@ -12,9 +12,10 @@ export default {
     projectIntro: 'FG-ABYSS is a powerful security tool for managing projects, generating payloads, and using plugins.',
     projectDescription: 'The main features and usage methods of the project will be displayed here.',
     systemStatus: 'System Status',
-    memoryUsage: 'Memory Usage:',
-    cpuUsage: 'CPU Usage:',
-    uptime: 'Uptime:',
+    memoryUsage: 'Memory Usage',
+    cpuUsage: 'CPU Usage',
+    uptime: 'Uptime',
+    processId: 'Process ID',
     license: 'License',
     licenseText: 'This software is open source under the MIT license.',
     licenseDescription: 'You can freely use, modify and distribute this software.',
@@ -26,7 +27,21 @@ export default {
     securityTip2: 'Comply with relevant laws and regulations to protect network security.',
     helpSupport: 'Help & Support',
     helpSupport1: 'Check the documentation for more feature details.',
-    helpSupport2: 'Join the community for technical support.'
+    helpSupport2: 'Join the community for technical support.',
+    // Dashboard
+    totalProjects: 'Total Projects',
+    totalWebShells: 'Total WebShells',
+    totalPlugins: 'Total Plugins',
+    totalPayloads: 'Total Payloads',
+    quickActions: 'Quick Actions',
+    recentActivity: 'Recent Activity',
+    usageStatistics: 'Usage Statistics',
+    newProject: 'New Project',
+    newWebShell: 'New WebShell',
+    newPlugin: 'New Plugin',
+    newPayload: 'New Payload',
+    projectsByType: 'Projects by Type',
+    shellByLanguage: 'Shells by Language'
   },
   projects: {
     title: 'Projects',
@@ -100,7 +115,8 @@ export default {
     enable: 'Enable',
     noPlugins: 'No Plugins',
     noPluginsDescription1: 'You have not installed any plugins yet',
-    noPluginsDescription2: 'Browse and install plugins from the plugin store to extend functionality'
+    noPluginsDescription2: 'Browse and install plugins from the plugin store to extend functionality',
+    newPlugin: 'New Plugin'
   },
   settings: {
     title: 'Settings',

@@ -1360,23 +1360,26 @@ body {
 
 .content-header {
   width: 100%;
-  padding: 16px 24px;
+  padding: 24px 24px 20px 24px;
   margin-bottom: 0;
-  background: var(--panel-bg);
-  border-bottom: none;
-  box-shadow: none;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.dark .content-header {
+  border-bottom-color: var(--border-strong);
 }
 
 .content-section h1 {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 0;
+  line-height: 1;
   color: var(--text-color);
   text-align: left;
   display: flex;
   align-items: center;
   gap: 12px;
-  line-height: 1.2;
 }
 
 .content-body {
@@ -1390,22 +1393,23 @@ body {
 }
 
 .content-section h1 .title {
-  font-weight: 700;
-  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--active-color);
+  letter-spacing: 0;
 }
 
 .content-section h1 .separator {
-  color: white;
-  opacity: 0.7;
-  font-weight: 400;
+  color: var(--text-tertiary);
+  font-weight: 300;
+  font-size: 20px;
 }
 
 .content-section h1 .subtitle {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 400;
-  color: white;
-  opacity: 0.8;
-  font-style: normal;
+  color: var(--text-secondary);
+  letter-spacing: 0;
 }
 
 /* 首页内容样式 - 深色主题风格 */

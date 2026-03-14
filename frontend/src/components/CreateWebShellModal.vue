@@ -337,7 +337,7 @@ const handleCreate = async () => {
   color: var(--text-color) !important;
   opacity: 0.8 !important;
 }
-/* 输入框样式 */
+/* 输入框样式 - 移除所有边框效果 */
 .webshell-input,
 .webshell-select,
 .webshell-textarea {
@@ -353,20 +353,20 @@ const handleCreate = async () => {
   box-sizing: border-box;
 }
 
+/* 移除悬停时的边框颜色变化 */
 .webshell-input:hover,
 .webshell-select:hover,
 .webshell-textarea:hover {
-  border-color: var(--active-color);
   background-color: var(--card-bg);
 }
 
+/* 移除聚焦时的边框颜色和光晕效果 */
 .webshell-input:focus,
 .webshell-select:focus,
 .webshell-textarea:focus {
-  border-color: var(--active-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   background-color: var(--card-bg);
   outline: none;
+  box-shadow: none;
 }
 
 .webshell-input::placeholder,
@@ -513,14 +513,13 @@ const handleCreate = async () => {
   box-shadow: none !important;
 }
 
-/* 聚焦状态 */
+/* 移除聚焦状态的边框和光晕 */
 .webshell-select:focus-within .n-select {
-  border-color: var(--active-color) !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+  box-shadow: none !important;
 }
 
+/* 移除悬停时的边框颜色变化 */
 .webshell-select:hover .n-select {
-  border-color: var(--active-color) !important;
   background-color: var(--card-bg) !important;
 }
 

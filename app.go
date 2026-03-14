@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"fg-abyss/backend/models"
+	"fmt"
 	"os"
 	"time"
 
@@ -14,10 +14,10 @@ import (
 
 // App 应用结构体
 type App struct {
-	db          *gorm.DB
-	startTime   time.Time
-	process     *process.Process
-	processID   int32
+	db        *gorm.DB
+	startTime time.Time
+	process   *process.Process
+	processID int32
 }
 
 // NewApp 创建应用实例
@@ -152,23 +152,23 @@ func (a *App) DeleteProject(projectName string) error {
 	if projectName == "默认项目" {
 		return fmt.Errorf("默认项目无法删除")
 	}
-	
+
 	// 先根据项目名称查询项目
 	var project models.Project
 	if err := a.db.Where("name = ?", projectName).First(&project).Error; err != nil {
 		return err
 	}
-	
+
 	// 删除项目
 	return a.db.Delete(&project).Error
 }
 
 // SystemStatus 系统状态结构体
 type SystemStatus struct {
-	MemoryUsage   string `json:"memoryUsage"`
-	ProcessID     string `json:"processId"`
-	CPUUsage      string `json:"cpuUsage"`
-	Uptime        string `json:"uptime"`
+	MemoryUsage string `json:"memoryUsage"`
+	ProcessID   string `json:"processId"`
+	CPUUsage    string `json:"cpuUsage"`
+	Uptime      string `json:"uptime"`
 }
 
 // GetSystemStatus 获取系统状态信息

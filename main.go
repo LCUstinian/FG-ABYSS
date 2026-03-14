@@ -60,13 +60,13 @@ func main() {
 		log.Fatalf("Failed to ping database: %v", err)
 	}
 
-	log.Println("Database initialized successfully (Pure Go SQLite)")
+	log.Println("=== Database initialized successfully ===")
 
 	// 创建 App 实例
 	appInstance := NewApp(dbInstance)
+	log.Println("=== App instance created ===")
 
 	// 使用 fs.Sub 提取前端资源子目录
-	// 这是 Wails 3 推荐的方式，用于从嵌入的文件系统中提取子目录
 	log.Println("Loading frontend assets...")
 	frontendAssets, err := fs.Sub(assets, "frontend/dist")
 	if err != nil {
@@ -74,39 +74,32 @@ func main() {
 	}
 	
 	// 调试：列出嵌入的文件
-	log.Println("Checking embedded files in frontend/dist:")
+	log.Println("=== Embedded files in frontend/dist ===")
 	entries, err := fs.ReadDir(frontendAssets, ".")
 	if err != nil {
-		log.Printf("Warning: Could not read embedded files: %v", err)
+		log.Printf("ERROR: Could not read embedded files: %v", err)
 	} else {
 		for _, entry := range entries {
 			if entry.IsDir() {
 				log.Printf("  [DIR]  %s", entry.Name())
 			} else {
-				log.Printf("  [FILE] %s (%d bytes)", entry.Name(), func() int64 {
-					file, err := entry.Info()
-					if err != nil {
-						return 0
-					}
-					return file.Size()
-				}())
+				info, _ := entry.Info()
+				log.Printf("  [FILE] %s (%d bytes)", entry.Name(), info.Size())
 			}
 		}
 	}
 
-	// Create a new Wails application by providing the necessary options.
-	// Variables 'Name' and 'Description' are for application metadata.
-	// 'Assets' configures the asset server with the 'FS' variable pointing to the frontend files.
-	// 'Bind' is a list of Go struct instances. The frontend has access to the methods of these instances.
-	// 'Mac' options tailor the application when running an macOS.
+	// Create a new Wails application
 	log.Println("Creating Wails application...")
 	app := application.New(application.Options{
 		Name:        "FG-ABYSS",
-		Description: "A demo of using raw HTML & CSS",
+		Description: "FG-ABYSS Application",
 		Services: []application.Service{
 			application.NewService(appInstance),
 		},
 		Assets: application.AssetOptions{
+			// 使用 AssetFileServerFS 处理嵌入的前端资源
+			// 注意：frontendAssets 已经是 fs.Sub 提取的子目录，直接指向 dist 目录
 			Handler: application.AssetFileServerFS(frontendAssets),
 		},
 		Mac: application.MacOptions{
@@ -116,10 +109,7 @@ func main() {
 	log.Println("Wails application created successfully")
 
 	// Create a new window with the necessary options.
-	// 'Title' is the title of the window.
-	// 'Mac' options tailor the window when running on macOS.
-	// 'BackgroundColour' is the background colour of the window.
-	// 'URL' is the URL that will be loaded into the webview.
+	log.Println("Creating window...")
 	app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title: "FG-ABYSS",
 		Mac: application.MacWindow{
@@ -128,13 +118,16 @@ func main() {
 			TitleBar:                application.MacTitleBarHiddenInset,
 		},
 		BackgroundColour: application.NewRGB(27, 38, 54),
-		URL:              "/",
-		Frameless:        true,
-		Width:            1600,
-		Height:           900,
-		MinWidth:         1500,
-		MinHeight:        900,
+		// URL 设置为空字符串，让 Wails 自动加载 index.html
+		// 或者显式设置为 "/index.html"
+		URL:       "/index.html",
+		Frameless: true,
+		Width:     1600,
+		Height:    900,
+		MinWidth:  1500,
+		MinHeight: 900,
 	})
+	log.Println("Window created successfully")
 
 	// Create a goroutine that emits an event containing the current time every second.
 	// The frontend can listen to this event and update the UI accordingly.

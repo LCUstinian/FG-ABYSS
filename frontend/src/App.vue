@@ -9,7 +9,7 @@ import PluginsContent from './components/PluginsContent.vue'
 import SettingsContent from './components/SettingsContent.vue'
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NConfigProvider, darkTheme } from 'naive-ui'
+import { NConfigProvider, darkTheme, lightTheme } from 'naive-ui'
 import { getSystemStatus, type SystemStatus } from './api/system'
 
 const { t, locale } = useI18n()
@@ -17,6 +17,76 @@ const { t, locale } = useI18n()
 const isDarkTheme = ref(localStorage.getItem('theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches)
 const themeMode = ref(localStorage.getItem('themeMode') || 'system')
 const currentNavItem = ref('home')
+
+// 定义主题覆盖配置 - 移除默认绿色，使用中性灰色
+const themeOverrides = {
+  common: {
+    // 主色调改为中性灰色
+    primaryColor: '#6b7280', // gray-500
+    primaryColorHover: '#4b5563', // gray-600
+    primaryColorPressed: '#374151', // gray-700
+    primaryColorSuppl: '#f3f4f6', // gray-100
+    
+    // 成功状态也使用灰色（移除默认绿色）
+    successColor: '#6b7280',
+    successColorHover: '#4b5563',
+    successColorPressed: '#374151',
+    successColorSuppl: '#f3f4f6',
+    
+    // 信息颜色
+    infoColor: '#6b7280',
+    infoColorHover: '#4b5563',
+    infoColorPressed: '#374151',
+    infoColorSuppl: '#f3f4f6',
+    
+    // 警告颜色（保持黄色系）
+    warningColor: '#d97706',
+    warningColorHover: '#b45309',
+    warningColorPressed: '#92400e',
+    warningColorSuppl: '#fef3c7',
+    
+    // 错误颜色（保持红色系）
+    errorColor: '#dc2626',
+    errorColorHover: '#b91c1c',
+    errorColorPressed: '#991b1b',
+    errorColorSuppl: '#fee2e2',
+  }
+}
+
+// 深色模式的主题覆盖
+const darkThemeOverrides = {
+  common: {
+    // 主色调改为中性灰色
+    primaryColor: '#9ca3af', // gray-400
+    primaryColorHover: '#d1d5db', // gray-300
+    primaryColorPressed: '#e5e7eb', // gray-200
+    primaryColorSuppl: '#374151', // gray-700
+    
+    // 成功状态也使用灰色
+    successColor: '#9ca3af',
+    successColorHover: '#d1d5db',
+    successColorPressed: '#e5e7eb',
+    successColorSuppl: '#374151',
+    
+    // 信息颜色
+    infoColor: '#9ca3af',
+    infoColorHover: '#d1d5db',
+    infoColorPressed: '#e5e7eb',
+    infoColorSuppl: '#374151',
+    
+    // 警告颜色（保持黄色系）
+    warningColor: '#fbbf24',
+    warningColorHover: '#fcd34d',
+    warningColorPressed: '#f59e0b',
+    warningColorSuppl: '#78350f',
+    
+    // 错误颜色（保持红色系）
+    errorColor: '#ef4444',
+    errorColorHover: '#f87171',
+    errorColorPressed: '#dc2626',
+    errorColorSuppl: '#7f1d1d',
+  }
+}
 
 // 系统状态数据
 const systemStatus = ref<SystemStatus>({
@@ -153,7 +223,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <NConfigProvider :theme="isDarkTheme ? darkTheme : null">
+  <NConfigProvider 
+    :theme="isDarkTheme ? darkTheme : null"
+    :theme-overrides="isDarkTheme ? darkThemeOverrides : themeOverrides"
+  >
     <div class="app-container" :class="{ 'dark': isDarkTheme }">
       <TitleBar :is-dark-theme="isDarkTheme" />
       <div class="main-content">

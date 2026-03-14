@@ -448,6 +448,46 @@ body {
   }
 }
 
+/* ============================================
+   Naive UI 组件样式覆盖
+   注意：主要颜色已通过 App.vue 中的 themeOverrides 处理
+   这里仅保留边框等细节样式的覆盖
+   ============================================ */
+
+/* ========== 输入框边框样式 ========== */
+/* 这些样式无法通过 themeOverrides 完全覆盖，需要 CSS 处理 */
+.n-input,
+.n-select,
+.n-textarea {
+  --n-border: var(--border-subtle) !important;
+  --n-border-hover: var(--border-subtle) !important;
+  --n-border-focus: var(--border-subtle) !important;
+  --n-border-active: var(--border-subtle) !important;
+}
+
+.n-input:hover,
+.n-select:hover,
+.n-textarea:hover {
+  --n-border: var(--border-subtle) !important;
+}
+
+.n-input:focus,
+.n-input:focus-within,
+.n-select:focus,
+.n-select:focus-within,
+.n-textarea:focus,
+.n-textarea:focus-within {
+  --n-border: var(--border-subtle) !important;
+  box-shadow: none !important;
+}
+
+/* 内部元素边框移除 */
+.n-input .n-input__input,
+.n-select .n-base-selection {
+  border: none !important;
+  box-shadow: none !important;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;

@@ -55,9 +55,9 @@
                       class="recycle-bin-btn"
                     >
                       <template #icon>
-                        <span style="font-size: 16px;">{{ showDeleted ? '🗑️' : '♻️' }}</span>
+                        <span class="recycle-icon">{{ showDeleted ? '🗑️' : '♻️' }}</span>
                       </template>
-                      {{ showDeleted ? t('projects.showNormal') : t('projects.showDeleted') }}
+                      <span class="recycle-text">{{ showDeleted ? t('projects.showNormal') : t('projects.showDeleted') }}</span>
                     </NButton>
                     <Tooltip :text="t('projects.newWebShell')" placement="bottom">
                       <NButton 
@@ -965,6 +965,85 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   box-shadow: var(--shadow-sm) !important;
 }
 
+/* 回收站按钮样式 - 与新建按钮保持统一 */
+.recycle-bin-btn {
+  height: 36px !important;
+  min-width: 100px !important;
+  padding: 0 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  border: 1px solid transparent !important;
+  outline: none !important;
+  vertical-align: middle !important;
+  gap: 6px !important;
+}
+
+.recycle-bin-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-md) !important;
+  opacity: 0.9 !important;
+}
+
+.recycle-bin-btn:active {
+  transform: translateY(0) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* 回收站按钮在警告状态下的样式 */
+.recycle-bin-btn[type="warning"] {
+  background-color: var(--warning-color) !important;
+  color: white !important;
+  border-color: var(--warning-color) !important;
+}
+
+.recycle-bin-btn[type="warning"]:hover {
+  background-color: var(--warning-color-hover) !important;
+  border-color: var(--warning-color-hover) !important;
+}
+
+/* 回收站按钮在默认状态下的样式 */
+.recycle-bin-btn[type="default"] {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-color) !important;
+}
+
+.recycle-bin-btn[type="default"]:hover {
+  background-color: var(--hover-color) !important;
+  border-color: var(--active-color) !important;
+  color: var(--active-color) !important;
+}
+
+.recycle-icon {
+  font-size: 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  margin-right: 4px !important;
+  transition: all 0.3s ease !important;
+}
+
+.recycle-text {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.recycle-bin-btn:hover .recycle-icon {
+  transform: scale(1.1) rotate(5deg) !important;
+}
+
+.recycle-bin-btn:hover .recycle-text {
+  letter-spacing: 0.5px !important;
+}
+
 .projects-main {
   flex: 1;
   display: flex;
@@ -1136,6 +1215,38 @@ const handleContextMenuOutside = (event: MouseEvent) => {
     width: 100%;
     height: auto;
     max-height: 150px;
+  }
+  
+  /* 移动端按钮优化 */
+  .recycle-bin-btn {
+    min-width: 80px !important;
+    padding: 0 12px !important;
+    font-size: 13px !important;
+  }
+  
+  .new-webshell-btn {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    font-size: 18px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 小屏幕进一步优化 */
+  .recycle-bin-btn {
+    min-width: 70px !important;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+  }
+  
+  .recycle-icon {
+    font-size: 14px !important;
+    margin-right: 3px !important;
+  }
+  
+  .recycle-text {
+    font-size: 12px !important;
   }
 }
 

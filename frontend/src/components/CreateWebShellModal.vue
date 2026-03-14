@@ -94,8 +94,9 @@ import type { WebShell } from '../../bindings/fg-abyss/backend/models/models'
 
 const { t } = useI18n()
 
-defineProps<{
+const props = defineProps<{
   modelValue: boolean
+  projectId?: string  // 当前选中的项目 ID
 }>()
 
 const emit = defineEmits<{
@@ -187,24 +188,27 @@ const handleCreate = async () => {
   loading.value = true
 
   try {
-    // 获取当前选中的项目
-    const selectedProject = localStorage.getItem('selectedProject') || '默认项目'
+    // 使用传入的项目 ID，如果没有则报错
+    if (!props.projectId) {
+      throw new Error('未选择项目')
+    }
     
     // 自动生成名称
     const autoName = generateName(webshell.url)
     
-    // 创建 WebShell 对象（使用类型断言，因为 name 字段由后端自动生成）
-    const newWebShell: any = {
+    // 创建 WebShell 对象
+    const newWebShell = {
       id: '', // 由后端生成
-      projectId: selectedProject,
-      name: autoName,
+      projectId: props.projectId,
       url: webshell.url || '',
       payload: webshell.payload || 'php',
       cryption: webshell.cryption || 'none',
       encoding: webshell.encoding || 'UTF-8',
       proxyType: webshell.proxyType || 'none',
       remark: webshell.remark || '',
-      status: webshell.status || 'active'
+      status: webshell.status || 'active',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
 
     await App.CreateWebShell(newWebShell)

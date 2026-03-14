@@ -76,8 +76,8 @@ export function GetSystemStatus(): $CancellablePromise<$models.SystemStatus> {
 /**
  * GetWebShells 获取 WebShell 列表
  */
-export function GetWebShells(projectName: string, page: number, pageSize: number, searchQuery: string, sortField: string, sortDir: string): $CancellablePromise<[models$0.WebShell[], number]> {
-    return $Call.ByID(95418832, projectName, page, pageSize, searchQuery, sortField, sortDir).then(($result: any) => {
+export function GetWebShells(projectID: string, page: number, pageSize: number, searchQuery: string, sortField: string, sortDir: string): $CancellablePromise<[models$0.WebShell[], number]> {
+    return $Call.ByID(95418832, projectID, page, pageSize, searchQuery, sortField, sortDir).then(($result: any) => {
         $result[0] = $$createType1($result[0]);
         return $result;
     });

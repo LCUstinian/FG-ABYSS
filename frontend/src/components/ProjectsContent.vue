@@ -209,6 +209,7 @@
     <!-- 新建 WebShell 弹窗 -->
     <CreateWebShellModal 
       v-model="newWebShellDialogVisible" 
+      :project-id="selectedProject || undefined"
       @created="handleWebShellCreated"
     />
 
@@ -627,15 +628,19 @@ const fetchData = async () => {
     
     // 如果没有选中项目，返回空数据
     if (!selectedProject.value) {
+      console.log('没有选中的项目，返回空数据')
       tableData.value = []
       total.value = 0
       return
     }
     
+    console.log('获取项目数据，项目 ID:', selectedProject.value, '回收站视图:', showDeleted.value)
+    
     if (showDeleted.value) {
       // 获取已删除的 WebShell（回收站）
       data = await App.GetDeletedWebShells(selectedProject.value)
       count = data.length
+      console.log('获取回收站数据成功，数量:', count)
     } else {
       // 获取正常的 WebShell
       const [result, totalCount] = await App.GetWebShells(
@@ -648,12 +653,15 @@ const fetchData = async () => {
       )
       data = result
       count = totalCount
+      console.log('获取 WebShell 数据成功，数量:', count)
     }
     
     tableData.value = data
     total.value = count
   } catch (error) {
     console.error('获取数据失败:', error)
+    // 显示错误消息
+    message.error('获取数据失败：' + error)
   }
 }
 
@@ -715,7 +723,10 @@ onMounted(async () => {
   
   // 初始加载数据
   await fetchProjects()
-  fetchData()
+  // 等待项目列表加载完成后再获取数据
+  if (selectedProject.value) {
+    await fetchData()
+  }
 })
 
 onUnmounted(() => {

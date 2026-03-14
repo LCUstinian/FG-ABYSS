@@ -39,19 +39,12 @@ func NewApp(db *gorm.DB) *App {
 }
 
 // GetWebShells 获取 WebShell 列表
-func (a *App) GetWebShells(projectName string, page int, pageSize int, searchQuery string, sortField string, sortDir string) ([]models.WebShell, int64, error) {
-	var project models.Project
+func (a *App) GetWebShells(projectID string, page int, pageSize int, searchQuery string, sortField string, sortDir string) ([]models.WebShell, int64, error) {
 	var webshells []models.WebShell
 	var total int64
 
-	// 先根据项目名称查询项目 ID
-	if err := a.db.Where("name = ?", projectName).First(&project).Error; err != nil {
-		// 如果项目不存在，返回空列表
-		return []models.WebShell{}, 0, nil
-	}
-
 	// 构建查询（GORM 会自动过滤已删除的记录，通过 DeletedAt 字段）
-	query := a.db.Where("project_id = ?", project.ID)
+	query := a.db.Where("project_id = ?", projectID)
 
 	// 搜索
 	if searchQuery != "" {
@@ -96,16 +89,13 @@ func (a *App) GetWebShells(projectName string, page int, pageSize int, searchQue
 
 // CreateWebShell 创建 WebShell
 func (a *App) CreateWebShell(shell models.WebShell) error {
-	// 先根据项目名称查询项目 ID
+	// 先根据项目 ID 查询项目
 	var project models.Project
-	if err := a.db.Where("name = ?", shell.ProjectID).First(&project).Error; err != nil {
+	if err := a.db.Where("id = ?", shell.ProjectID).First(&project).Error; err != nil {
 		return err
 	}
 
-	// 设置项目 ID
-	shell.ProjectID = project.ID
-
-	// 创建 WebShell
+	// 创建 WebShell（ProjectID 已经是正确的 ID）
 	return a.db.Create(&shell).Error
 }
 

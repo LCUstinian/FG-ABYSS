@@ -18,75 +18,192 @@ const isDarkTheme = ref(localStorage.getItem('theme') === 'dark' || window.match
 const themeMode = ref(localStorage.getItem('themeMode') || 'system')
 const currentNavItem = ref('home')
 
-// 定义主题覆盖配置 - 移除默认绿色，使用中性灰色
-const themeOverrides = {
-  common: {
-    // 主色调改为中性灰色
-    primaryColor: '#6b7280', // gray-500
-    primaryColorHover: '#4b5563', // gray-600
-    primaryColorPressed: '#374151', // gray-700
-    primaryColorSuppl: '#f3f4f6', // gray-100
-    
-    // 成功状态也使用灰色（移除默认绿色）
-    successColor: '#6b7280',
-    successColorHover: '#4b5563',
-    successColorPressed: '#374151',
-    successColorSuppl: '#f3f4f6',
-    
-    // 信息颜色
-    infoColor: '#6b7280',
-    infoColorHover: '#4b5563',
-    infoColorPressed: '#374151',
-    infoColorSuppl: '#f3f4f6',
-    
-    // 警告颜色（保持黄色系）
-    warningColor: '#d97706',
-    warningColorHover: '#b45309',
-    warningColorPressed: '#92400e',
-    warningColorSuppl: '#fef3c7',
-    
-    // 错误颜色（保持红色系）
-    errorColor: '#dc2626',
-    errorColorHover: '#b91c1c',
-    errorColorPressed: '#991b1b',
-    errorColorSuppl: '#fee2e2',
-  }
+// 辅助函数：安全地获取 CSS 变量值
+const getVar = (name: string, defaultVal: string): string => {
+  if (typeof window === 'undefined') return defaultVal
+  const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  return val || defaultVal
 }
 
-// 深色模式的主题覆盖
-const darkThemeOverrides = {
-  common: {
-    // 主色调改为中性灰色
-    primaryColor: '#9ca3af', // gray-400
-    primaryColorHover: '#d1d5db', // gray-300
-    primaryColorPressed: '#e5e7eb', // gray-200
-    primaryColorSuppl: '#374151', // gray-700
-    
-    // 成功状态也使用灰色
-    successColor: '#9ca3af',
-    successColorHover: '#d1d5db',
-    successColorPressed: '#e5e7eb',
-    successColorSuppl: '#374151',
-    
-    // 信息颜色
-    infoColor: '#9ca3af',
-    infoColorHover: '#d1d5db',
-    infoColorPressed: '#e5e7eb',
-    infoColorSuppl: '#374151',
-    
-    // 警告颜色（保持黄色系）
-    warningColor: '#fbbf24',
-    warningColorHover: '#fcd34d',
-    warningColorPressed: '#f59e0b',
-    warningColorSuppl: '#78350f',
-    
-    // 错误颜色（保持红色系）
-    errorColor: '#ef4444',
-    errorColorHover: '#f87171',
-    errorColorPressed: '#dc2626',
-    errorColorSuppl: '#7f1d1d',
-  }
+// 辅助函数：颜色变亮（用于 hover 状态）
+const lightenColor = (color: string, percent: number): string => {
+  const num = parseInt(color.replace('#', ''), 16)
+  const amt = Math.round(2.55 * percent)
+  const R = (num >> 16) + amt
+  const G = ((num >> 8) & 0x00FF) + amt
+  const B = (num & 0x0000FF) + amt
+  return '#' + (0x1000000 + 
+    (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 + 
+    (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 + 
+    (B < 255 ? (B < 1 ? 0 : B) : 255)
+  ).toString(16).slice(1)
 }
+
+// 辅助函数：颜色变暗（用于 pressed 状态）
+const darkenColor = (color: string, percent: number): string => {
+  const num = parseInt(color.replace('#', ''), 16)
+  const amt = Math.round(2.55 * percent)
+  const R = (num >> 16) - amt
+  const G = ((num >> 8) & 0x00FF) - amt
+  const B = (num & 0x0000FF) - amt
+  return '#' + (0x1000000 + 
+    (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 + 
+    (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 + 
+    (B < 255 ? (B < 1 ? 0 : B) : 255)
+  ).toString(16).slice(1)
+}
+
+// 辅助函数：添加透明度到颜色
+const addOpacity = (color: string, opacity: number): string => {
+  const alpha = Math.round(opacity * 255)
+  return color + alpha.toString(16).padStart(2, '0')
+}
+
+// 定义主题覆盖配置 - 使用全局强调色 (在设置中可自定义)
+const themeOverrides = computed(() => {
+  // 触发重新计算（即使 CSS 变量没变，trigger 变化也会触发）
+  themeTrigger.value
+  
+  // 从 CSS 变量中读取当前强调色
+  const primaryColor = getVar('--active-color', '#3b82f6')
+  
+  // 计算衍生颜色
+  const primaryColorHover = lightenColor(primaryColor, 10)
+  const primaryColorPressed = darkenColor(primaryColor, 10)
+  const primaryColorSuppl = addOpacity(primaryColor, 0.1)
+  const primaryColorActive = primaryColor
+  
+  // 成功状态也使用强调色
+  const successColor = primaryColor
+  const successColorHover = primaryColorHover
+  const successColorPressed = primaryColorPressed
+  const successColorSuppl = primaryColorSuppl
+  const successColorActive = primaryColorActive
+  
+  // 信息颜色使用强调色
+  const infoColor = primaryColor
+  const infoColorHover = primaryColorHover
+  const infoColorPressed = primaryColorPressed
+  const infoColorSuppl = primaryColorSuppl
+  const infoColorActive = primaryColorActive
+  
+  // 警告颜色 (保持黄色系)
+  const warningColor = '#d97706'
+  const warningColorHover = lightenColor(warningColor, 10)
+  const warningColorPressed = darkenColor(warningColor, 10)
+  const warningColorSuppl = addOpacity(warningColor, 0.1)
+  const warningColorActive = warningColor
+  
+  // 错误颜色 (保持红色系)
+  const errorColor = '#dc2626'
+  const errorColorHover = lightenColor(errorColor, 10)
+  const errorColorPressed = darkenColor(errorColor, 10)
+  const errorColorSuppl = addOpacity(errorColor, 0.1)
+  const errorColorActive = errorColor
+  
+  return {
+    common: {
+      primaryColor,
+      primaryColorHover,
+      primaryColorPressed,
+      primaryColorSuppl,
+      primaryColorActive,
+      successColor,
+      successColorHover,
+      successColorPressed,
+      successColorSuppl,
+      successColorActive,
+      infoColor,
+      infoColorHover,
+      infoColorPressed,
+      infoColorSuppl,
+      infoColorActive,
+      warningColor,
+      warningColorHover,
+      warningColorPressed,
+      warningColorSuppl,
+      warningColorActive,
+      errorColor,
+      errorColorHover,
+      errorColorPressed,
+      errorColorSuppl,
+      errorColorActive,
+    }
+  }
+})
+
+// 深色模式的主题覆盖
+const darkThemeOverrides = computed(() => {
+  // 触发重新计算
+  themeTrigger.value
+  
+  // 从 CSS 变量中读取当前强调色
+  const primaryColor = getVar('--active-color', '#3b82f6')
+  
+  // 深色模式下使用不同的计算方式
+  const primaryColorHover = lightenColor(primaryColor, 15)
+  const primaryColorPressed = darkenColor(primaryColor, 5)
+  const primaryColorSuppl = addOpacity(primaryColor, 0.15)
+  const primaryColorActive = primaryColor
+  
+  // 成功状态也使用强调色
+  const successColor = primaryColor
+  const successColorHover = primaryColorHover
+  const successColorPressed = primaryColorPressed
+  const successColorSuppl = primaryColorSuppl
+  const successColorActive = primaryColorActive
+  
+  // 信息颜色使用强调色
+  const infoColor = primaryColor
+  const infoColorHover = primaryColorHover
+  const infoColorPressed = primaryColorPressed
+  const infoColorSuppl = primaryColorSuppl
+  const infoColorActive = primaryColorActive
+  
+  // 警告颜色 (保持黄色系)
+  const warningColor = '#fbbf24'
+  const warningColorHover = lightenColor(warningColor, 15)
+  const warningColorPressed = darkenColor(warningColor, 10)
+  const warningColorSuppl = addOpacity(warningColor, 0.2)
+  const warningColorActive = warningColor
+  
+  // 错误颜色 (保持红色系)
+  const errorColor = '#ef4444'
+  const errorColorHover = lightenColor(errorColor, 15)
+  const errorColorPressed = darkenColor(errorColor, 10)
+  const errorColorSuppl = addOpacity(errorColor, 0.2)
+  const errorColorActive = errorColor
+  
+  return {
+    common: {
+      primaryColor,
+      primaryColorHover,
+      primaryColorPressed,
+      primaryColorSuppl,
+      primaryColorActive,
+      successColor,
+      successColorHover,
+      successColorPressed,
+      successColorSuppl,
+      successColorActive,
+      infoColor,
+      infoColorHover,
+      infoColorPressed,
+      infoColorSuppl,
+      infoColorActive,
+      warningColor,
+      warningColorHover,
+      warningColorPressed,
+      warningColorSuppl,
+      warningColorActive,
+      errorColor,
+      errorColorHover,
+      errorColorPressed,
+      errorColorSuppl,
+      errorColorActive,
+    }
+  }
+})
 
 // 系统状态数据
 const systemStatus = ref<SystemStatus>({
@@ -95,6 +212,18 @@ const systemStatus = ref<SystemStatus>({
   cpuUsage: '0%',
   uptime: '0 秒'
 })
+
+// 用于触发主题重新计算的信号
+const themeTrigger = ref(0)
+
+// 监听 localStorage 中 accentColor 的变化
+const handleStorageChange = (event: StorageEvent) => {
+  if (event.key === 'accentColor' && event.newValue) {
+    // CSS 变量已经在 SettingsContent 中更新
+    // 触发 themeOverrides 重新计算
+    themeTrigger.value++
+  }
+}
 
 // 定时器引用
 let updateTimer: number | null = null
@@ -147,6 +276,8 @@ window.addEventListener('storage', (event) => {
     localStorage.setItem('themeMode', themeMode.value)
   } else if (event.key === 'accentColor' && event.newValue) {
     document.documentElement.style.setProperty('--active-color', event.newValue)
+    // 触发 themeOverrides 重新计算
+    themeTrigger.value++
   } else if (event.key === 'fontFamily' && event.newValue) {
     document.documentElement.style.setProperty('--font-family', event.newValue)
   } else if (event.key === 'fontSize' && event.newValue) {

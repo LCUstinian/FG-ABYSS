@@ -108,6 +108,7 @@
   --card-bg: var(--bg-tertiary);
   --panel-bg: var(--primary-500);
   --active-color: var(--primary-500);
+  --active-color-suppl: var(--primary-100);
   --success-color: var(--success-500);
   --warning-color: var(--warning-500);
   --error-color: var(--error-500);
@@ -238,8 +239,14 @@
   --content-bg: var(--bg-primary);
   --status-bar-bg: var(--bg-secondary);
   --card-bg: var(--bg-tertiary);
-  
-  /* 暗色主题阴影 */
+  --panel-bg: var(--primary-500);
+  /* 注意：--active-color 和 --active-color-suppl 不在这里定义 */
+  /* 它们由 JavaScript 通过内联样式动态设置，以支持用户自定义强调色 */
+  /* 如果没有内联样式，将使用亮色主题的默认值 */
+  --success-color: var(--success-500);
+  --warning-color: var(--warning-500);
+  --error-color: var(--error-500);
+  --info-color: var(--info-500);
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);

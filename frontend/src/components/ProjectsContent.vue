@@ -194,7 +194,21 @@
 <script setup lang="ts">
 import { ref, computed, h, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NButton, NCard, NPagination, NSpace, NSelect, NDropdown, NIcon, NMenu, NText, NInput } from 'naive-ui'
+import { 
+  NButton, 
+  NCard, 
+  NPagination, 
+  NSpace, 
+  NSelect, 
+  NDropdown, 
+  NIcon, 
+  NMenu, 
+  NText, 
+  NInput,
+  NDialogProvider,
+  useDialog,
+  useMessage
+} from 'naive-ui'
 import Tooltip from './Tooltip.vue'
 import CreateProjectModal from './CreateProjectModal.vue'
 import CreateWebShellModal from './CreateWebShellModal.vue'
@@ -236,6 +250,10 @@ const emitEvent = (event: string, data?: any) => {
 
 
 const { t } = useI18n()
+
+// 使用 Naive UI 的对话框和消息组件
+const dialog = useDialog()
+const message = useMessage()
 
 // 分页状态
 const page = ref(1)
@@ -379,17 +397,52 @@ const handleMenuClick = (key: string) => {
       break
     case 'delete':
       console.log('Delete webshell:', selectedRow.value)
-      // 确认删除
-      if (confirm('确定要删除这个 WebShell 吗？')) {
-        // 调用后端删除方法
-        App.DeleteWebShell(selectedRow.value.id).then(() => {
-          // 刷新数据
-          fetchData()
-        }).catch(error => {
-          console.error('删除失败:', error)
-          alert('删除失败: ' + error)
-        })
-      }
+      // 显示确认对话框
+      dialog.warning({
+        title: t('projects.deleteConfirm'),
+        content: t('projects.deleteConfirmContent'),
+        positiveText: t('projects.confirm'),
+        negativeText: t('projects.cancel'),
+        onPositiveClick: async () => {
+          // 检查 selectedRow 是否为 null
+          if (!selectedRow.value) {
+            message.error('未选择要删除的 WebShell')
+            return
+          }
+          
+          // 显示加载状态
+          const loading = message.loading('正在删除...', {
+            duration: 0
+          })
+          
+          try {
+            // 调用后端删除方法
+            await App.DeleteWebShell(selectedRow.value.id)
+            
+            // 关闭加载提示
+            loading.destroy()
+            
+            // 显示成功消息
+            message.success(t('projects.deleteSuccess'))
+            
+            // 刷新数据
+            await fetchData()
+            
+            // 清空选中项
+            selectedRow.value = null
+          } catch (error) {
+            // 关闭加载提示
+            loading.destroy()
+            
+            // 显示错误消息
+            console.error('删除失败:', error)
+            message.error(t('projects.deleteError') + ': ' + error)
+          }
+        },
+        onNegativeClick: () => {
+          console.log('取消删除')
+        }
+      })
       break
   }
   menuVisible.value = false

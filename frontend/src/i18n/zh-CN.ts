@@ -69,6 +69,12 @@ export default {
     cache: '缓存',
     edit: '编辑',
     delete: '删除',
+    deleteConfirm: '确认删除',
+    deleteConfirmContent: '确定要删除这个 WebShell 吗？此操作不可恢复。',
+    confirm: '确认',
+    cancel: '取消',
+    deleteSuccess: '删除成功',
+    deleteError: '删除失败',
     newProject: '新建项目',
     newWebShell: '新建 WebShell',
     webShellName: '名称',
@@ -79,8 +85,7 @@ export default {
     webShellProxy: '代理类型',
     webShellRemark: '备注',
     createWebShell: '创建 WebShell',
-    creating: '创建中...',
-    cancel: '取消'
+    creating: '创建中...'
   },
   payloads: {
     title: '载荷',

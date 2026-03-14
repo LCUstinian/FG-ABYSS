@@ -9,7 +9,13 @@ import PluginsContent from './components/PluginsContent.vue'
 import SettingsContent from './components/SettingsContent.vue'
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NConfigProvider, darkTheme, lightTheme } from 'naive-ui'
+import { 
+  NConfigProvider, 
+  NMessageProvider, 
+  NDialogProvider,
+  darkTheme, 
+  lightTheme 
+} from 'naive-ui'
 import { getSystemStatus, type SystemStatus } from './api/system'
 
 const { t, locale } = useI18n()
@@ -358,59 +364,63 @@ onUnmounted(() => {
     :theme="isDarkTheme ? darkTheme : null"
     :theme-overrides="isDarkTheme ? darkThemeOverrides : themeOverrides"
   >
-    <div class="app-container" :class="{ 'dark': isDarkTheme }">
-      <TitleBar :is-dark-theme="isDarkTheme" />
-      <div class="main-content">
-        <!-- 左边导航区 -->
-        <Sidebar 
-          :current-nav-item="currentNavItem"
-          @switch-nav="switchNavItem"
-        />
-        
-        <!-- 右边内容区 -->
-        <div class="content-area">
-          <!-- 首页内容 -->
-          <HomeContent 
-            v-if="currentContent === 'home'"
-            :system-status="systemStatus"
-          />
-          
-          <!-- 项目内容 -->
-          <ProjectsContent 
-            v-else-if="currentContent === 'projects'"
-          />
-          
-          <!-- 载荷内容 -->
-          <PayloadsContent 
-            v-else-if="currentContent === 'payloads'"
-          />
-          
-          <!-- 插件内容 -->
-          <PluginsContent 
-            v-else-if="currentContent === 'plugins'"
-          />
-          
-          <!-- 设置内容 -->
-          <SettingsContent 
-            v-else-if="currentContent === 'settings'"
-            :is-dark-theme="isDarkTheme"
-            :theme-mode="themeMode"
-            @update:theme-mode="handleThemeChange"
-          />
-          
-          <!-- 默认内容（当没有匹配任何条件时显示） -->
-          <div v-else class="default-content">
-            <div class="default-content-inner">
-              <h2>{{ t('common.loading') }}</h2>
-              <p>正在加载内容...</p>
+    <NMessageProvider>
+      <NDialogProvider>
+        <div class="app-container" :class="{ 'dark': isDarkTheme }">
+          <TitleBar :is-dark-theme="isDarkTheme" />
+          <div class="main-content">
+            <!-- 左边导航区 -->
+            <Sidebar 
+              :current-nav-item="currentNavItem"
+              @switch-nav="switchNavItem"
+            />
+            
+            <!-- 右边内容区 -->
+            <div class="content-area">
+              <!-- 首页内容 -->
+              <HomeContent 
+                v-if="currentContent === 'home'"
+                :system-status="systemStatus"
+              />
+              
+              <!-- 项目内容 -->
+              <ProjectsContent 
+                v-else-if="currentContent === 'projects'"
+              />
+              
+              <!-- 载荷内容 -->
+              <PayloadsContent 
+                v-else-if="currentContent === 'payloads'"
+              />
+              
+              <!-- 插件内容 -->
+              <PluginsContent 
+                v-else-if="currentContent === 'plugins'"
+              />
+              
+              <!-- 设置内容 -->
+              <SettingsContent 
+                v-else-if="currentContent === 'settings'"
+                :is-dark-theme="isDarkTheme"
+                :theme-mode="themeMode"
+                @update:theme-mode="handleThemeChange"
+              />
+              
+              <!-- 默认内容（当没有匹配任何条件时显示） -->
+              <div v-else class="default-content">
+                <div class="default-content-inner">
+                  <h2>{{ t('common.loading') }}</h2>
+                  <p>正在加载内容...</p>
+                </div>
+              </div>
             </div>
           </div>
+          
+          <!-- 底部状态栏 -->
+          <StatusBar :system-status="systemStatus" />
         </div>
-      </div>
-      
-      <!-- 底部状态栏 -->
-      <StatusBar :system-status="systemStatus" />
-    </div>
+      </NDialogProvider>
+    </NMessageProvider>
   </NConfigProvider>
 </template>
 

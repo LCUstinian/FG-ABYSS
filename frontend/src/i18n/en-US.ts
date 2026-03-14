@@ -69,6 +69,12 @@ export default {
     cache: 'Cache',
     edit: 'Edit',
     delete: 'Delete',
+    deleteConfirm: 'Confirm Deletion',
+    deleteConfirmContent: 'Are you sure you want to delete this WebShell? This action cannot be undone.',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
+    deleteSuccess: 'Deleted successfully',
+    deleteError: 'Delete failed',
     newProject: 'New Project',
     newWebShell: 'New WebShell',
     webShellName: 'Name',
@@ -79,8 +85,7 @@ export default {
     webShellProxy: 'Proxy Type',
     webShellRemark: 'Remark',
     createWebShell: 'Create WebShell',
-    creating: 'Creating...',
-    cancel: 'Cancel'
+    creating: 'Creating...'
   },
   payloads: {
     title: 'Payloads',

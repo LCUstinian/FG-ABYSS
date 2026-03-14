@@ -50,7 +50,7 @@ func (a *App) GetWebShells(projectName string, page int, pageSize int, searchQue
 		return []models.WebShell{}, 0, nil
 	}
 
-	// 构建查询
+	// 构建查询（GORM 会自动过滤已删除的记录，通过 DeletedAt 字段）
 	query := a.db.Where("project_id = ?", project.ID)
 
 	// 搜索
@@ -67,24 +67,10 @@ func (a *App) GetWebShells(projectName string, page int, pageSize int, searchQue
 		)
 	}
 
-	// 计算总数
-	if err := query.Model(&models.WebShell{}).Count(&total).Error; err != nil {
-		return nil, 0, err
-	}
-
 	// 排序
 	if sortField != "" {
-		// 将驼峰命名字段转换为下划线命名（GORM 默认行为）
-		snakeField := ""
-		for i, r := range sortField {
-			if i > 0 && r >= 'A' && r <= 'Z' {
-				snakeField += "_"
-				snakeField += string(r + 32) // 转为小写
-			} else {
-				snakeField += string(r)
-			}
-		}
-
+		// 将驼峰命名字段转换为下划线命名
+		snakeField := camelToSnake(sortField)
 		order := snakeField
 		if sortDir == "desc" {
 			order += " DESC"
@@ -92,6 +78,11 @@ func (a *App) GetWebShells(projectName string, page int, pageSize int, searchQue
 			order += " ASC"
 		}
 		query = query.Order(order)
+	}
+
+	// 计算总数（GORM 会自动过滤已删除的记录）
+	if err := query.Model(&models.WebShell{}).Count(&total).Error; err != nil {
+		return nil, 0, err
 	}
 
 	// 分页

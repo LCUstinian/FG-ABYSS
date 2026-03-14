@@ -115,10 +115,24 @@ func (a *App) UpdateWebShell(shell models.WebShell) error {
 	return a.db.Save(&shell).Error
 }
 
-// DeleteWebShell 删除 WebShell
+// DeleteWebShell 删除 WebShell（软删除）
 func (a *App) DeleteWebShell(id string) error {
-	// 删除 WebShell
+	// 删除 WebShell（软删除，只设置 deleted_at 字段）
 	return a.db.Delete(&models.WebShell{}, "id = ?", id).Error
+}
+
+// RecoverWebShell 恢复已删除的 WebShell
+func (a *App) RecoverWebShell(id string) error {
+	// 使用 Unscoped 查询已删除的记录，并清空 deleted_at 字段
+	return a.db.Unscoped().Model(&models.WebShell{}).Where("id = ?", id).Update("deleted_at", nil).Error
+}
+
+// GetDeletedWebShells 获取已删除的 WebShell 列表（回收站）
+func (a *App) GetDeletedWebShells(projectID string) ([]models.WebShell, error) {
+	var webshells []models.WebShell
+	// 只查询已删除的记录（deleted_at IS NOT NULL）
+	err := a.db.Unscoped().Where("project_id = ? AND deleted_at IS NOT NULL", projectID).Find(&webshells).Error
+	return webshells, err
 }
 
 // CreateProject 创建项目

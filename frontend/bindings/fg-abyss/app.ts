@@ -40,10 +40,19 @@ export function DeleteProject(projectName: string): $CancellablePromise<void> {
 }
 
 /**
- * DeleteWebShell 删除 WebShell
+ * DeleteWebShell 删除 WebShell（软删除）
  */
 export function DeleteWebShell(id: string): $CancellablePromise<void> {
     return $Call.ByID(66317606, id);
+}
+
+/**
+ * GetDeletedWebShells 获取已删除的 WebShell 列表（回收站）
+ */
+export function GetDeletedWebShells(projectID: string): $CancellablePromise<models$0.WebShell[]> {
+    return $Call.ByID(953076089, projectID).then(($result: any) => {
+        return $$createType1($result);
+    });
 }
 
 /**
@@ -51,7 +60,7 @@ export function DeleteWebShell(id: string): $CancellablePromise<void> {
  */
 export function GetProjects(): $CancellablePromise<models$0.Project[]> {
     return $Call.ByID(540785005).then(($result: any) => {
-        return $$createType1($result);
+        return $$createType3($result);
     });
 }
 
@@ -60,7 +69,7 @@ export function GetProjects(): $CancellablePromise<models$0.Project[]> {
  */
 export function GetSystemStatus(): $CancellablePromise<$models.SystemStatus> {
     return $Call.ByID(1366046352).then(($result: any) => {
-        return $$createType2($result);
+        return $$createType4($result);
     });
 }
 
@@ -69,9 +78,16 @@ export function GetSystemStatus(): $CancellablePromise<$models.SystemStatus> {
  */
 export function GetWebShells(projectName: string, page: number, pageSize: number, searchQuery: string, sortField: string, sortDir: string): $CancellablePromise<[models$0.WebShell[], number]> {
     return $Call.ByID(95418832, projectName, page, pageSize, searchQuery, sortField, sortDir).then(($result: any) => {
-        $result[0] = $$createType4($result[0]);
+        $result[0] = $$createType1($result[0]);
         return $result;
     });
+}
+
+/**
+ * RecoverWebShell 恢复已删除的 WebShell
+ */
+export function RecoverWebShell(id: string): $CancellablePromise<void> {
+    return $Call.ByID(3726786223, id);
 }
 
 /**
@@ -82,8 +98,8 @@ export function UpdateWebShell(shell: models$0.WebShell): $CancellablePromise<vo
 }
 
 // Private type creation functions
-const $$createType0 = models$0.Project.createFrom;
+const $$createType0 = models$0.WebShell.createFrom;
 const $$createType1 = $Create.Array($$createType0);
-const $$createType2 = $models.SystemStatus.createFrom;
-const $$createType3 = models$0.WebShell.createFrom;
-const $$createType4 = $Create.Array($$createType3);
+const $$createType2 = models$0.Project.createFrom;
+const $$createType3 = $Create.Array($$createType2);
+const $$createType4 = $models.SystemStatus.createFrom;

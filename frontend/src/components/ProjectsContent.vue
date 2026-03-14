@@ -19,10 +19,11 @@
               v-for="project in projects" 
               :key="project.id"
               class="tree-item" 
-              :class="{ active: selectedProject === project.name }"
-              @click="selectedProject = project.name"
+              :class="{ active: selectedProject === project.id }"
+              @click="handleProjectSelect(project.id)"
             >
-              {{ project.name }}
+              <span class="tree-item-icon">📁</span>
+              <span class="tree-item-text">{{ project.name }}</span>
             </div>
           </div>
         </div>
@@ -42,12 +43,22 @@
                       <span style="margin-right: 8px;">🔍</span>
                     </template>
                   </NInput>
-                  <NSpace align="center" style="gap: 16px;">
-                    <NSpace align="center" style="gap: 8px;">
-                      <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.total') }}: <span style="color: var(--active-color); font-weight: 500;">{{ total }}</span></span>
-                      <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.active') }}: <span style="color: #4CAF50; font-weight: 500;">{{ activeCount }}</span></span>
-                      <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.inactive') }}: <span style="color: #FF9800; font-weight: 500;">{{ inactiveCount }}</span></span>
-                    </NSpace>
+                  <NSpace align="center" style="gap: 8px;">
+                    <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.total') }}: <span style="color: var(--active-color); font-weight: 500;">{{ total }}</span></span>
+                    <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.active') }}: <span style="color: #4CAF50; font-weight: 500;">{{ activeCount }}</span></span>
+                    <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.inactive') }}: <span style="color: #FF9800; font-weight: 500;">{{ inactiveCount }}</span></span>
+                    <!-- 回收站切换按钮 -->
+                    <NButton 
+                      :type="showDeleted ? 'warning' : 'default'"
+                      size="small"
+                      @click="toggleView"
+                      class="recycle-bin-btn"
+                    >
+                      <template #icon>
+                        <span style="font-size: 16px;">{{ showDeleted ? '🗑️' : '♻️' }}</span>
+                      </template>
+                      {{ showDeleted ? t('projects.showNormal') : t('projects.showDeleted') }}
+                    </NButton>
                     <Tooltip :text="t('projects.newWebShell')" placement="bottom">
                       <NButton 
                         type="primary" 
@@ -77,8 +88,21 @@
             </template>
             <!-- 完整表格 -->
             <div class="webshell-table-container" style="overflow-x: auto; margin-bottom: 16px; background: var(--card-bg); border-radius: 8px; padding: 16px;">
+              <!-- 空状态提示 -->
+              <div v-if="tableData.length === 0" style="text-align: center; padding: 60px 20px; color: var(--text-color); opacity: 0.6;">
+                <div style="font-size: 48px; margin-bottom: 16px;">
+                  {{ showDeleted ? '🗑️' : '📦' }}
+                </div>
+                <div style="font-size: 16px; margin-bottom: 8px;">
+                  {{ showDeleted ? t('projects.noDeletedData') : t('projects.noData') }}
+                </div>
+                <div style="font-size: 14px; opacity: 0.8;">
+                  {{ showDeleted ? t('projects.noDeletedDataTip') : t('projects.noDataTip') }}
+                </div>
+              </div>
+              
               <!-- 表格 -->
-              <table id="webshellTable" class="webshell-table" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+              <table v-else id="webshellTable" class="webshell-table" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                 <thead>
                   <tr class="webshell-table-header-row">
                     <th class="webshell-table-header" style="text-align: left; min-width: 60px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('id')">
@@ -199,7 +223,6 @@ import {
   NCard, 
   NPagination, 
   NSpace, 
-  NSelect, 
   NDropdown, 
   NIcon, 
   NMenu, 
@@ -267,34 +290,60 @@ const searchQuery = ref('')
 const sortField = ref<string>('id')
 const sortDirection = ref<'asc' | 'desc'>('asc')
 
+// 回收站视图状态
+const showDeleted = ref(false)
+
+// 切换视图（正常/回收站）
+const toggleView = () => {
+  showDeleted.value = !showDeleted.value
+  page.value = 1
+  fetchData()
+}
+
 // 右键菜单状态
-const menuOptions = computed(() => [
-  { 
-    label: t('projects.control'),
-    key: 'enter',
-    icon: () => h('span', { class: 'menu-icon-enter' }, '🖥️')
-  },
-  { 
-    label: t('projects.cache'),
-    key: 'cache',
-    icon: () => h('span', { class: 'menu-icon-cache' }, '💾')
-  },
-  { 
-    label: t('projects.edit'),
-    key: 'edit',
-    icon: () => h('span', { class: 'menu-icon-edit' }, '✏️')
-  },
-  { 
-    label: t('projects.delete'),
-    key: 'delete',
-    icon: () => h('span', { class: 'menu-icon-delete' }, '🗑️')
+const menuOptions = computed(() => {
+  const baseOptions = [
+    { 
+      label: t('projects.control'),
+      key: 'enter',
+      icon: () => h('span', { class: 'menu-icon-enter' }, '🖥️')
+    },
+    { 
+      label: t('projects.cache'),
+      key: 'cache',
+      icon: () => h('span', { class: 'menu-icon-cache' }, '💾')
+    },
+    { 
+      label: t('projects.edit'),
+      key: 'edit',
+      icon: () => h('span', { class: 'menu-icon-edit' }, '✏️')
+    }
+  ]
+  
+  // 根据视图显示不同的操作
+  if (showDeleted.value) {
+    // 回收站视图：显示恢复按钮
+    baseOptions.push({
+      label: t('projects.recover'),
+      key: 'recover',
+      icon: () => h('span', { class: 'menu-icon-recover' }, '↩️')
+    })
+  } else {
+    // 正常视图：显示删除按钮
+    baseOptions.push({
+      label: t('projects.delete'),
+      key: 'delete',
+      icon: () => h('span', { class: 'menu-icon-delete' }, '🗑️')
+    })
   }
-])
+  
+  return baseOptions
+})
 
 const selectedRow = ref<WebShell | null>(null)
 const menuVisible = ref(false)
 const menuPosition = ref({ x: 0, y: 0 })
-const selectedProject = ref('默认项目')
+const selectedProject = ref<string | null>(null)  // 存储项目 ID，初始为 null
 const selectedTableRow = ref<WebShell | null>(null)
 
 // 项目列表
@@ -309,7 +358,7 @@ const newWebShellDialogVisible = ref(false)
 // 表格数据
 const tableData = ref<WebShell[]>([])
 
-// 计算活跃和非活跃webshell数量
+// 计算活跃和非活跃 webshell 数量
 const activeCount = computed(() => {
   return tableData.value.filter(item => item.status === 'active').length
 })
@@ -317,6 +366,27 @@ const activeCount = computed(() => {
 const inactiveCount = computed(() => {
   return tableData.value.filter(item => item.status === 'inactive').length
 })
+
+// 处理项目选择（左侧列表点击）
+const handleProjectSelect = (projectId: string) => {
+  console.log('选择项目:', projectId)
+  selectedProject.value = projectId
+  // 重置分页和搜索
+  page.value = 1
+  searchQuery.value = ''
+  // 刷新数据
+  fetchData()
+}
+
+// 处理项目切换
+const handleProjectChange = (projectId: string) => {
+  console.log('切换项目:', projectId)
+  // 重置分页和搜索
+  page.value = 1
+  searchQuery.value = ''
+  // 刷新数据
+  fetchData()
+}
 
 // 处理新建项目
 const handleNewProject = () => {
@@ -344,6 +414,14 @@ const fetchProjects = async () => {
   try {
     const projectList = await App.GetProjects()
     projects.value = projectList
+    
+    console.log('获取项目列表:', projectList)
+    
+    // 如果没有选中项目，且项目列表不为空，选择第一个项目
+    if (!selectedProject.value && projectList.length > 0) {
+      selectedProject.value = projectList[0].id
+      console.log('自动选择第一个项目:', selectedProject.value)
+    }
   } catch (error) {
     console.error('获取项目列表失败:', error)
   }
@@ -444,6 +522,55 @@ const handleMenuClick = (key: string) => {
         }
       })
       break
+    case 'recover':
+      console.log('Recover webshell:', selectedRow.value)
+      // 显示确认对话框
+      dialog.success({
+        title: t('projects.recoverConfirm'),
+        content: t('projects.recoverConfirmContent'),
+        positiveText: t('projects.confirm'),
+        negativeText: t('projects.cancel'),
+        onPositiveClick: async () => {
+          // 检查 selectedRow 是否为 null
+          if (!selectedRow.value) {
+            message.error('未选择要恢复的 WebShell')
+            return
+          }
+          
+          // 显示加载状态
+          const loading = message.loading('正在恢复...', {
+            duration: 0
+          })
+          
+          try {
+            // 调用后端恢复方法
+            await App.RecoverWebShell(selectedRow.value.id)
+            
+            // 关闭加载提示
+            loading.destroy()
+            
+            // 显示成功消息
+            message.success(t('projects.recoverSuccess'))
+            
+            // 刷新数据
+            await fetchData()
+            
+            // 清空选中项
+            selectedRow.value = null
+          } catch (error) {
+            // 关闭加载提示
+            loading.destroy()
+            
+            // 显示错误消息
+            console.error('恢复失败:', error)
+            message.error(t('projects.recoverError') + ': ' + error)
+          }
+        },
+        onNegativeClick: () => {
+          console.log('取消恢复')
+        }
+      })
+      break
   }
   menuVisible.value = false
 }
@@ -495,14 +622,33 @@ const handlePageSizeChange = (size: number) => {
 // 从后端获取数据
 const fetchData = async () => {
   try {
-    const [data, count] = await App.GetWebShells(
-      selectedProject.value,
-      page.value,
-      pageSize.value,
-      searchQuery.value,
-      sortField.value,
-      sortDirection.value
-    )
+    let data: WebShell[]
+    let count: number
+    
+    // 如果没有选中项目，返回空数据
+    if (!selectedProject.value) {
+      tableData.value = []
+      total.value = 0
+      return
+    }
+    
+    if (showDeleted.value) {
+      // 获取已删除的 WebShell（回收站）
+      data = await App.GetDeletedWebShells(selectedProject.value)
+      count = data.length
+    } else {
+      // 获取正常的 WebShell
+      const [result, totalCount] = await App.GetWebShells(
+        selectedProject.value,
+        page.value,
+        pageSize.value,
+        searchQuery.value,
+        sortField.value,
+        sortDirection.value
+      )
+      data = result
+      count = totalCount
+    }
     
     tableData.value = data
     total.value = count
@@ -697,6 +843,9 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 }
 
 .tree-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 10px 12px;
   cursor: pointer;
   margin-bottom: 4px;
@@ -714,6 +863,27 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   background: var(--active-color);
   color: white;
   box-shadow: var(--shadow-sm);
+  font-weight: 500;
+}
+
+.tree-item-icon {
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.tree-item:hover .tree-item-icon {
+  transform: scale(1.1);
+}
+
+.tree-item.active .tree-item-icon {
+  filter: brightness(0) invert(1);
+}
+
+.tree-item-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* 新建项目按钮样式 */

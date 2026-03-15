@@ -1461,7 +1461,8 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 /* 统一的恢复按钮样式 - 始终显示 */
 .recover-all-btn {
-  width: 100%;
+  width: calc(100% - 32px);  /* 减去左右各 16px 的 padding，确保与容器边缘对齐 */
+  margin: 0 16px;             /* 确保与容器边缘有适当间距 */
   padding: 12px 16px;
   background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(76, 175, 80, 0.05) 100%);
   border: 1px solid rgba(76, 175, 80, 0.25);

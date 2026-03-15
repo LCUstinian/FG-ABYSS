@@ -91,7 +91,7 @@
               </div>
             </template>
             <!-- 完整表格 -->
-            <div class="webshell-table-container" style="flex: 1; overflow: auto; padding: 16px;">
+            <div class="webshell-table-container">
               <!-- 空状态提示 -->
               <div v-if="tableData.length === 0" style="text-align: center; padding: 60px 20px; color: var(--text-color); opacity: 0.6;">
                 <div style="font-size: 48px; margin-bottom: 16px;">
@@ -105,8 +105,9 @@
                 </div>
               </div>
               
-              <!-- 表格 -->
-              <table v-else id="webshellTable" class="webshell-table" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+              <!-- 表格容器 -->
+              <div v-else style="flex: 1; overflow: auto; min-height: 0;">
+                <table id="webshellTable" class="webshell-table" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                 <thead>
                   <tr class="webshell-table-header-row">
                     <th class="webshell-table-header" style="text-align: left; min-width: 60px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('id')">
@@ -160,58 +161,59 @@
                   >
                     <td class="webshell-table-cell">
                       <Tooltip :text="item.id">
-                        <span>{{ item.id }}</span>
+                        <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.id }}</span>
                       </Tooltip>
                     </td>
-                    <td class="webshell-table-cell webshell-table-cell-truncate">
+                    <td class="webshell-table-cell">
                       <Tooltip :text="item.url">
-                        <span>{{ item.url }}</span>
+                        <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.url }}</span>
                       </Tooltip>
                     </td>
                     <td class="webshell-table-cell">
                       <Tooltip :text="item.payload">
-                        <span>{{ item.payload }}</span>
+                        <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.payload }}</span>
                       </Tooltip>
                     </td>
                     <td class="webshell-table-cell">
                       <Tooltip :text="item.cryption">
-                        <span>{{ item.cryption }}</span>
+                        <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.cryption }}</span>
                       </Tooltip>
                     </td>
                     <td class="webshell-table-cell">
                       <Tooltip :text="item.encoding">
-                        <span>{{ item.encoding }}</span>
+                        <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.encoding }}</span>
                       </Tooltip>
                     </td>
                     <td class="webshell-table-cell">
                       <Tooltip :text="item.proxyType">
-                        <span>{{ item.proxyType }}</span>
+                        <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.proxyType }}</span>
                       </Tooltip>
                     </td>
-                    <td class="webshell-table-cell webshell-table-cell-truncate">
+                    <td class="webshell-table-cell">
                       <Tooltip v-if="item.remark" :text="item.remark">
-                        <span>{{ item.remark }}</span>
+                        <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.remark }}</span>
                       </Tooltip>
-                      <span v-else>-</span>
+                      <span v-else style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">-</span>
                     </td>
                     <td class="webshell-table-cell">
                       <Tooltip :text="formatTime(item.createdAt)">
-                        <span>{{ formatTime(item.createdAt) }}</span>
+                        <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ formatTime(item.createdAt) }}</span>
                       </Tooltip>
                     </td>
                     <td class="webshell-table-cell">
                       <Tooltip :text="formatTime(item.updatedAt)">
-                        <span>{{ formatTime(item.updatedAt) }}</span>
+                        <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ formatTime(item.updatedAt) }}</span>
                       </Tooltip>
                     </td>
                     <td class="webshell-table-cell">
                       <Tooltip :text="item.status">
-                        <span>{{ item.status }}</span>
+                        <span style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.status }}</span>
                       </Tooltip>
                     </td>
                   </tr>
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
             <template #footer>
               <div class="pagination-container">
@@ -1383,10 +1385,26 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   border: 1px solid var(--border-strong);
 }
 
+/* 覆盖 NCard 的默认内容区域样式 */
+.webshell-table-card :deep(.n-card__content) {
+  flex: 1;
+  padding: 0 !important;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
 /* WebShell 表格样式 */
 .webshell-table-container {
   border: 1px solid var(--border-color);
   border-radius: 8px;
+  margin: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .webshell-table {
@@ -1466,6 +1484,27 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   display: flex !important;
   align-items: center !important;
   height: 100% !important;
+  width: 100% !important;
+}
+
+/* 单元格内的 Tooltip wrapper 需要特殊处理 */
+.webshell-table-cell .tooltip-wrapper {
+  display: block !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+.webshell-table-cell .tooltip-content {
+  display: block !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+.webshell-table-cell .tooltip-content span {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
   width: 100% !important;
 }
 

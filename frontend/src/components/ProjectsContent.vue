@@ -463,13 +463,19 @@ const handleProjectCreated = async () => {
 const fetchProjects = async () => {
   try {
     const projectList = await ProjectHandler.GetProjects()
-    projects.value = projectList
     
-    console.log('获取项目列表:', projectList)
+    // 按创建时间排序（从旧到新）
+    projects.value = projectList.sort((a, b) => {
+      const timeA = new Date(a.createdAt).getTime()
+      const timeB = new Date(b.createdAt).getTime()
+      return timeA - timeB
+    })
+    
+    console.log('获取项目列表:', projects.value)
     
     // 如果没有选中项目，且项目列表不为空，选择第一个项目
-    if (!selectedProject.value && projectList.length > 0) {
-      selectedProject.value = projectList[0].id
+    if (!selectedProject.value && projects.value.length > 0) {
+      selectedProject.value = projects.value[0].id
       console.log('自动选择第一个项目:', selectedProject.value)
     }
   } catch (error) {
@@ -1393,6 +1399,12 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   display: flex;
   flex-direction: column;
   min-height: 0;
+}
+
+/* 覆盖 NCard 的默认页脚区域样式 */
+.webshell-table-card :deep(.n-card__footer) {
+  padding: 16px !important;
+  border-top: 1px solid var(--border-color);
 }
 
 /* WebShell 表格样式 */

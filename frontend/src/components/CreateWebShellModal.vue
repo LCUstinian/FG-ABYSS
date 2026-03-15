@@ -89,8 +89,8 @@
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NModal, NForm, NFormItem, NInput, NSelect, NButton } from 'naive-ui'
-import { App } from '../../bindings/fg-abyss'
-import type { WebShell } from '../../bindings/fg-abyss/backend/models/models'
+import * as WebShellHandler from '../../bindings/fg-abyss/internal/app/handlers/webshellhandler'
+import type { WebShell } from '../../bindings/fg-abyss/internal/domain/entity/models'
 
 const { t } = useI18n()
 
@@ -196,22 +196,17 @@ const handleCreate = async () => {
     // 自动生成名称
     const autoName = generateName(webshell.url)
     
-    // 创建 WebShell 对象
-    const newWebShell = {
-      id: '', // 由后端生成
-      projectId: props.projectId,
-      url: webshell.url || '',
-      payload: webshell.payload || 'php',
-      cryption: webshell.cryption || 'none',
-      encoding: webshell.encoding || 'UTF-8',
-      proxyType: webshell.proxyType || 'none',
-      remark: webshell.remark || '',
-      status: webshell.status || 'active',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
-
-    await App.CreateWebShell(newWebShell)
+    // 调用后端创建方法（传递 8 个参数）
+    await WebShellHandler.CreateWebShell(
+      props.projectId,
+      webshell.url || '',
+      webshell.payload || 'php',
+      webshell.cryption || 'none',
+      webshell.encoding || 'UTF-8',
+      webshell.proxyType || 'none',
+      webshell.remark || '',
+      webshell.status || 'active'
+    )
     
     resetForm()
     emit('update:modelValue', false)

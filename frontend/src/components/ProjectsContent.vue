@@ -260,7 +260,8 @@ import CreateWebShellModal from './CreateWebShellModal.vue'
 
 // 导入 Wails 运行时和绑定
 import { Events } from '@wailsio/runtime'
-import { App } from '../../bindings/fg-abyss'
+import * as ProjectHandler from '../../bindings/fg-abyss/internal/app/handlers/projecthandler'
+import * as WebShellHandler from '../../bindings/fg-abyss/internal/app/handlers/webshellhandler'
 
 // 导入时间格式化工具
 import { formatTime } from '@/utils/formatTime'
@@ -434,7 +435,7 @@ const handleProjectCreated = async () => {
 // 获取项目列表
 const fetchProjects = async () => {
   try {
-    const projectList = await App.GetProjects()
+    const projectList = await ProjectHandler.GetProjects()
     projects.value = projectList
     
     console.log('获取项目列表:', projectList)
@@ -517,7 +518,7 @@ const handleMenuClick = (key: string) => {
           
           try {
             // 调用后端删除方法
-            await App.DeleteWebShell(selectedRow.value.id)
+            await WebShellHandler.DeleteWebShell(selectedRow.value.id)
             
             // 关闭加载提示
             loading.destroy()
@@ -566,7 +567,7 @@ const handleMenuClick = (key: string) => {
           
           try {
             // 调用后端恢复方法
-            await App.RecoverWebShell(selectedRow.value.id)
+            await WebShellHandler.RecoverWebShell(selectedRow.value.id)
             
             // 关闭加载提示
             loading.destroy()
@@ -659,12 +660,12 @@ const fetchData = async () => {
     
     if (showDeleted.value) {
       // 获取已删除的 WebShell（回收站）
-      data = await App.GetDeletedWebShells(selectedProject.value)
+      data = await WebShellHandler.GetDeletedWebShells(selectedProject.value)
       count = data.length
       console.log('获取回收站数据成功，数量:', count)
     } else {
       // 获取正常的 WebShell
-      const [result, totalCount] = await App.GetWebShells(
+      const [result, totalCount] = await WebShellHandler.GetWebShells(
         selectedProject.value,
         page.value,
         pageSize.value,

@@ -69,6 +69,97 @@ export class Project {
 }
 
 /**
+ * Setting 设置实体 - 用于存储应用程序的所有设置项
+ */
+export class Setting {
+    /**
+     * 自增 ID
+     */
+    "id": number;
+
+    /**
+     * 设置键名（如：theme, language）
+     */
+    "key": string;
+
+    /**
+     * 设置值（统一存储为字符串）
+     */
+    "value": string;
+
+    /**
+     * 数据类型：string, int, bool, json, color
+     */
+    "type": string;
+
+    /**
+     * 分类：appearance, network, proxy, general
+     */
+    "category": string;
+
+    /**
+     * 显示名称
+     */
+    "name": string;
+
+    /**
+     * 描述
+     */
+    "description": string;
+
+    /**
+     * 更新时间
+     */
+    "updatedAt": time$0.Time;
+
+    /**
+     * 创建时间
+     */
+    "createdAt": time$0.Time;
+
+    /** Creates a new Setting instance. */
+    constructor($$source: Partial<Setting> = {}) {
+        if (!("id" in $$source)) {
+            this["id"] = 0;
+        }
+        if (!("key" in $$source)) {
+            this["key"] = "";
+        }
+        if (!("value" in $$source)) {
+            this["value"] = "";
+        }
+        if (!("type" in $$source)) {
+            this["type"] = "";
+        }
+        if (!("category" in $$source)) {
+            this["category"] = "";
+        }
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+        if (!("description" in $$source)) {
+            this["description"] = "";
+        }
+        if (!("updatedAt" in $$source)) {
+            this["updatedAt"] = null;
+        }
+        if (!("createdAt" in $$source)) {
+            this["createdAt"] = null;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new Setting instance from a string or object.
+     */
+    static createFrom($$source: any = {}): Setting {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new Setting($$parsedSource as Partial<Setting>);
+    }
+}
+
+/**
  * WebShell WebShell 实体
  */
 export class WebShell {

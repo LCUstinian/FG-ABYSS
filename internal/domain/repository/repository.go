@@ -43,3 +43,21 @@ type WebShellRepository interface {
 	// Recover 恢复已删除的 WebShell
 	Recover(id string) error
 }
+
+// SettingRepository 设置仓储接口
+type SettingRepository interface {
+	// FindAll 查找所有设置
+	FindAll() ([]entity.Setting, error)
+	// FindByCategory 根据分类查找设置
+	FindByCategory(category string) ([]entity.Setting, error)
+	// FindByKey 根据键名查找设置
+	FindByKey(key string) (*entity.Setting, error)
+	// Save 保存设置（创建或更新）
+	Save(setting *entity.Setting) error
+	// SaveAll 批量保存设置
+	SaveAll(settings []entity.Setting) error
+	// UpdateValue 更新设置值
+	UpdateValue(key string, value string) error
+	// InitializeDefaults 初始化默认设置
+	InitializeDefaults(defaults []entity.Setting) error
+}

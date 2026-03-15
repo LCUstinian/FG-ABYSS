@@ -63,7 +63,7 @@ func Init(cfg *Config) (*gorm.DB, error) {
 
 	// 自动迁移数据库表结构
 	fmt.Println("正在执行数据库表结构迁移...")
-	if err := db.AutoMigrate(&entity.Project{}, &entity.WebShell{}); err != nil {
+	if err := db.AutoMigrate(&entity.Project{}, &entity.WebShell{}, &entity.Setting{}); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
 

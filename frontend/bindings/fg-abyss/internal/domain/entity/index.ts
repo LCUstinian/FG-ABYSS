@@ -3,5 +3,6 @@
 
 export {
     Project,
+    Setting,
     WebShell
 } from "./models.js";

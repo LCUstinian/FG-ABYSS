@@ -46,6 +46,7 @@ func main() {
 	log.Println("=== Creating Repositories ===")
 	projectRepo := repositories.NewProjectRepository(dbInstance)
 	webshellRepo := repositories.NewWebShellRepository(dbInstance)
+	settingRepo := repositories.NewSettingRepository(dbInstance)
 	log.Println("=== Repositories created ===")
 
 	// 创建服务实例
@@ -53,13 +54,31 @@ func main() {
 	appService := services.NewAppService(dbInstance, projectRepo, webshellRepo)
 	projectService := services.NewProjectService(projectRepo)
 	webshellService := services.NewWebShellService(webshellRepo)
+	settingService := services.NewSettingService(settingRepo)
 	log.Println("=== Services created ===")
+
+	// 初始化设置（自动创建表并填充默认值）
+	log.Println("=== Initializing Settings ===")
+	defaultSettings := settingService.GetDefaultSettings()
+	if err := settingService.InitializeDefaults(defaultSettings); err != nil {
+		log.Printf("Warning: Failed to initialize default settings: %v", err)
+	} else {
+		log.Println("=== Default settings initialized successfully ===")
+	}
+
+	// 加载设置到内存
+	if err := settingService.Initialize(); err != nil {
+		log.Printf("Warning: Failed to load settings: %v", err)
+	} else {
+		log.Println("=== Settings loaded to memory successfully ===")
+	}
 
 	// 创建处理器实例
 	log.Println("=== Creating Handlers ===")
 	systemHandler := handlers.NewSystemHandler(appService)
 	projectHandler := handlers.NewProjectHandler(projectService)
 	webshellHandler := handlers.NewWebShellHandler(webshellService)
+	settingHandler := handlers.NewSettingHandler(settingService)
 	log.Println("=== Handlers created ===")
 
 	// 加载前端资源
@@ -94,6 +113,7 @@ func main() {
 			application.NewService(systemHandler),
 			application.NewService(projectHandler),
 			application.NewService(webshellHandler),
+			application.NewService(settingHandler),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(frontendAssets),

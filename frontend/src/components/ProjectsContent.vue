@@ -2035,17 +2035,18 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   border-color: var(--warning-color-hover) !important;
 }
 
-/* 回收站按钮在默认状态下的样式 */
+/* 回收站按钮在默认状态下的样式 - 使用强调色 */
 .recycle-bin-btn[type="default"] {
-  background-color: var(--card-bg) !important;
-  color: var(--text-color) !important;
-  border-color: var(--border-color) !important;
+  background-color: var(--active-color) !important;
+  color: white !important;
+  border-color: var(--active-color) !important;
 }
 
 .recycle-bin-btn[type="default"]:hover {
-  background-color: var(--hover-color) !important;
+  background-color: var(--active-color) !important;
+  opacity: 0.9 !important;
   border-color: var(--active-color) !important;
-  color: var(--active-color) !important;
+  color: white !important;
 }
 
 .recycle-icon {
@@ -2168,6 +2169,46 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   background-color: var(--active-color-suppressed) !important;
   color: var(--active-color) !important;
   font-weight: 500 !important;
+}
+
+/* 分页组件样式 - 应用强调色 */
+.pagination-container :deep(.n-pagination) {
+  --n-item-text-color: var(--text-color) !important;
+  --n-item-text-color-hover: var(--active-color) !important;
+  --n-item-text-color-active: var(--active-color) !important;
+  --n-item-border-color: var(--border-color) !important;
+  --n-item-border-color-hover: var(--active-color) !important;
+  --n-item-border-color-active: var(--active-color) !important;
+  --n-item-bg-color-hover: rgba(var(--active-color-rgb), 0.1) !important;
+  --n-item-bg-color-active: rgba(var(--active-color-rgb), 0.15) !important;
+}
+
+.pagination-container :deep(.n-pagination-item) {
+  border-radius: 6px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.pagination-container :deep(.n-pagination-item:hover) {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.pagination-container :deep(.n-pagination-item.n-pagination-item--active) {
+  background-color: var(--active-color) !important;
+  color: white !important;
+  border-color: var(--active-color) !important;
+  font-weight: 600 !important;
+}
+
+.pagination-container :deep(.n-pagination-item.n-pagination-item--active:hover) {
+  opacity: 0.9 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.pagination-container :deep(.n-pagination-item--disabled) {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
 }
 
 .projects-main {

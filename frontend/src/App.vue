@@ -793,13 +793,21 @@ body {
   padding: 6px 12px;
   font-size: 0.857em; /* 12px / 14px */
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
 }
 
 .action-button:hover {
   background: var(--active-color);
   opacity: 0.9;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.action-button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .pagination {
@@ -818,19 +826,29 @@ body {
   border-radius: 6px;
   padding: 8px 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--text-color);
 }
 
 .page-button:hover {
   background: var(--hover-color);
-  transform: translateY(-1px);
+  border-color: var(--active-color);
+  color: var(--active-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .page-button.active {
   background: var(--active-color);
   color: white;
   border-color: var(--active-color);
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+}
+
+.page-button.active:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 /* 载荷生成样式 */
@@ -914,26 +932,32 @@ body {
 
 .generate-button {
   width: 100%;
-  background: linear-gradient(135deg, var(--active-color) 0%, #764ba2 100%);
+  background: var(--active-color);
   color: white;
   border: none;
   padding: 14px 20px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   z-index: 1;
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  letter-spacing: 0.5px;
 }
 
 .generate-button:hover {
+  background: var(--active-color);
+  opacity: 0.9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .generate-button:active {
   transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 /* 插件管理样式 */
@@ -1125,13 +1149,20 @@ body {
   padding: 6px 12px;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
 }
 
 .setting-item button:hover {
   background: var(--active-color);
   opacity: 0.9;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.setting-item button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 /* 滚动条样式 */

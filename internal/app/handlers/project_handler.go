@@ -39,3 +39,13 @@ func (h *ProjectHandler) UpdateProject(id, name, description string, status int)
 func (h *ProjectHandler) DeleteProject(id string) error {
 	return h.projectService.Delete(id)
 }
+
+// RecoverProject 恢复已删除的项目
+func (h *ProjectHandler) RecoverProject(id string) (*entity.Project, error) {
+	return h.projectService.Recover(id)
+}
+
+// GetDeletedProjects 获取已删除的项目
+func (h *ProjectHandler) GetDeletedProjects() ([]entity.Project, error) {
+	return h.projectService.GetDeleted()
+}

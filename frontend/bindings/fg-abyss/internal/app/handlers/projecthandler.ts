@@ -31,6 +31,15 @@ export function DeleteProject(id: string): $CancellablePromise<void> {
 }
 
 /**
+ * GetDeletedProjects 获取已删除的项目
+ */
+export function GetDeletedProjects(): $CancellablePromise<entity$0.Project[]> {
+    return $Call.ByID(3350231829).then(($result: any) => {
+        return $$createType2($result);
+    });
+}
+
+/**
  * GetProjectByID 根据 ID 获取项目
  */
 export function GetProjectByID(id: string): $CancellablePromise<entity$0.Project | null> {
@@ -45,6 +54,15 @@ export function GetProjectByID(id: string): $CancellablePromise<entity$0.Project
 export function GetProjects(): $CancellablePromise<entity$0.Project[]> {
     return $Call.ByID(4040895908).then(($result: any) => {
         return $$createType2($result);
+    });
+}
+
+/**
+ * RecoverProject 恢复已删除的项目
+ */
+export function RecoverProject(id: string): $CancellablePromise<entity$0.Project | null> {
+    return $Call.ByID(149237847, id).then(($result: any) => {
+        return $$createType1($result);
     });
 }
 

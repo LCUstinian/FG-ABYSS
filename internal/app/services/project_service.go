@@ -88,3 +88,26 @@ func (s *ProjectService) Delete(id string) error {
 
 	return s.projectRepo.DeleteSoft(id)
 }
+
+// Recover 恢复已删除的项目
+func (s *ProjectService) Recover(id string) (*entity.Project, error) {
+	project, err := s.projectRepo.FindByID(id)
+	if err != nil {
+		return nil, errors.New("项目不存在")
+	}
+
+	if project.DeletedAt.Valid {
+		// 恢复项目
+		if err := s.projectRepo.Recover(id); err != nil {
+			return nil, err
+		}
+		return project, nil
+	}
+
+	return nil, errors.New("项目未被删除")
+}
+
+// GetDeleted 获取已删除的项目
+func (s *ProjectService) GetDeleted() ([]entity.Project, error) {
+	return s.projectRepo.FindDeleted()
+}

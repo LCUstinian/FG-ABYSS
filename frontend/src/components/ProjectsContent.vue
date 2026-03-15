@@ -6,7 +6,8 @@
     <div class="content-body">
       <div class="projects-content">
         <div class="projects-sidebar">
-          <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 16px;">
+          <!-- 顶部新建按钮区域 -->
+          <div class="sidebar-top-section">
             <Tooltip :text="t('projects.newProject')">
               <button class="new-project-button" @click="handleNewProject">
                 +
@@ -14,19 +15,59 @@
             </Tooltip>
           </div>
           <div style="width: 100%; height: 1px; background: var(--border-color); margin-bottom: 16px;"></div>
+          <!-- 项目列表区域 -->
           <div class="directory-tree">
+            <!-- 正常项目列表 -->
             <div 
               v-for="project in projects" 
               :key="project.id"
               class="tree-item" 
               :class="{ active: selectedProject === project.id }"
               @click="handleProjectSelect(project.id)"
+              @mouseenter="hoveredProject = project.id"
+              @mouseleave="hoveredProject = null"
             >
               <span class="tree-item-icon">📁</span>
-              <span class="tree-item-text">{{ project.name }}</span>
+              <Tooltip :text="project.name">
+                <span class="tree-item-text">{{ project.name }}</span>
+              </Tooltip>
+              <span class="tree-item-actions" :class="{ 'show-actions': hoveredProject === project.id || selectedProject === project.id }">
+                <button 
+                  class="delete-project-btn" 
+                  @click.stop="handleDeleteProject(project)"
+                  :title="t('projects.deleteProject')"
+                >
+                  🗑️
+                </button>
+              </span>
+            </div>
+          </div>
+          
+          <!-- 底部回收站区域 - 固定于底部 -->
+          <div class="sidebar-bottom-section">
+            <div class="recycle-bin-section">
+              <div class="recycle-bin-divider">
+                <span class="divider-line"></span>
+                <span class="divider-text">{{ t('projects.recycleBin') }}</span>
+                <span class="divider-line"></span>
+              </div>
+              <!-- 统一的恢复按钮 - 始终显示 -->
+              <button class="recover-all-btn" @click="showRecoverDialog = true">
+                <span class="btn-icon">↩️</span>
+                <span class="btn-text">{{ t('projects.recoverProjects') }}</span>
+                <span class="btn-count" v-if="deletedProjects.length > 0">{{ deletedProjects.length }}</span>
+              </button>
             </div>
           </div>
         </div>
+        
+        <!-- 恢复项目弹窗组件 -->
+        <RecoverProjectModal
+          v-model="showRecoverDialog"
+          :deleted-projects="deletedProjects"
+          @recover="handleRecoverProject"
+          @close="handleRecoverDialogClose"
+        />
         <div class="projects-main">
           <NCard class="webshell-table-card" style="height: 100%; display: flex; flex-direction: column; overflow: hidden;">
             <template #header>
@@ -108,7 +149,7 @@
               <!-- 表格容器 -->
               <div v-else style="flex: 1; overflow: auto; min-height: 0;">
                 <table id="webshellTable" class="webshell-table" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
-                <thead>
+                  <thead>
                   <tr class="webshell-table-header-row">
                     <th class="webshell-table-header" style="text-align: left; min-width: 60px; cursor: pointer; user-select: none; position: relative;" @click="handleSort('id')">
                       ID <span style="font-size: 10px; margin-left: 4px;">{{ getSortIcon('id') }}</span>
@@ -284,6 +325,7 @@ import {
 import Tooltip from './Tooltip.vue'
 import CreateProjectModal from './CreateProjectModal.vue'
 import CreateWebShellModal from './CreateWebShellModal.vue'
+import RecoverProjectModal from './RecoverProjectModal.vue'
 
 // 导入 Wails 运行时和绑定
 import { Events } from '@wailsio/runtime'
@@ -398,6 +440,11 @@ const selectedTableRow = ref<WebShell | null>(null)
 
 // 项目列表
 const projects = ref<any[]>([])
+const deletedProjects = ref<any[]>([])  // 前端临时存储已删除的项目
+
+// UI 状态
+const hoveredProject = ref<string | null>(null)
+const showRecoverDialog = ref(false)
 
 // 新建项目弹窗
 const newProjectDialogVisible = ref(false)
@@ -459,6 +506,20 @@ const handleProjectCreated = async () => {
   newProjectDialogVisible.value = false
 }
 
+// 格式化时间（使用导入的工具函数）
+// const formatTime = (time: string | number | Date) => {
+//   if (!time) return ''
+//   const date = new Date(time)
+//   return date.toLocaleString('zh-CN', {
+//     year: 'numeric',
+//     month: '2-digit',
+//     day: '2-digit',
+//     hour: '2-digit',
+//     minute: '2-digit',
+//     second: '2-digit'
+//   })
+// }
+
 // 获取项目列表
 const fetchProjects = async () => {
   try {
@@ -481,6 +542,114 @@ const fetchProjects = async () => {
   } catch (error) {
     console.error('获取项目列表失败:', error)
   }
+}
+
+// 获取已删除项目列表
+const fetchDeletedProjects = async () => {
+  try {
+    const deletedList = await ProjectHandler.GetDeletedProjects()
+    
+    // 按删除时间排序（从新到旧）
+    deletedProjects.value = deletedList.sort((a, b) => {
+      const timeA = new Date(a.deletedAt).getTime()
+      const timeB = new Date(b.deletedAt).getTime()
+      return timeB - timeA
+    })
+    
+    console.log('获取已删除项目列表:', deletedProjects.value)
+  } catch (error) {
+    console.error('获取已删除项目列表失败:', error)
+  }
+}
+
+// 处理删除项目
+const handleDeleteProject = async (project: any) => {
+  // 显示确认对话框
+  dialog.warning({
+    title: t('projects.deleteProjectConfirm'),
+    content: t('projects.deleteProjectConfirmContent', { name: project.name }),
+    positiveText: t('projects.confirm'),
+    negativeText: t('projects.cancel'),
+    onPositiveClick: async () => {
+      // 显示加载状态
+      const loading = message.loading(t('projects.deleting'), {
+        duration: 0
+      })
+      
+      try {
+        // 调用后端删除接口
+        await ProjectHandler.DeleteProject(project.id)
+        
+        // 关闭加载提示
+        loading.destroy()
+        
+        // 显示成功消息
+        message.success(t('projects.deleteSuccess'))
+        
+        // 刷新项目列表和已删除项目列表
+        await fetchProjects()
+        await fetchDeletedProjects()
+        
+        // 如果删除的是当前选中的项目，清空选中
+        if (selectedProject.value === project.id) {
+          selectedProject.value = null
+          tableData.value = []
+          total.value = 0
+        }
+      } catch (error) {
+        // 关闭加载提示
+        loading.destroy()
+        
+        // 显示错误消息
+        console.error('删除失败:', error)
+        message.error(t('projects.deleteError') + ': ' + error)
+      }
+    },
+    onNegativeClick: () => {
+      console.log('取消删除')
+    }
+  })
+}
+
+// 处理恢复项目
+const handleRecoverProject = async (project: any) => {
+  // 显示加载状态
+  const loading = message.loading(t('projects.recovering'), {
+    duration: 0
+  })
+  
+  try {
+    // 调用后端恢复接口
+    await ProjectHandler.RecoverProject(project.id)
+    
+    // 关闭加载提示
+    loading.destroy()
+    
+    // 显示成功消息
+    message.success(t('projects.recoverSuccess'))
+    
+    // 刷新项目列表和已删除项目列表
+    await fetchProjects()
+    await fetchDeletedProjects()
+  } catch (error) {
+    // 关闭加载提示
+    loading.destroy()
+    
+    // 显示错误消息
+    console.error('恢复失败:', error)
+    message.error(t('projects.recoverError') + ': ' + error)
+  }
+}
+
+// 处理恢复全部（由弹窗内部处理，此处只需刷新列表）
+const handleRecoverAll = async () => {
+  await fetchProjects()
+  await fetchDeletedProjects()
+}
+
+// 处理关闭弹窗
+const handleRecoverDialogClose = () => {
+  console.log('关闭恢复项目弹窗')
 }
 
 // 处理右键菜单
@@ -781,6 +950,7 @@ onMounted(async () => {
   
   // 初始加载数据
   await fetchProjects()
+  await fetchDeletedProjects()
   // 等待项目列表加载完成后再获取数据
   if (selectedProject.value) {
     await fetchData()
@@ -900,12 +1070,13 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 }
 
 .projects-sidebar {
-  width: 200px;
-  min-width: 200px;
-  max-width: 200px;
+  width: 18%;
+  min-width: 220px;
+  max-width: 320px;
   background: var(--sidebar-bg);
   padding: 20px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
   overflow-y: auto;
   overflow-x: hidden;
   height: 100%;
@@ -913,6 +1084,31 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+}
+
+/* 顶部区域 - 新建项目按钮 */
+.sidebar-top-section {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 8px;
+}
+
+/* 项目列表区域 - 可滚动 */
+.directory-tree {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  margin-bottom: 16px;
+}
+
+/* 底部区域 - 回收站固定于底部 */
+.sidebar-bottom-section {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: 16px;
 }
 
 .projects-main {
@@ -1089,6 +1285,30 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 14px;
   border-radius: 4px;
+  position: relative;
+}
+
+.tree-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tree-item-actions.show-actions {
+  opacity: 1;
+}
+
+.tree-item-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+  display: block;
 }
 
 .tree-item:hover {
@@ -1147,6 +1367,585 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   scale: 1.05;
+}
+
+/* 删除项目按钮样式 */
+.delete-project-btn {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+}
+
+.tree-item:hover .delete-project-btn,
+.tree-item.active .delete-project-btn {
+  opacity: 1;
+}
+
+.delete-project-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.dark .delete-project-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* 回收站区域样式优化 */
+.recycle-bin-section {
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dark .recycle-bin-section {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.recycle-bin-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  position: relative;
+  width: 100%;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-color), transparent);
+  min-width: 30px;
+}
+
+.divider-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.divider-text::before {
+  content: '🗑️';
+  font-size: 14px;
+  filter: grayscale(0.2);
+}
+
+/* 统一的恢复按钮样式 - 始终显示 */
+.recover-all-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(76, 175, 80, 0.05) 100%);
+  border: 1px solid rgba(76, 175, 80, 0.25);
+  border-radius: 10px;
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  line-height: 1;
+  letter-spacing: 0.3px;
+}
+
+.recover-all-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.6s ease;
+}
+
+.recover-all-btn:hover::before {
+  left: 100%;
+}
+
+.recover-all-btn:hover {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.18) 0%, rgba(76, 175, 80, 0.12) 100%);
+  border-color: rgba(76, 175, 80, 0.45);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(76, 175, 80, 0.3);
+}
+
+.dark .recover-all-btn {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.12) 0%, rgba(76, 175, 80, 0.08) 100%);
+  border-color: rgba(76, 175, 80, 0.3);
+}
+
+.dark .recover-all-btn:hover {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(76, 175, 80, 0.15) 100%);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.3);
+}
+
+.btn-icon {
+  font-size: 18px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.btn-text {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-align: center;
+  display: inline-block;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.btn-count {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.25) 0%, rgba(76, 175, 80, 0.35) 100%);
+  color: #4CAF50;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  min-width: 20px;
+  height: 20px;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(76, 175, 80, 0.4);
+  line-height: 1;
+}
+
+.dark .btn-count {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.3) 0%, rgba(76, 175, 80, 0.4) 100%);
+  box-shadow: 0 2px 6px rgba(76, 175, 80, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: rgba(76, 175, 80, 0.5);
+}
+
+.recover-all-btn:hover .btn-count {
+  transform: scale(1.1);
+  box-shadow: 0 3px 10px rgba(76, 175, 80, 0.4);
+}
+
+/* 恢复项目弹窗样式 - 基于主界面居中 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: var(--content-bg);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 550px;
+  max-height: 75vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-header {
+  padding: 24px 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, transparent 100%);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-header h3::before {
+  content: '↩️';
+  font-size: 20px;
+}
+
+.modal-close {
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text-color);
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 300;
+}
+
+.modal-close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+  transform: rotate(90deg);
+}
+
+.dark .modal-close {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark .modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background: var(--content-bg);
+}
+
+/* 自定义滚动条 */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+.empty-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.recover-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recover-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(0, 0, 0, 0.02) 100%);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.recover-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.5) 0%, rgba(239, 68, 68, 0.2) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.recover-item:hover::before {
+  opacity: 1;
+}
+
+.recover-item:hover {
+  transform: translateX(6px);
+  border-color: rgba(76, 175, 80, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(76, 175, 80, 0.1);
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, var(--bg-secondary) 100%);
+}
+
+.dark .recover-item:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(76, 175, 80, 0.2);
+}
+
+.recover-item-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.recover-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.recover-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 6px;
+  letter-spacing: -0.2px;
+}
+
+.recover-item-time {
+  font-size: 12px;
+  color: var(--text-secondary);
+  opacity: 0.75;
+  font-weight: 500;
+}
+
+.recover-item-btn {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.08) 100%);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.recover-item-btn span:first-child {
+  font-size: 16px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.recover-item-btn:hover {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(76, 175, 80, 0.15) 100%);
+  border-color: rgba(76, 175, 80, 0.5);
+  transform: scale(1.06) translateY(-1px);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.25), 0 0 0 1px rgba(76, 175, 80, 0.2);
+}
+
+.dark .recover-item-btn {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(76, 175, 80, 0.12) 100%);
+}
+
+.dark .recover-item-btn:hover {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.25) 0%, rgba(76, 175, 80, 0.2) 100%);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.3), 0 0 0 1px rgba(76, 175, 80, 0.25);
+}
+
+.modal-footer {
+  padding: 20px 24px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0%, transparent 100%);
+}
+
+.dark .modal-footer {
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
+}
+
+.modal-btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  letter-spacing: 0.3px;
+}
+
+.modal-btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.modal-btn-secondary:hover {
+  background: var(--hover-color);
+  border-color: var(--text-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.deleted-projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tree-item.deleted {
+  opacity: 0.5;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px dashed var(--border-color);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tree-item.deleted::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--border-color);
+}
+
+.tree-item.deleted:hover {
+  opacity: 0.8;
+  transform: translateX(2px);
+  background: rgba(0, 0, 0, 0.15);
+  border-color: var(--active-color);
+}
+
+.dark .tree-item.deleted {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark .tree-item.deleted:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 恢复项目按钮样式 */
+.recover-project-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tree-item.deleted:hover .recover-project-btn {
+  opacity: 1;
+}
+
+.recover-project-btn:hover {
+  background: rgba(76, 175, 80, 0.15);
+  transform: scale(1.15);
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+}
+
+.dark .recover-project-btn:hover {
+  background: rgba(76, 175, 80, 0.25);
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+}
+
+/* 空回收站提示 */
+.recycle-bin-section:empty::after {
+  content: '回收站为空';
+  display: block;
+  text-align: center;
+  padding: 20px;
+  color: var(--text-color);
+  opacity: 0.4;
+  font-size: 13px;
 }
 
 /* 新建 WebShell 按钮样式 - 与主题和其他元素保持一致 */
@@ -1664,8 +2463,44 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   border-left: none !important; /* 移除单元格左边框，让行的左边框显示 */
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
+/* 响应式设计 - 大屏幕优化 */
+@media (min-width: 1920px) {
+  .projects-sidebar {
+    width: 15%;
+    min-width: 280px;
+    max-width: 380px;
+  }
+}
+
+/* 中等屏幕优化 */
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .projects-sidebar {
+    width: 18%;
+    min-width: 240px;
+    max-width: 340px;
+  }
+}
+
+/* 小屏幕优化 */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .projects-sidebar {
+    width: 22%;
+    min-width: 220px;
+    max-width: 300px;
+  }
+}
+
+/* 平板 landscape */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .projects-sidebar {
+    width: 28%;
+    min-width: 200px;
+    max-width: 280px;
+  }
+}
+
+/* 平板 portrait 和移动端 */
+@media (max-width: 767px) {
   .content-header {
     padding: 12px 16px;
   }
@@ -1681,7 +2516,9 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   .projects-sidebar {
     width: 100%;
     height: auto;
-    max-height: 150px;
+    max-height: 200px;
+    min-width: 100%;
+    max-width: 100%;
   }
   
   /* 移动端按钮优化 */

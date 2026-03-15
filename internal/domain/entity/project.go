@@ -15,7 +15,7 @@ type Project struct {
 	Status      int            `gorm:"type:integer;default:0" json:"status"` // 0=Active, 1=Archived
 	CreatedAt   time.Time      `json:"createdAt"`
 	UpdatedAt   time.Time      `json:"updatedAt"`
-	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deletedAt"` // 软删除标记
 }
 
 // TableName 指定表名

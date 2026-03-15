@@ -18,6 +18,10 @@ type ProjectRepository interface {
 	Delete(id string) error
 	// DeleteSoft 软删除项目
 	DeleteSoft(id string) error
+	// Recover 恢复已删除的项目
+	Recover(id string) error
+	// FindDeleted 查找所有已删除的项目
+	FindDeleted() ([]entity.Project, error)
 }
 
 // WebShellRepository WebShell 仓储接口

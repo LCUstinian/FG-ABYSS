@@ -7,6 +7,9 @@ import { Create as $Create } from "@wailsio/runtime";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unused imports
+import * as gorm$0 from "../../../../gorm.io/gorm/models.js";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
 import * as time$0 from "../../../../time/models.js";
 
 /**
@@ -23,6 +26,11 @@ export class Project {
     "status": number;
     "createdAt": time$0.Time;
     "updatedAt": time$0.Time;
+
+    /**
+     * 软删除标记
+     */
+    "deletedAt": gorm$0.DeletedAt;
 
     /** Creates a new Project instance. */
     constructor($$source: Partial<Project> = {}) {
@@ -43,6 +51,9 @@ export class Project {
         }
         if (!("updatedAt" in $$source)) {
             this["updatedAt"] = null;
+        }
+        if (!("deletedAt" in $$source)) {
+            this["deletedAt"] = null;
         }
 
         Object.assign(this, $$source);

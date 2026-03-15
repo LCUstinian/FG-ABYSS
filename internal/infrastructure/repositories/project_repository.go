@@ -79,3 +79,18 @@ func (r *ProjectRepositoryImpl) DeleteSoft(id string) error {
 	result := r.db.Model(&entity.Project{}).Where("id = ?", id).Delete(&entity.Project{})
 	return result.Error
 }
+
+// Recover 恢复已删除的项目
+func (r *ProjectRepositoryImpl) Recover(id string) error {
+	return r.db.Model(&entity.Project{}).Unscoped().Where("id = ?", id).Update("deleted_at", nil).Error
+}
+
+// FindDeleted 查找所有已删除的项目
+func (r *ProjectRepositoryImpl) FindDeleted() ([]entity.Project, error) {
+	var projects []entity.Project
+	result := r.db.Unscoped().Where("deleted_at IS NOT NULL").Order("deleted_at DESC").Find(&projects)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return projects, nil
+}

@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput, NButton } from 'naive-ui'
-import { App } from '../../bindings/fg-abyss'
+import * as ProjectHandler from '../../bindings/fg-abyss/internal/app/handlers/projecthandler'
 
 defineProps<{
   modelValue: boolean
@@ -76,7 +76,7 @@ const handleCreate = async () => {
   }
 
   try {
-    await App.CreateProject(projectName.value, projectDescription.value)
+    await ProjectHandler.CreateProject(projectName.value, projectDescription.value)
     projectName.value = ''
     projectDescription.value = ''
     emit('update:modelValue', false)

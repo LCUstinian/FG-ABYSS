@@ -4,8 +4,7 @@
  */
 
 // 导入自动生成的 Wails 绑定
-import { GetSystemStatus } from '../../bindings/fg-abyss/app'
-import type { SystemStatus as WailsSystemStatus } from '../../bindings/fg-abyss/models'
+import { GetSystemStatus } from '../../bindings/fg-abyss/internal/app/handlers/systemhandler'
 
 // 定义系统状态接口
 export interface SystemStatus {

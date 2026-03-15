@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	"gorm.io/gorm"
 
 	"fg-abyss/internal/domain/entity"

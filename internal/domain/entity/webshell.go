@@ -38,7 +38,6 @@ func (w *WebShell) BeforeCreate(tx *gorm.DB) error {
 
 // Validate 验证 WebShell 数据
 func (w *WebShell) Validate() error {
-	// 领域规则验证
 	if w.Url == "" {
 		return &ValidationError{Field: "url", Message: "URL 不能为空"}
 	}
@@ -46,14 +45,4 @@ func (w *WebShell) Validate() error {
 		return &ValidationError{Field: "projectId", Message: "项目 ID 不能为空"}
 	}
 	return nil
-}
-
-// ValidationError 验证错误
-type ValidationError struct {
-	Field   string
-	Message string
-}
-
-func (e *ValidationError) Error() string {
-	return e.Message
 }

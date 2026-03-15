@@ -52,7 +52,7 @@ func main() {
 	log.Println("=== Creating Services ===")
 	appService := services.NewAppService(dbInstance, projectRepo, webshellRepo)
 	projectService := services.NewProjectService(projectRepo)
-	webshellService := services.NewWebShellService(webshellRepo, projectRepo)
+	webshellService := services.NewWebShellService(webshellRepo)
 	log.Println("=== Services created ===")
 
 	// 创建处理器实例

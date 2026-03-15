@@ -8,7 +8,7 @@
         <div class="projects-sidebar">
           <!-- 顶部新建按钮区域 -->
           <div class="sidebar-top-section">
-            <Tooltip :text="t('projects.newProject')">
+            <Tooltip :text="t('projects.newProject')" :always-show="true">
               <button class="new-project-button" @click="handleNewProject">
                 +
               </button>
@@ -100,7 +100,7 @@
                       </template>
                       <span class="recycle-text">{{ showDeleted ? t('projects.showNormal') : t('projects.showDeleted') }}</span>
                     </NButton>
-                    <Tooltip :text="t('projects.newWebShell')" placement="bottom">
+                    <Tooltip :text="t('projects.newWebShell')" :always-show="true" placement="bottom">
                       <NButton 
                         type="primary" 
                         size="small"

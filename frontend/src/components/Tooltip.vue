@@ -14,6 +14,7 @@ import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
 interface Props {
   text: string
+  alwaysShow?: boolean  // 是否始终显示，不检测溢出
 }
 
 const props = defineProps<Props>()
@@ -77,6 +78,20 @@ const updateTooltipPosition = () => {
 const showTooltip = () => {
   if (!wrapperRef.value) return
   
+  // 如果设置了 alwaysShow，始终显示 Tooltip
+  if (props.alwaysShow) {
+    isOverflow.value = true  // 强制设置为 true，确保 tooltip 可以显示
+    updateTheme()
+    const rect = wrapperRef.value.getBoundingClientRect()
+    tooltipStyle.value = {
+      left: `${rect.left + rect.width / 2}px`,
+      top: `${rect.bottom + 8}px`,
+      opacity: '1',
+      visibility: 'visible'
+    }
+    return
+  }
+  
   // 只在内容溢出时才显示 Tooltip
   checkOverflow()
   if (!isOverflow.value) return
@@ -95,6 +110,10 @@ const showTooltip = () => {
 const hideTooltip = () => {
   tooltipStyle.value.opacity = '0'
   tooltipStyle.value.visibility = 'hidden'
+  // 只在非 alwaysShow 模式下重置 isOverflow
+  if (!props.alwaysShow) {
+    isOverflow.value = false
+  }
 }
 
 onMounted(() => {

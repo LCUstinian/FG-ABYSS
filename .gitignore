@@ -4,3 +4,15 @@ frontend/dist
 frontend/node_modules
 build/linux/appimage/build
 build/windows/nsis/MicrosoftEdgeWebview2Setup.exe
+
+# 运行时数据
+data/
+
+# 构建产物
+*.exe
+
+# Vite 缓存
+*.mjs
+
+# IDE 配置
+.idea/

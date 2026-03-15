@@ -110,7 +110,6 @@ const showRecoverConfirm = (project: any) => {
 // 处理恢复
 const handleRecover = (project: any) => {
   emit('recover', project)
-  message.success(t('projects.recoverSuccess', { name: project.name }))
   emit('update:modelValue', false)
   emit('close')
 }

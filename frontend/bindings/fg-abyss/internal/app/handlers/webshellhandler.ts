@@ -31,6 +31,15 @@ export function DeleteWebShell(id: string): $CancellablePromise<void> {
 }
 
 /**
+ * GetDeletedWebShells 获取已删除的 WebShell（回收站）
+ */
+export function GetDeletedWebShells(projectID: string): $CancellablePromise<entity$0.WebShell[]> {
+    return $Call.ByID(2620972821, projectID).then(($result: any) => {
+        return $$createType2($result);
+    });
+}
+
+/**
  * GetWebShellByID 根据 ID 获取 WebShell
  */
 export function GetWebShellByID(id: string): $CancellablePromise<entity$0.WebShell | null> {

@@ -69,3 +69,8 @@ func (h *WebShellHandler) DeleteWebShell(id string) error {
 func (h *WebShellHandler) RecoverWebShell(id string) error {
 	return h.webshellService.Recover(id)
 }
+
+// GetDeletedWebShells 获取已删除的 WebShell（回收站）
+func (h *WebShellHandler) GetDeletedWebShells(projectID string) ([]entity.WebShell, error) {
+	return h.webshellService.GetDeleted(projectID)
+}

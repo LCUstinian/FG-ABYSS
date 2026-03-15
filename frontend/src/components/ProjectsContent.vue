@@ -659,10 +659,10 @@ const fetchData = async () => {
     console.log('获取项目数据，项目 ID:', selectedProject.value, '回收站视图:', showDeleted.value)
     
     if (showDeleted.value) {
-      // 回收站功能暂时禁用
-      data = []
-      count = 0
-      console.log('回收站功能暂未实现')
+      // 获取已删除的 WebShell（回收站）
+      data = await WebShellHandler.GetDeletedWebShells(selectedProject.value)
+      count = data.length
+      console.log('获取回收站数据成功，数量:', count)
     } else {
       // 获取正常的 WebShell
       const [result, totalCount] = await WebShellHandler.GetWebShells(

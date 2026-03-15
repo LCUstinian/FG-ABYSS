@@ -461,6 +461,40 @@ body {
    这里仅保留边框等细节样式的覆盖
    ============================================ */
 
+/* ========== 弹窗 (Modal/Dialog) 圆角样式 ========== */
+/* 统一的弹窗圆角 - 符合设计规范的 16px 圆角半径 */
+.n-modal,
+.n-dialog {
+  border-radius: var(--radius-2xl) !important; /* 16px */
+  overflow: hidden;
+}
+
+/* 弹窗容器 */
+.n-modal-container .n-modal,
+.n-dialog-provider .n-dialog {
+  border-radius: var(--radius-2xl) !important;
+}
+
+/* 弹窗主体 */
+.n-modal__content,
+.n-dialog__content {
+  border-radius: var(--radius-2xl) !important;
+}
+
+/* 弹窗头部保持圆角 */
+.n-modal__header,
+.n-dialog__header {
+  border-top-left-radius: var(--radius-2xl);
+  border-top-right-radius: var(--radius-2xl);
+}
+
+/* 弹窗底部保持圆角 */
+.n-modal__footer,
+.n-dialog__footer {
+  border-bottom-left-radius: var(--radius-2xl);
+  border-bottom-right-radius: var(--radius-2xl);
+}
+
 /* ========== 输入框边框样式 ========== */
 /* 这些样式无法通过 themeOverrides 完全覆盖，需要 CSS 处理 */
 .n-input,

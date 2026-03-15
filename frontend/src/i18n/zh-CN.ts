@@ -218,6 +218,11 @@ export default {
     minimize: '最小化',
     maximize: '最大化',
     restore: '还原',
-    close: '关闭'
+    close: '关闭',
+    memoryTip: '系统内存使用情况',
+    processIdTip: '应用程序进程 ID',
+    cpuTip: 'CPU 使用率',
+    uptimeTip: '应用程序运行时间',
+    currentTime: '当前系统时间'
   }
 }

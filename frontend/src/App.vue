@@ -1134,48 +1134,6 @@ body {
   transform: translateY(-1px);
 }
 
-/* 底部状态栏样式 */
-.status-bar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 20px;
-  padding: 8px 20px;
-  background: var(--status-bar-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-top: 1px solid var(--border-color);
-  font-size: 12px;
-  color: var(--text-color);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.status-bar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.status-item {
-  display: flex;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.status-item span {
-  opacity: 0.8;
-}
-
 /* 滚动条样式 */
 ::-webkit-scrollbar {
   width: 8px;
@@ -1943,32 +1901,6 @@ body {
   color: white;
 }
 
-/* 状态栏样式 - 深色主题风格 */
-.status-bar {
-  height: 28px;
-  background: var(--status-bar-bg);
-  border-top: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 20px;
-  gap: 24px;
-  font-size: 12px;
-  color: var(--text-color);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 100%;
-  box-sizing: border-box;
-  flex-wrap: wrap;
-}
-
-.status-item {
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-}
-
-/* 响应式设计 */
 @media (max-width: 1200px) {
   .home-content {
     max-width: 100%;
@@ -2024,16 +1956,6 @@ body {
   
   .content-body {
     padding: 16px;
-  }
-  
-  .status-bar {
-    gap: 12px;
-    padding: 0 12px;
-    font-size: 11px;
-  }
-  
-  .status-item {
-    white-space: nowrap;
   }
   
   .home-content {

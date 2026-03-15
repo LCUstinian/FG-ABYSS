@@ -218,6 +218,11 @@ export default {
     minimize: 'Minimize',
     maximize: 'Maximize',
     restore: 'Restore',
-    close: 'Close'
+    close: 'Close',
+    memoryTip: 'System memory usage',
+    processIdTip: 'Application process ID',
+    cpuTip: 'CPU usage rate',
+    uptimeTip: 'Application running time',
+    currentTime: 'Current system time'
   }
 }

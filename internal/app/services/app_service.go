@@ -62,8 +62,17 @@ func (s *AppService) GetSystemStatus() (map[string]interface{}, error) {
 
 	// 获取进程信息
 	if s.process != nil {
+		// 进程 ID
+		status["processID"] = s.processID
+		
+		// 进程内存使用率
 		if memPercent, err := s.process.MemoryPercent(); err == nil {
 			status["processMemoryPercent"] = memPercent
+		}
+		
+		// 进程 CPU 使用率
+		if cpuPercent, err := s.process.CPUPercent(); err == nil {
+			status["processCpuPercent"] = cpuPercent
 		}
 	}
 

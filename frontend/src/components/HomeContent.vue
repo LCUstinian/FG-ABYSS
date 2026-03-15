@@ -117,11 +117,12 @@
                 </div>
                 <div class="status-value">{{ systemStatus.cpuUsage }}</div>
                 <div class="mini-chart">
-                  <div class="chart-bar" style="height: 40%"></div>
-                  <div class="chart-bar" style="height: 60%"></div>
-                  <div class="chart-bar" style="height: 45%"></div>
-                  <div class="chart-bar" style="height: 70%"></div>
-                  <div class="chart-bar" style="height: 55%"></div>
+                  <div 
+                    v-for="i in 5" 
+                    :key="i" 
+                    class="chart-bar" 
+                    :style="{ height: getCPUBarHeight(systemStatus.cpuUsage, i) + '%' }"
+                  ></div>
                 </div>
               </div>
               <div class="status-item">
@@ -131,7 +132,7 @@
                 </div>
                 <div class="status-value">{{ systemStatus.memoryUsage }}</div>
                 <div class="progress-bar">
-                  <div class="progress-fill memory" style="width: 65%"></div>
+                  <div class="progress-fill memory" :style="{ width: getMemoryPercentage(systemStatus.memoryUsage) + '%' }"></div>
                 </div>
               </div>
               <div class="status-item">
@@ -139,14 +140,14 @@
                   <span class="status-dot active"></span>
                   {{ t('home.uptime') }}
                 </div>
-                <div class="status-value">{{ systemStatus.uptime }}</div>
+                <div class="status-value">{{ formatUptimeDisplay(systemStatus.uptime) }}</div>
               </div>
               <div class="status-item">
                 <div class="status-label">
                   <span class="status-dot"></span>
                   {{ t('home.processId') }}
                 </div>
-                <div class="status-value">{{ systemStatus.processId }}</div>
+                <div class="status-value">{{ systemStatus.processId || 'N/A' }}</div>
               </div>
             </div>
           </div>
@@ -318,6 +319,54 @@ const props = defineProps({
     })
   }
 })
+
+// 格式化运行时间显示
+const formatUptimeDisplay = (uptime: string): string => {
+  const seconds = parseFloat(uptime)
+  if (isNaN(seconds)) return 'N/A'
+  
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = Math.floor(seconds % 60)
+  
+  if (hours > 0) {
+    return `${hours}h ${minutes}m ${secs}s`
+  } else if (minutes > 0) {
+    return `${minutes}m ${secs}s`
+  } else {
+    return `${secs}s`
+  }
+}
+
+// 计算 CPU 柱状图高度（根据 CPU 使用率和柱子位置）
+const getCPUBarHeight = (cpuUsage: string, index: number): number => {
+  const cpuPercent = parseFloat(cpuUsage) || 0
+  // 基础高度 20%，根据 CPU 使用率波动
+  const baseHeight = 20
+  // 波动范围：每个柱子有不同的波动系数
+  const variance = Math.sin(index * 1.5 + cpuPercent / 10) * 20
+  // 最终高度 = 基础高度 + (CPU 使用率 * 系数) + 波动
+  const height = baseHeight + (cpuPercent * 0.8) + variance
+  return Math.min(Math.max(height, 10), 100) // 限制在 10-100% 之间
+}
+
+// 计算内存使用百分比
+const getMemoryPercentage = (memoryUsage: string): number => {
+  try {
+    // 解析 "11.75 GB / 32 GB" 格式
+    const parts = memoryUsage.split('/')
+    if (parts.length !== 2) return 0
+    
+    const used = parseFloat(parts[0].trim())
+    const total = parseFloat(parts[1].trim())
+    
+    if (isNaN(used) || isNaN(total) || total === 0) return 0
+    
+    return Math.min((used / total) * 100, 100)
+  } catch {
+    return 0
+  }
+}
 
 const navigateTo = (page: string) => {
   // TODO: 实现页面导航逻辑

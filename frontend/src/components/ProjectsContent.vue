@@ -84,7 +84,7 @@
                       <span style="margin-right: 8px;">🔍</span>
                     </template>
                   </NInput>
-                  <NSpace align="center" style="gap: 8px;">
+                  <div class="toolbar-container">
                     <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.total') }}: <span style="color: var(--active-color); font-weight: 500;">{{ total }}</span></span>
                     <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.active') }}: <span style="color: #4CAF50; font-weight: 500;">{{ activeCount }}</span></span>
                     <span style="font-size: 14px; color: var(--text-color);">{{ t('projects.inactive') }}: <span style="color: #FF9800; font-weight: 500;">{{ inactiveCount }}</span></span>
@@ -127,7 +127,7 @@
                         class="page-size-select"
                       />
                     </div>
-                  </NSpace>
+                  </div>
                 </div>
               </div>
             </template>
@@ -1951,9 +1951,9 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 /* 新建 WebShell 按钮样式 - 与主题和其他元素保持一致 */
 .new-webshell-btn {
-  width: 36px !important;
-  height: 36px !important;
-  min-width: 36px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
   padding: 0 !important;
   display: inline-flex !important;
   align-items: center !important;
@@ -1969,6 +1969,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   cursor: pointer !important;
   vertical-align: middle !important;
+  margin: 0 !important;
 }
 
 .new-webshell-btn .btn-icon {
@@ -1993,7 +1994,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 /* 回收站按钮样式 - 与新建按钮保持统一 */
 .recycle-bin-btn {
-  height: 36px !important;
+  height: 32px !important;
   min-width: 100px !important;
   padding: 0 16px !important;
   display: inline-flex !important;
@@ -2008,6 +2009,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   outline: none !important;
   vertical-align: middle !important;
   gap: 6px !important;
+  margin: 0 !important;
 }
 
 .recycle-bin-btn:hover {
@@ -2070,12 +2072,22 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   letter-spacing: 0.5px !important;
 }
 
+/* 工具栏容器 - 使用 flexbox 确保所有元素完美对齐 */
+.toolbar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 32px;
+}
+
 /* 分页条数选择器容器 */
 .page-size-container {
   display: inline-flex;
   align-items: center;
   gap: 12px;
   margin-left: 4px;
+  height: 32px;
+  vertical-align: middle;
 }
 
 /* 分隔线样式 - 统一主题表现 */
@@ -2099,6 +2111,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   font-size: 13px !important;
   /* 确保与按钮高度一致 */
   line-height: 32px !important;
+  margin: 0 !important;
 }
 
 .page-size-select :deep(.n-base-selection) {

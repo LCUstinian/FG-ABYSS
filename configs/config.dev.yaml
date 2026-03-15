@@ -1,0 +1,17 @@
+# 开发环境配置
+app:
+  env: development
+  debug: true
+
+server:
+  port: 9245
+  host: localhost
+
+log:
+  level: debug
+  format: console
+
+features:
+  dev_mode: true
+  debug_menu: true
+  hot_reload: true

@@ -1,0 +1,22 @@
+# 生产环境配置
+app:
+  env: production
+  debug: false
+
+server:
+  port: 8080
+  host: 0.0.0.0
+
+log:
+  level: warn
+  format: json
+  output: file
+  file_path: logs/app.log
+
+database:
+  path: data/app.db
+
+features:
+  dev_mode: false
+  debug_menu: false
+  hot_reload: false

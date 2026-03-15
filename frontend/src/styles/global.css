@@ -1916,6 +1916,41 @@ a {
   }
 }
 
+/* Naive UI Tooltip 主题适配 */
+.n-tooltip {
+  z-index: 2147483647 !important;
+}
+
+.n-tooltip__content {
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #1e293b !important;
+  transition: opacity 0.15s ease, transform 0.15s ease !important;
+}
+
+.n-tooltip__arrow {
+  border-color: rgba(255, 255, 255, 0.9) transparent transparent transparent !important;
+}
+
+/* 深色主题下的 Tooltip 样式 */
+.dark .n-tooltip__content {
+  background: rgba(30, 41, 59, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  color: #e2e8f0 !important;
+}
+
+.dark .n-tooltip__arrow {
+  border-color: rgba(30, 41, 59, 0.95) transparent transparent transparent !important;
+}
+
 /* 高亮文本 */
 .highlight {
   background: linear-gradient(120deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);

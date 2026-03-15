@@ -28,10 +28,10 @@
           </div>
         </div>
         <div class="projects-main">
-          <NCard class="webshell-table-card">
+          <NCard class="webshell-table-card" style="height: 100%; display: flex; flex-direction: column; overflow: hidden;">
             <template #header>
-              <div style="width: 100%;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div style="width: 100%; flex-shrink: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 16px 0 16px;">
                   <NInput
                     v-model:value="searchQuery"
                     placeholder="搜索 WebShell..."
@@ -91,7 +91,7 @@
               </div>
             </template>
             <!-- 完整表格 -->
-            <div class="webshell-table-container" style="overflow-x: auto; margin-bottom: 16px; background: var(--card-bg); border-radius: 8px; padding: 16px;">
+            <div class="webshell-table-container" style="flex: 1; overflow: auto; padding: 16px;">
               <!-- 空状态提示 -->
               <div v-if="tableData.length === 0" style="text-align: center; padding: 60px 20px; color: var(--text-color); opacity: 0.6;">
                 <div style="font-size: 48px; margin-bottom: 16px;">
@@ -158,31 +158,57 @@
                     :class="{ 'table-row-selected': selectedTableRow && selectedTableRow.id === item.id }"
                     class="webshell-table-row"
                   >
-                    <td class="webshell-table-cell">{{ item.id }}</td>
-                    <td class="webshell-table-cell webshell-table-cell-truncate">
-                      <NTooltip trigger="hover" :show-arrow="true">
-                        <template #trigger>
-                          <span>{{ item.url }}</span>
-                        </template>
-                        {{ item.url }}
-                      </NTooltip>
+                    <td class="webshell-table-cell">
+                      <Tooltip :text="item.id">
+                        <span>{{ item.id }}</span>
+                      </Tooltip>
                     </td>
-                    <td class="webshell-table-cell">{{ item.payload }}</td>
-                    <td class="webshell-table-cell">{{ item.cryption }}</td>
-                    <td class="webshell-table-cell">{{ item.encoding }}</td>
-                    <td class="webshell-table-cell">{{ item.proxyType }}</td>
                     <td class="webshell-table-cell webshell-table-cell-truncate">
-                      <NTooltip trigger="hover" :show-arrow="true" v-if="item.remark">
-                        <template #trigger>
-                          <span>{{ item.remark }}</span>
-                        </template>
-                        {{ item.remark }}
-                      </NTooltip>
+                      <Tooltip :text="item.url">
+                        <span>{{ item.url }}</span>
+                      </Tooltip>
+                    </td>
+                    <td class="webshell-table-cell">
+                      <Tooltip :text="item.payload">
+                        <span>{{ item.payload }}</span>
+                      </Tooltip>
+                    </td>
+                    <td class="webshell-table-cell">
+                      <Tooltip :text="item.cryption">
+                        <span>{{ item.cryption }}</span>
+                      </Tooltip>
+                    </td>
+                    <td class="webshell-table-cell">
+                      <Tooltip :text="item.encoding">
+                        <span>{{ item.encoding }}</span>
+                      </Tooltip>
+                    </td>
+                    <td class="webshell-table-cell">
+                      <Tooltip :text="item.proxyType">
+                        <span>{{ item.proxyType }}</span>
+                      </Tooltip>
+                    </td>
+                    <td class="webshell-table-cell webshell-table-cell-truncate">
+                      <Tooltip v-if="item.remark" :text="item.remark">
+                        <span>{{ item.remark }}</span>
+                      </Tooltip>
                       <span v-else>-</span>
                     </td>
-                    <td class="webshell-table-cell">{{ formatTime(item.createdAt) }}</td>
-                    <td class="webshell-table-cell">{{ formatTime(item.updatedAt) }}</td>
-                    <td class="webshell-table-cell">{{ item.status }}</td>
+                    <td class="webshell-table-cell">
+                      <Tooltip :text="formatTime(item.createdAt)">
+                        <span>{{ formatTime(item.createdAt) }}</span>
+                      </Tooltip>
+                    </td>
+                    <td class="webshell-table-cell">
+                      <Tooltip :text="formatTime(item.updatedAt)">
+                        <span>{{ formatTime(item.updatedAt) }}</span>
+                      </Tooltip>
+                    </td>
+                    <td class="webshell-table-cell">
+                      <Tooltip :text="item.status">
+                        <span>{{ item.status }}</span>
+                      </Tooltip>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -249,7 +275,6 @@ import {
   NMenu, 
   NText, 
   NInput,
-  NTooltip,
   NDialogProvider,
   useDialog,
   useMessage
@@ -852,26 +877,194 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   border-top: none;
   display: flex;
   align-items: stretch;
+  overflow: hidden; /* 添加 overflow 防止溢出 */
 }
 
 /* 项目内容样式 - 深色主题风格 */
 .projects-content {
   display: flex;
-  gap: 1px;
+  gap: 0;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
   background: var(--border-color);
+  overflow: hidden;
 }
 
 .projects-sidebar {
   width: 200px;
+  min-width: 200px;
+  max-width: 200px;
   background: var(--sidebar-bg);
   padding: 20px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
+  overflow-x: hidden;
   height: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.projects-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  background: var(--card-bg);
+  height: 100%;
+}
+
+.webshell-table-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.webshell-table-container {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  border-radius: 6px;
+}
+
+/* 表格样式优化 */
+.webshell-table-container :deep(.n-data-table) {
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 13px;
+  table-layout: auto; /* 列宽自适应 */
+}
+
+/* 表头样式 */
+.webshell-table-container :deep(.n-data-table .n-data-table-th) {
+  background: var(--table-header-bg) !important;
+  font-weight: 600;
+  padding: 10px 12px !important;
+  color: var(--text-color);
+  border-bottom: 2px solid var(--border-color);
+  white-space: nowrap !important;
+  max-width: 200px;
+}
+
+/* 单元格样式 - 关键修复 */
+.webshell-table-container :deep(.n-data-table .n-data-table-td) {
+  padding: 8px 12px !important;
+  border-bottom: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+  height: 40px !important;
+  max-height: 40px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  line-height: 24px !important; /* 使用固定行高，不是 40px */
+  vertical-align: middle !important;
+}
+
+/* 行样式 */
+.webshell-table-container :deep(.n-data-table .n-data-table-tr) {
+  height: 40px !important;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-tr:hover) {
+  background: var(--hover-color) !important;
+}
+
+/* 单元格内部容器 - 关键修复 */
+.webshell-table-container :deep(.n-data-table .n-data-table-td .n-data-table-cell) {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 100%;
+  display: block;
+}
+
+/* 单元格内的任何元素 */
+.webshell-table-container :deep(.n-data-table .n-data-table-td *) {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-wrapper) {
+  border-radius: 6px;
+}
+
+/* 特定列的宽度优化 */
+.webshell-table-container :deep(.n-data-table .n-data-table-col-id) {
+  min-width: 180px;
+  max-width: 200px;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-col-url) {
+  min-width: 120px;
+  max-width: 180px;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-col-payload) {
+  min-width: 60px;
+  max-width: 80px;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-col-encryption) {
+  min-width: 80px;
+  max-width: 100px;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-col-encoding) {
+  min-width: 60px;
+  max-width: 80px;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-col-proxyType) {
+  min-width: 80px;
+  max-width: 100px;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-col-remark) {
+  min-width: 80px;
+  max-width: 120px;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-col-createTime) {
+  min-width: 140px;
+  max-width: 160px;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-col-updateTime) {
+  min-width: 140px;
+  max-width: 160px;
+}
+
+.webshell-table-container :deep(.n-data-table .n-data-table-col-status) {
+  min-width: 60px;
+  max-width: 80px;
+}
+
+/* 滚动条美化 */
+.webshell-table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.webshell-table-container::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 4px;
+}
+
+.webshell-table-container::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+.webshell-table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }
 
 .directory-tree {
@@ -1199,21 +1392,44 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 .webshell-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: fixed; /* 固定表格布局，列宽自适应 */
 }
 
 .webshell-table-header-row {
   background: var(--hover-color);
 }
 
+/* 确保所有表头单元格的基线对齐 */
+.webshell-table-header-row th {
+  box-sizing: border-box !important;
+}
+
+/* 确保所有行单元格的基线对齐 */
+.webshell-table-row td {
+  box-sizing: border-box !important;
+}
+
 .webshell-table-header {
-  padding: 10px;
+  padding: 0 8px !important; /* 紧凑布局：上下 0，左右 8px */
   border: 1px solid var(--border-color);
   text-align: left;
   cursor: pointer;
   user-select: none;
   position: relative;
   transition: background-color 0.2s;
+  height: 53px !important; /* 固定表头高度 53px */
+  line-height: 53px !important; /* 垂直居中 */
+  overflow: hidden !important; /* 隐藏溢出 */
+  text-overflow: ellipsis !important; /* 显示省略号 */
+  white-space: nowrap !important; /* 不换行 */
+  display: table-cell !important; /* 确保作为表格单元格显示 */
+  vertical-align: middle !important; /* 垂直居中 */
+}
+
+.webshell-table-header span {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  line-height: normal !important; /* 使用默认行高，确保文字清晰 */
 }
 
 .webshell-table-header:hover {
@@ -1223,7 +1439,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 .webshell-table-row {
   cursor: pointer;
   transition: background-color 0.2s;
-  height: 48px !important; /* 固定行高 48px，适合单行内容 */
+  height: 53px !important; /* 固定行高 53px（比 40px 增加约三分之一） */
 }
 
 .webshell-table-row:hover {
@@ -1231,21 +1447,84 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 }
 
 .webshell-table-cell {
-  padding: 8px 12px !important; /* 上下 8px，左右 12px，保持紧凑 */
+  padding: 0 8px !important; /* 紧凑布局：上下 0，左右 8px */
   border: 1px solid var(--border-color) !important;
   text-align: left;
   background-color: transparent !important;
   color: var(--text-color) !important;
-  height: 48px !important; /* 固定单元格高度 */
+  height: 53px !important; /* 固定单元格高度 53px */
+  max-height: 53px !important; /* 最大高度 53px */
   vertical-align: middle !important; /* 垂直居中 */
-  line-height: 1.5 !important; /* 行高 1.5 倍，确保文字清晰 */
+  overflow: hidden !important; /* 隐藏溢出 */
+  text-overflow: ellipsis !important; /* 显示省略号 */
+  white-space: nowrap !important; /* 不换行 */
+  display: table-cell !important; /* 确保作为表格单元格显示 */
+}
+
+/* 所有单元格内的内容都使用 flex 布局确保垂直居中 */
+.webshell-table-cell > * {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  width: 100% !important;
 }
 
 .webshell-table-cell-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 0;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 53px !important; /* 与单元格高度一致 */
+}
+
+.webshell-table-cell-truncate span {
+  display: inline-block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
+  vertical-align: middle !important;
+  line-height: normal !important;
+}
+
+/* Tooltip 在表格中的样式 - URL 和备注列使用 flex 布局 */
+.webshell-table-cell .tooltip-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.webshell-table-cell .tooltip-content {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.webshell-table-cell .tooltip-content span {
+  display: inline-block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  width: 100% !important;
+  vertical-align: middle !important;
+  line-height: normal !important;
+}
+
+/* 所有单元格内的文字都应用省略号和垂直居中 */
+.webshell-table-cell span {
+  display: inline-block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  width: 100% !important;
+  vertical-align: middle !important;
+  line-height: normal !important;
 }
 
 /* 列宽拖动手柄样式优化 */

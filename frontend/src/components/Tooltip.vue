@@ -4,13 +4,13 @@
       <slot></slot>
     </div>
     <Teleport to="body">
-      <div class="tooltip-text" :class="{ 'dark': isDarkTheme }" :style="tooltipStyle">{{ text }}</div>
+      <div v-if="isOverflow" class="tooltip-text" :class="{ 'dark': isDarkTheme }" :style="tooltipStyle">{{ text }}</div>
     </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
 interface Props {
   text: string
@@ -20,12 +20,43 @@ const props = defineProps<Props>()
 
 const isDarkTheme = ref(false)
 const wrapperRef = ref<HTMLElement | null>(null)
+const isOverflow = ref(false) // 内容是否溢出
 const tooltipStyle = ref<Record<string, string>>({
   left: '0px',
   top: '0px',
   opacity: '0',
   visibility: 'hidden'
 })
+
+// 检测内容是否溢出
+const checkOverflow = () => {
+  if (!wrapperRef.value) return
+  
+  // 获取 wrapper 的宽度
+  const wrapperWidth = wrapperRef.value.clientWidth
+  
+  // 获取 span 元素
+  const contentElement = wrapperRef.value.querySelector('.tooltip-content span')
+  if (!contentElement) {
+    // 如果没有 span，检查 wrapper 是否溢出
+    const scrollWidth = wrapperRef.value.scrollWidth
+    isOverflow.value = scrollWidth > wrapperWidth
+    return
+  }
+  
+  // 获取 span 的实际内容宽度
+  const spanWidth = contentElement.scrollWidth
+  
+  // 比较实际内容宽度和容器宽度
+  isOverflow.value = spanWidth > wrapperWidth
+}
+
+// 延迟检测，确保 DOM 已经渲染完成
+const checkOverflowWithDelay = () => {
+  setTimeout(() => {
+    checkOverflow()
+  }, 0)
+}
 
 const updateTheme = () => {
   isDarkTheme.value = document.documentElement.classList.contains('dark')
@@ -46,6 +77,10 @@ const updateTooltipPosition = () => {
 const showTooltip = () => {
   if (!wrapperRef.value) return
   
+  // 只在内容溢出时才显示 Tooltip
+  checkOverflow()
+  if (!isOverflow.value) return
+  
   updateTheme()
   
   const rect = wrapperRef.value.getBoundingClientRect()
@@ -65,6 +100,10 @@ const hideTooltip = () => {
 onMounted(() => {
   updateTheme()
   updateTooltipPosition()
+  checkOverflowWithDelay() // 使用延迟检测
+  
+  // 监听窗口大小变化，重新检测溢出
+  window.addEventListener('resize', checkOverflow)
   window.addEventListener('storage', updateTheme)
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme)
   
@@ -75,6 +114,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  window.removeEventListener('resize', checkOverflow)
   window.removeEventListener('storage', updateTheme)
   window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', updateTheme)
   

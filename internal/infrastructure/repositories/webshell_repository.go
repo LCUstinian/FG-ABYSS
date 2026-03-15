@@ -19,10 +19,10 @@ func NewWebShellRepository(db *gorm.DB) repository.WebShellRepository {
 	return &WebShellRepositoryImpl{db: db}
 }
 
-// FindByID 根据 ID 查找 WebShell
+// FindByID 根据 ID 查找 WebShell（包括已删除的）
 func (r *WebShellRepositoryImpl) FindByID(id string) (*entity.WebShell, error) {
 	var webshell entity.WebShell
-	result := r.db.First(&webshell, "id = ?", id)
+	result := r.db.Unscoped().First(&webshell, "id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -131,18 +131,18 @@ func (r *WebShellRepositoryImpl) Save(webshell *entity.WebShell) error {
 
 // Delete 删除 WebShell
 func (r *WebShellRepositoryImpl) Delete(id string) error {
-	result := r.db.Unscoped().Delete(&entity.WebShell{}, "id = ?", id)
+	result := r.db.Unscoped().Model(&entity.WebShell{}).Delete("id = ?", id)
 	return result.Error
 }
 
 // DeleteSoft 软删除 WebShell
 func (r *WebShellRepositoryImpl) DeleteSoft(id string) error {
-	result := r.db.Where("id = ?", id).Delete(&entity.WebShell{})
+	result := r.db.Model(&entity.WebShell{}).Where("id = ?", id).Delete(&entity.WebShell{})
 	return result.Error
 }
 
 // Recover 恢复已删除的 WebShell
 func (r *WebShellRepositoryImpl) Recover(id string) error {
-	result := r.db.Unscoped().Where("id = ?", id).Update("deleted_at", nil)
+	result := r.db.Unscoped().Model(&entity.WebShell{}).Where("id = ? AND deleted_at IS NOT NULL", id).Update("deleted_at", nil)
 	return result.Error
 }

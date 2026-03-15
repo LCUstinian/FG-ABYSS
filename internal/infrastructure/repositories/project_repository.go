@@ -17,10 +17,10 @@ func NewProjectRepository(db *gorm.DB) repository.ProjectRepository {
 	return &ProjectRepositoryImpl{db: db}
 }
 
-// FindByID 根据 ID 查找项目
+// FindByID 根据 ID 查找项目（包括已删除的）
 func (r *ProjectRepositoryImpl) FindByID(id string) (*entity.Project, error) {
 	var project entity.Project
-	result := r.db.First(&project, "id = ?", id)
+	result := r.db.Unscoped().First(&project, "id = ?", id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -70,12 +70,12 @@ func (r *ProjectRepositoryImpl) Save(project *entity.Project) error {
 
 // Delete 删除项目
 func (r *ProjectRepositoryImpl) Delete(id string) error {
-	result := r.db.Delete(&entity.Project{}, "id = ?", id)
+	result := r.db.Unscoped().Model(&entity.Project{}).Delete("id = ?", id)
 	return result.Error
 }
 
 // DeleteSoft 软删除项目
 func (r *ProjectRepositoryImpl) DeleteSoft(id string) error {
-	result := r.db.Where("id = ?", id).Delete(&entity.Project{})
+	result := r.db.Model(&entity.Project{}).Where("id = ?", id).Delete(&entity.Project{})
 	return result.Error
 }

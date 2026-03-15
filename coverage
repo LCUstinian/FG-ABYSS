@@ -1,0 +1,18 @@
+mode: set
+fg-abyss/internal/domain/entity/project.go:22.35,24.2 1 0
+fg-abyss/internal/domain/entity/project.go:27.51,28.16 1 0
+fg-abyss/internal/domain/entity/project.go:28.16,30.3 1 0
+fg-abyss/internal/domain/entity/project.go:31.2,31.12 1 0
+fg-abyss/internal/domain/entity/project.go:35.36,37.18 1 1
+fg-abyss/internal/domain/entity/project.go:37.18,39.3 1 1
+fg-abyss/internal/domain/entity/project.go:40.2,40.12 1 1
+fg-abyss/internal/domain/entity/project.go:49.42,51.2 1 1
+fg-abyss/internal/domain/entity/webshell.go:27.36,29.2 1 0
+fg-abyss/internal/domain/entity/webshell.go:32.52,33.16 1 0
+fg-abyss/internal/domain/entity/webshell.go:33.16,35.3 1 0
+fg-abyss/internal/domain/entity/webshell.go:36.2,36.12 1 0
+fg-abyss/internal/domain/entity/webshell.go:40.37,41.17 1 1
+fg-abyss/internal/domain/entity/webshell.go:41.17,43.3 1 1
+fg-abyss/internal/domain/entity/webshell.go:44.2,44.23 1 1
+fg-abyss/internal/domain/entity/webshell.go:44.23,46.3 1 1
+fg-abyss/internal/domain/entity/webshell.go:47.2,47.12 1 1

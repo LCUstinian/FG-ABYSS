@@ -403,7 +403,11 @@ SOFTWARE.
 
 ### 获取支持
 
-- 📖 **文档**: [项目文档](documentation/)
+- 📖 **文档**: [项目文档](./docs/guides/development.md)
+- 🔧 **开发指南**: [开发指南](./docs/guides/development.md)
+- 🏗️ **构建指南**: [构建指南](./docs/guides/build.md)
+- 📐 **架构文档**: [架构文档](./docs/architecture/)
+- 🚀 **优化方案**: [优化方案](./docs/optimization/)
 - 🐛 **问题反馈**: [GitHub Issues](https://github.com/FG-ABYSS/FG-ABYSS/issues)
 - 💬 **讨论交流**: [GitHub Discussions](https://github.com/FG-ABYSS/FG-ABYSS/discussions)
 - 📧 **邮件联系**: [发送邮件](mailto:support@fg-abyss.com)

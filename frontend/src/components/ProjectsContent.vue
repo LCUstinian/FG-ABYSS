@@ -597,13 +597,25 @@ const handleDeleteProject = async (project: any) => {
           tableData.value = []
           total.value = 0
         }
-      } catch (error) {
+      } catch (error: any) {
         // 关闭加载提示
         loading.destroy()
         
         // 显示错误消息
         console.error('删除失败:', error)
-        message.error(t('projects.deleteError') + ': ' + error)
+        let errorMessage = ''
+        if (error.message) {
+          if (typeof error.message === 'string') {
+            errorMessage = error.message
+          } else if (error.message.message) {
+            errorMessage = error.message.message
+          } else {
+            errorMessage = String(error.message)
+          }
+        } else {
+          errorMessage = String(error)
+        }
+        message.error(t('projects.deleteError') + ': ' + errorMessage)
       }
     },
     onNegativeClick: () => {
@@ -632,13 +644,25 @@ const handleRecoverProject = async (project: any) => {
     // 刷新项目列表和已删除项目列表
     await fetchProjects()
     await fetchDeletedProjects()
-  } catch (error) {
+  } catch (error: any) {
     // 关闭加载提示
     loading.destroy()
     
     // 显示错误消息
     console.error('恢复失败:', error)
-    message.error(t('projects.recoverError') + ': ' + error)
+    let errorMessage = ''
+    if (error.message) {
+      if (typeof error.message === 'string') {
+        errorMessage = error.message
+      } else if (error.message.message) {
+        errorMessage = error.message.message
+      } else {
+        errorMessage = String(error.message)
+      }
+    } else {
+      errorMessage = String(error)
+    }
+    message.error(t('projects.recoverError') + ': ' + errorMessage)
   }
 }
 
@@ -734,13 +758,25 @@ const handleMenuClick = (key: string) => {
             
             // 清空选中项
             selectedRow.value = null
-          } catch (error) {
+          } catch (error: any) {
             // 关闭加载提示
             loading.destroy()
             
             // 显示错误消息
             console.error('删除失败:', error)
-            message.error(t('projects.deleteError') + ': ' + error)
+            let errorMessage = ''
+            if (error.message) {
+              if (typeof error.message === 'string') {
+                errorMessage = error.message
+              } else if (error.message.message) {
+                errorMessage = error.message.message
+              } else {
+                errorMessage = String(error.message)
+              }
+            } else {
+              errorMessage = String(error)
+            }
+            message.error(t('projects.deleteError') + ': ' + errorMessage)
           }
         },
         onNegativeClick: () => {
@@ -783,13 +819,25 @@ const handleMenuClick = (key: string) => {
             
             // 清空选中项
             selectedRow.value = null
-          } catch (error) {
+          } catch (error: any) {
             // 关闭加载提示
             loading.destroy()
             
             // 显示错误消息
             console.error('恢复失败:', error)
-            message.error(t('projects.recoverError') + ': ' + error)
+            let errorMessage = ''
+            if (error.message) {
+              if (typeof error.message === 'string') {
+                errorMessage = error.message
+              } else if (error.message.message) {
+                errorMessage = error.message.message
+              } else {
+                errorMessage = String(error.message)
+              }
+            } else {
+              errorMessage = String(error)
+            }
+            message.error(t('projects.recoverError') + ': ' + errorMessage)
           }
         },
         onNegativeClick: () => {
@@ -883,10 +931,22 @@ const fetchData = async () => {
     
     tableData.value = data
     total.value = count
-  } catch (error) {
+  } catch (error: any) {
     console.error('获取数据失败:', error)
     // 显示错误消息
-    message.error('获取数据失败：' + error)
+    let errorMessage = ''
+    if (error.message) {
+      if (typeof error.message === 'string') {
+        errorMessage = error.message
+      } else if (error.message.message) {
+        errorMessage = error.message.message
+      } else {
+        errorMessage = String(error.message)
+      }
+    } else {
+      errorMessage = String(error)
+    }
+    message.error('获取数据失败：' + errorMessage)
   }
 }
 

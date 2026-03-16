@@ -3,6 +3,8 @@ package services
 import (
 	"errors"
 
+	"gorm.io/gorm"
+
 	"fg-abyss/internal/domain/entity"
 	"fg-abyss/internal/domain/repository"
 )
@@ -33,6 +35,10 @@ func (s *ProjectService) Create(name, description string) (*entity.Project, erro
 	existing, err := s.projectRepo.FindByName(name)
 	if err == nil && existing != nil {
 		return nil, errors.New("项目名称已存在")
+	}
+	// 如果是记录不存在错误，继续执行
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
 	}
 
 	project := &entity.Project{

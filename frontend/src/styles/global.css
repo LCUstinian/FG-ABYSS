@@ -514,6 +514,85 @@ body {
   border-bottom-right-radius: var(--radius-lg);
 }
 
+/* ========== 深色模式下的弹窗样式 ========== */
+.dark .n-modal,
+.dark .n-dialog {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-strong) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark .n-modal__content,
+.dark .n-dialog__content {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark .n-modal__header,
+.dark .n-dialog__header {
+  background-color: var(--bg-tertiary) !important;
+  border-bottom: 1px solid var(--border-strong) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark .n-modal__footer,
+.dark .n-dialog__footer {
+  background-color: var(--bg-tertiary) !important;
+  border-top: 1px solid var(--border-strong) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark .n-modal__header-title,
+.dark .n-dialog__header-title {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.dark .n-modal__close,
+.dark .n-dialog__close {
+  color: var(--text-secondary) !important;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dark .n-modal__close:hover,
+.dark .n-dialog__close:hover {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-hover) !important;
+}
+
+/* 确保弹窗内容区域的文字颜色 */
+.dark .n-modal__body,
+.dark .n-dialog__body {
+  color: var(--text-primary) !important;
+}
+
+/* 确保弹窗中的输入框、按钮等组件样式一致 */
+.dark .n-modal .n-input,
+.dark .n-dialog .n-input,
+.dark .n-modal .n-select,
+.dark .n-dialog .n-select,
+.dark .n-modal .n-textarea,
+.dark .n-dialog .n-textarea {
+  --n-bg: var(--bg-tertiary) !important;
+  --n-border: var(--border-strong) !important;
+  --n-text-color: var(--text-primary) !important;
+  --n-placeholder-color: var(--text-tertiary) !important;
+}
+
+.dark .n-modal .n-button,
+.dark .n-dialog .n-button {
+  --n-text-color: var(--text-primary) !important;
+  --n-bg: var(--bg-tertiary) !important;
+  --n-border: var(--border-strong) !important;
+}
+
+.dark .n-modal .n-button--primary,
+.dark .n-dialog .n-button--primary {
+  --n-text-color: #ffffff !important;
+  --n-bg: var(--active-color) !important;
+  --n-border: var(--active-color) !important;
+}
+
 /* ========== 输入框边框样式 ========== */
 /* 这些样式无法通过 themeOverrides 完全覆盖，需要 CSS 处理 */
 .n-input,
@@ -2004,6 +2083,332 @@ a {
 .dark .n-tooltip__arrow {
   border-color: rgba(30, 41, 59, 0.95) transparent transparent transparent !important;
 }
+
+/* Naive UI Message 组件样式优化 */
+/* 基础容器 - 确保从一开始就固定在顶部中间 */
+.n-message-container {
+  z-index: 999999 !important;
+  position: fixed !important;
+  top: 20px !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  max-width: 500px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  text-align: center !important;
+}
+
+/* 消息列表特殊处理 */
+.n-message-list {
+  z-index: 999999 !important;
+  pointer-events: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  position: relative !important;
+  width: auto !important;
+  max-width: 500px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* 消息项特殊处理 */
+.n-message-item {
+  z-index: 999999 !important;
+  position: relative !important;
+  pointer-events: auto !important;
+  width: auto !important;
+  max-width: 500px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  background: transparent !important;
+}
+
+/* 消息容器 */
+.n-message {
+  z-index: 999999 !important;
+  position: relative !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+  pointer-events: auto !important;
+  width: auto !important;
+  max-width: 500px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  background: transparent !important;
+}
+
+/* 消息内容容器 - 简洁设计 */
+.n-message__content {
+  position: relative !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid var(--border-subtle) !important;
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  min-width: 280px !important;
+  max-width: 450px !important;
+  font-family: var(--font-sans) !important;
+  letter-spacing: 0.5px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 0 auto !important;
+}
+
+/* 消息图标 - 简洁样式 */
+.n-message__icon {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 16px !important;
+  color: inherit !important;
+  background: transparent !important;
+}
+
+/* 消息文本 */
+.n-message__text {
+  flex: 1 !important;
+  text-align: left !important;
+  line-height: 1.5 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: inherit !important;
+}
+
+/* 禁用所有消息相关的动画和过渡 */
+.n-message-enter-active,
+.n-message-leave-active,
+.n-message-enter-from,
+.n-message-leave-to,
+.n-message__content *,
+.n-message-item *,
+.n-message *,
+.n-message-list * {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  opacity: 1 !important;
+}
+
+/* 确保没有任何动画类被应用 */
+.n-message [class*="animate"],
+.n-message [class*="transition"],
+.n-message [class*="fade"],
+.n-message [class*="slide"],
+.n-message [class*="enter"],
+.n-message [class*="leave"],
+.n-message-list [class*="animate"],
+.n-message-list [class*="transition"],
+.n-message-list [class*="fade"],
+.n-message-list [class*="slide"],
+.n-message-list [class*="enter"],
+.n-message-list [class*="leave"] {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  opacity: 1 !important;
+}
+
+/* 覆盖Naive UI默认的消息样式 - 确保没有初始动画 */
+.n-message {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+}
+
+/* 确保消息不会从中间开始 - 完全禁用进入/离开动画 */
+.n-message-enter-from {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  bottom: auto !important;
+}
+
+.n-message-enter-active {
+  animation: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+}
+
+.n-message-leave-active {
+  animation: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+}
+
+.n-message-leave-to {
+  opacity: 0 !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  bottom: auto !important;
+}
+
+/* 额外的覆盖规则 - 确保没有任何默认样式影响 */
+.n-message,
+.n-message-list {
+  transform-origin: top right !important;
+  will-change: auto !important;
+}
+
+/* 确保消息容器不会被其他样式影响 */
+body .n-message-container {
+  position: fixed !important;
+  top: 20px !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translateX(-50%) !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+body .n-message,
+body .n-message-list,
+body .n-message-item {
+  position: relative !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+/* 深色主题适配 */
+.dark .n-message__content {
+  border-color: var(--border-strong) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 错误消息 - 红色主题 */
+.n-message--error .n-message-item,
+.n-message--error .n-message {
+  background: transparent !important;
+}
+
+.n-message--error .n-message__content {
+  background: rgba(239, 68, 68, 0.1) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  color: var(--error-600) !important;
+}
+
+.dark .n-message--error .n-message__content {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  color: var(--error-400) !important;
+}
+
+.n-message--error .n-message__icon {
+  color: var(--error-500) !important;
+}
+
+/* 警告消息 - 橙色主题 */
+.n-message--warning .n-message-item,
+.n-message--warning .n-message {
+  background: transparent !important;
+}
+
+.n-message--warning .n-message__content {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  color: var(--warning-700) !important;
+}
+
+.dark .n-message--warning .n-message__content {
+  background: rgba(245, 158, 11, 0.2) !important;
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  color: var(--warning-400) !important;
+}
+
+.n-message--warning .n-message__icon {
+  color: var(--warning-500) !important;
+}
+
+/* 成功消息 - 绿色主题 */
+.n-message--success .n-message-item,
+.n-message--success .n-message {
+  background: transparent !important;
+}
+
+.n-message--success .n-message__content {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: var(--success-700) !important;
+}
+
+.dark .n-message--success .n-message__content {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  color: var(--success-400) !important;
+}
+
+.n-message--success .n-message__icon {
+  color: var(--success-500) !important;
+}
+
+/* 信息消息 - 蓝色主题 */
+.n-message--info .n-message-item,
+.n-message--info .n-message {
+  background: transparent !important;
+}
+
+.n-message--info .n-message__content {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+  color: var(--info-700) !important;
+}
+
+.dark .n-message--info .n-message__content {
+  background: rgba(59, 130, 246, 0.2) !important;
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  color: var(--info-400) !important;
+}
+
+.n-message--info .n-message__icon {
+  color: var(--info-500) !important;
+}
+
+
 
 /* 高亮文本 */
 .highlight {

@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NModal, NForm, NFormItem, NInput, NButton } from 'naive-ui'
+import { NModal, NForm, NFormItem, NInput, NButton, useMessage } from 'naive-ui'
 import * as ProjectHandler from '../../bindings/fg-abyss/internal/app/handlers/projecthandler'
 
 defineProps<{
@@ -50,6 +50,9 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
   (e: 'created'): void
 }>()
+
+const message = useMessage()
+console.log('Message instance created:', message)
 
 const projectName = ref('')
 const projectDescription = ref('')
@@ -68,7 +71,8 @@ const handleCancel = () => {
 
 const handleCreate = async () => {
   if (!projectName.value.trim()) {
-    alert('请输入项目名称')
+    console.log('Calling message.warning')
+    message.warning('请输入项目名称')
     return
   }
 
@@ -78,9 +82,53 @@ const handleCreate = async () => {
     projectDescription.value = ''
     emit('update:modelValue', false)
     emit('created')
-  } catch (error) {
+  } catch (error: any) {
     console.error('创建项目失败:', error)
-    alert('创建项目失败：' + error)
+    // 处理唯一性约束错误
+    let errorMessage = ''
+    
+    // 直接检查error对象的结构
+    if (error && typeof error === 'object') {
+      if (error.message) {
+        if (typeof error.message === 'string') {
+          errorMessage = error.message
+        } else if (typeof error.message === 'object' && error.message.message) {
+          errorMessage = error.message.message
+        } else {
+          errorMessage = String(error.message)
+        }
+      } else if (error.error) {
+        if (typeof error.error === 'string') {
+          errorMessage = error.error
+        } else if (typeof error.error === 'object' && error.error.message) {
+          errorMessage = error.error.message
+        } else {
+          errorMessage = String(error.error)
+        }
+      } else {
+        errorMessage = String(error)
+      }
+    } else if (typeof error === 'string') {
+      errorMessage = error
+    } else {
+      errorMessage = String(error)
+    }
+    
+    console.log('Extracted error message:', errorMessage)
+    
+    if (errorMessage.includes('UNIQUE constraint failed') && errorMessage.includes('projects.name')) {
+      console.log('Calling message.error with duplicate name error')
+      message.error('创建项目失败：项目名称已存在，请使用其他名称')
+    } else if (errorMessage.includes('项目名称已存在')) {
+      console.log('Calling message.error with duplicate name error (direct)')
+      message.error('创建项目失败：项目名称已存在，请使用其他名称')
+    } else if (errorMessage) {
+      console.log('Calling message.error with error message:', errorMessage)
+      message.error('创建项目失败：' + errorMessage)
+    } else {
+      console.log('Calling message.error with string error:', String(error))
+      message.error('创建项目失败：' + String(error))
+    }
   }
 }
 </script>

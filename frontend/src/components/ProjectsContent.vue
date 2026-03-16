@@ -124,6 +124,9 @@
                         @update:value="handlePageSizeChange"
                         size="small"
                         class="page-size-select"
+                        :option-props="{
+                          class: 'custom-option'
+                        }"
                       />
                     </div>
                   </div>
@@ -2243,9 +2246,19 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 }
 
 .page-size-select :deep(.n-base-option.n-base-option--selected) {
-  background-color: var(--active-color-suppressed) !important;
+  background-color: var(--active-color-suppl) !important;
   color: var(--active-color) !important;
   font-weight: 500 !important;
+}
+
+/* 强制覆盖 Naive UI 默认样式 */
+.page-size-select :deep(.n-base-option--selected .n-base-option__checked) {
+  color: var(--active-color) !important;
+}
+
+.page-size-select :deep(.n-base-option--selected:hover) {
+  background-color: var(--active-color-suppl) !important;
+  opacity: 0.8 !important;
 }
 
 /* 分页组件样式 - 应用强调色 */
@@ -2588,7 +2601,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 .search-input:focus,
 .search-input:focus-within {
   border-color: var(--active-color) !important;
-  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb, 59, 130, 246), 0.15) !important;
+  box-shadow: 0 0 0 3px var(--active-color-suppl) !important;
 }
 
 /* 深色模式下的搜索框样式 */
@@ -2604,7 +2617,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 .dark .search-input:focus,
 .dark .search-input:focus-within {
   border-color: var(--active-color) !important;
-  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb, 59, 130, 246), 0.25) !important;
+  box-shadow: 0 0 0 3px var(--active-color-suppl) !important;
 }
 
 .pagination-container {
@@ -2904,8 +2917,8 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 /* 菜单项选中效果 */
 .n-menu-item.n-menu-item--selected {
-  background-color: rgba(59, 130, 246, 0.15) !important;
-  color: var(--primary-500) !important;
+  background-color: var(--active-color-suppl) !important;
+  color: var(--active-color) !important;
   font-weight: var(--font-semibold) !important;
 }
 
@@ -2920,8 +2933,8 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 }
 
 .dark .n-menu-item.n-menu-item--selected {
-  background-color: rgba(59, 130, 246, 0.2) !important;
-  color: #60a5fa !important; /* 使用更亮的蓝色 #60a5fa */
+  background-color: var(--active-color-suppl) !important;
+  color: var(--active-color) !important;
 }
 
 /* 菜单项图标样式 */

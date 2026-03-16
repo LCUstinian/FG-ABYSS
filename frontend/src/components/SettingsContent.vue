@@ -491,8 +491,19 @@ const changeAccentColor = async (color: string) => {
     await UpdateSetting('accentColor', color)
     // 更新 CSS 变量
     document.documentElement.style.setProperty('--active-color', color)
+    // 计算并设置辅助强调色（10% 透明度）
+    const rgb = hexToRgb(color)
+    if (rgb) {
+      document.documentElement.style.setProperty('--active-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`)
+      document.documentElement.style.setProperty('--active-color-suppl', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.1)`)
+    }
     // 同时更新 localStorage 作为缓存
     localStorage.setItem('accentColor', color)
+    
+    // 触发主题刷新 - 通知 App.vue 重新计算 themeOverrides
+    window.dispatchEvent(new CustomEvent('accent-color-change', { 
+      detail: { color, rgb } 
+    }))
   } catch (error) {
     console.error('更新强调色设置失败:', error)
     // 失败时回滚
@@ -500,7 +511,22 @@ const changeAccentColor = async (color: string) => {
     currentAccentColor.value = savedColor
     customColorValue.value = savedColor
     document.documentElement.style.setProperty('--active-color', savedColor)
+    const savedRgb = hexToRgb(savedColor)
+    if (savedRgb) {
+      document.documentElement.style.setProperty('--active-color-rgb', `${savedRgb.r}, ${savedRgb.g}, ${savedRgb.b}`)
+      document.documentElement.style.setProperty('--active-color-suppl', `rgba(${savedRgb.r}, ${savedRgb.g}, ${savedRgb.b}, 0.1)`)
+    }
   }
+}
+
+// HEX 转 RGB
+const hexToRgb = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null
 }
 
 // 验证 HEX 颜色格式
@@ -644,6 +670,12 @@ onMounted(async () => {
           currentAccentColor.value = setting.value
           customColorValue.value = setting.value
           document.documentElement.style.setProperty('--active-color', setting.value)
+          // 设置辅助强调色
+          const rgb = hexToRgb(setting.value)
+          if (rgb) {
+            document.documentElement.style.setProperty('--active-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`)
+            document.documentElement.style.setProperty('--active-color-suppl', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.1)`)
+          }
           localStorage.setItem('accentColor', setting.value)
           break
         case 'fontFamily':
@@ -957,12 +989,12 @@ const loadSettingsFromLocalStorage = () => {
   background: var(--active-color);
   color: white;
   border-color: var(--active-color);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 16px var(--active-color-suppl);
   transform: translateY(-2px);
 }
 
 .dark .theme-option.active {
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 20px var(--active-color-suppl);
   filter: brightness(1.1);
 }
 
@@ -1069,12 +1101,12 @@ const loadSettingsFromLocalStorage = () => {
   background: var(--active-color);
   color: white;
   border-color: var(--active-color);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 16px var(--active-color-suppl);
   transform: translateY(-2px);
 }
 
 .dark .language-option.active {
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 20px var(--active-color-suppl);
   filter: brightness(1.1);
 }
 
@@ -1324,7 +1356,7 @@ const loadSettingsFromLocalStorage = () => {
 
 .color-text-input:focus {
   border-color: var(--active-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .dark .color-text-input {
@@ -1333,7 +1365,7 @@ const loadSettingsFromLocalStorage = () => {
 }
 
 .dark .color-text-input:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .color-text-input.error {
@@ -1381,7 +1413,7 @@ const loadSettingsFromLocalStorage = () => {
 .btn-apply {
   background: var(--active-color);
   color: white;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 8px var(--active-color-suppl);
 }
 
 .btn-apply::before {
@@ -1397,7 +1429,7 @@ const loadSettingsFromLocalStorage = () => {
 
 .btn-apply:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 16px var(--active-color-suppl);
   filter: brightness(1.1);
 }
 
@@ -1407,18 +1439,18 @@ const loadSettingsFromLocalStorage = () => {
 
 .btn-apply:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 8px var(--active-color-suppl);
   filter: brightness(0.95);
 }
 
 /* 深色模式下的应用按钮 - 增强对比度 */
 .dark .btn-apply {
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 2px 8px var(--active-color-suppl);
   filter: brightness(1.05);
 }
 
 .dark .btn-apply:hover {
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 4px 20px var(--active-color-suppl);
   filter: brightness(1.15);
 }
 
@@ -1583,20 +1615,20 @@ const loadSettingsFromLocalStorage = () => {
 
 .font-family-select:hover {
   border-color: var(--active-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .dark .font-family-select:hover {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .font-family-select:focus {
   border-color: var(--active-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .dark .font-family-select:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .font-family-select option {
@@ -1638,20 +1670,20 @@ const loadSettingsFromLocalStorage = () => {
 
 .font-size-input-group:hover {
   border-color: var(--active-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .dark .font-size-input-group:hover {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .font-size-input-group:focus-within {
   border-color: var(--active-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .dark .font-size-input-group:focus-within {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .apply-button {
@@ -1670,28 +1702,28 @@ const loadSettingsFromLocalStorage = () => {
   align-items: center;
   justify-content: center;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 8px var(--active-color-suppl);
 }
 
 .dark .apply-button {
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 2px 8px var(--active-color-suppl);
   filter: brightness(1.05);
 }
 
 .apply-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 16px var(--active-color-suppl);
   filter: brightness(1.1);
 }
 
 .dark .apply-button:hover {
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 4px 20px var(--active-color-suppl);
   filter: brightness(1.15);
 }
 
 .apply-button:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 8px var(--active-color-suppl);
   filter: brightness(0.95);
 }
 

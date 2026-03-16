@@ -2833,6 +2833,58 @@ body .n-message-item {
   }
 }
 
+/* 全局强制覆盖 Naive UI 选中项的默认蓝色 */
+.n-base-option--selected,
+.n-select-option--selected,
+.n-base-select-option--selected,
+.n-select-option--selected .n-base-select-option__content {
+  background-color: var(--active-color-suppl) !important;
+  color: var(--active-color) !important;
+}
+
+.n-base-option--selected:hover,
+.n-select-option--selected:hover,
+.n-base-select-option--selected:hover {
+  background-color: var(--active-color-suppl) !important;
+  opacity: 0.8 !important;
+}
+
+/* 强制覆盖 Naive UI Select 组件的选中标记颜色 */
+.n-base-option--selected .n-base-option__checked,
+.n-select-option--selected .n-icon {
+  color: var(--active-color) !important;
+  fill: var(--active-color) !important;
+}
+
+/* 深色模式下的强制覆盖 */
+.dark .n-base-option--selected,
+.dark .n-select-option--selected,
+.dark .n-base-select-option--selected {
+  /* 使用 CSS 变量，如果不存在则使用默认值 */
+  background-color: var(--active-color-suppl) !important;
+  color: var(--active-color) !important;
+}
+
+.dark .n-base-option--selected:hover,
+.dark .n-select-option--selected:hover,
+.dark .n-base-select-option--selected:hover {
+  background-color: var(--active-color-suppl) !important;
+  opacity: 0.8 !important;
+}
+
+.dark .n-base-option--selected .n-base-option__checked,
+.dark .n-select-option--selected .n-icon {
+  color: var(--active-color) !important;
+  fill: var(--active-color) !important;
+}
+
+/* 强制覆盖 Select 组件的激活状态边框 */
+.dark .n-select.n-select--active,
+.n-select.n-select--active {
+  border-color: var(--active-color) !important;
+  box-shadow: 0 0 0 3px var(--active-color-suppl) !important;
+}
+
 /* 响应式适配 */
 @media (max-width: 768px) {
   .pagination-container {

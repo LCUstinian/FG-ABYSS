@@ -61,8 +61,12 @@ const darkenColor = (color: string, percent: number): string => {
 
 // 辅助函数：添加透明度到颜色
 const addOpacity = (color: string, opacity: number): string => {
+  const num = parseInt(color.replace('#', ''), 16)
   const alpha = Math.round(opacity * 255)
-  return color + alpha.toString(16).padStart(2, '0')
+  const R = num >> 16
+  const G = (num >> 8) & 0x00FF
+  const B = num & 0x0000FF
+  return `rgba(${R}, ${G}, ${B}, ${opacity})`
 }
 
 // 定义主题覆盖配置 - 使用全局强调色 (在设置中可自定义)
@@ -134,6 +138,12 @@ const themeOverrides = computed(() => {
       errorColorPressed,
       errorColorSuppl,
       errorColorActive,
+    },
+    Select: {
+      colorActive: primaryColorSuppl,
+      borderColorActive: primaryColor,
+      boxShadowActive: `0 0 0 3px ${primaryColorSuppl}`,
+      caretColor: primaryColor,
     }
   }
 })
@@ -207,6 +217,12 @@ const darkThemeOverrides = computed(() => {
       errorColorPressed,
       errorColorSuppl,
       errorColorActive,
+    },
+    Select: {
+      colorActive: primaryColorSuppl,
+      borderColorActive: primaryColor,
+      boxShadowActive: `0 0 0 3px ${primaryColorSuppl}`,
+      caretColor: primaryColor,
     }
   }
 })
@@ -229,6 +245,13 @@ const handleStorageChange = (event: StorageEvent) => {
     // 触发 themeOverrides 重新计算
     themeTrigger.value++
   }
+}
+
+// 监听强调色切换事件（实时触发主题刷新）
+const handleAccentColorChange = (event: CustomEvent) => {
+  // 立即触发 themeOverrides 重新计算
+  themeTrigger.value++
+  console.log('强调色已切换:', event.detail.color)
 }
 
 // 定时器引用
@@ -349,12 +372,21 @@ onMounted(() => {
     document.documentElement.style.setProperty('--font-size', savedFontSize)
   }
   
+  // 注册事件监听器
+  window.addEventListener('storage', handleStorageChange)
+  window.addEventListener('accent-color-change', handleAccentColorChange as EventListener)
+  
   // 启动系统状态定时更新
   startStatusUpdates()
 })
 
 // 组件卸载时清理定时器
 onUnmounted(() => {
+  // 移除事件监听器
+  window.removeEventListener('storage', handleStorageChange)
+  window.removeEventListener('accent-color-change', handleAccentColorChange as EventListener)
+  
+  // 停止系统状态更新
   stopStatusUpdates()
 })
 </script>

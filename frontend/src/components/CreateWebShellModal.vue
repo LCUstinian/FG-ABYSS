@@ -480,13 +480,14 @@ const handleCreate = async () => {
 }
 
 .webshell-select .n-select .n-select-option--selected {
-  background-color: rgba(59, 130, 246, 0.12) !important;
+  background-color: var(--active-color-suppl) !important;
   color: var(--active-color) !important;
   font-weight: 600 !important;
 }
 
 .webshell-select .n-select .n-select-option--selected:hover {
-  background-color: rgba(59, 130, 246, 0.2) !important;
+  background-color: var(--active-color-suppl) !important;
+  opacity: 0.8 !important;
 }
 
 /* 占位符文本 */
@@ -526,6 +527,29 @@ const handleCreate = async () => {
 
 .dark .webshell-select :deep(.n-select-option:hover) {
   background-color: var(--bg-hover) !important;
+}
+
+/* 深色模式下选中项强制使用强调色 */
+.dark .webshell-select :deep(.n-select-option--selected) {
+  background-color: var(--active-color-suppl) !important;
+  color: var(--active-color) !important;
+  font-weight: 600 !important;
+}
+
+.dark .webshell-select :deep(.n-select-option--selected:hover) {
+  background-color: var(--active-color-suppl) !important;
+  opacity: 0.8 !important;
+}
+
+.dark .webshell-select :deep(.n-select-option--selected .n-icon) {
+  color: var(--active-color) !important;
+  fill: var(--active-color) !important;
+}
+
+/* 深色模式下 Select 激活状态边框 */
+.dark .webshell-select :deep(.n-select.n-select--active) {
+  border-color: var(--active-color) !important;
+  box-shadow: 0 0 0 3px var(--active-color-suppl) !important;
 }
 
 .dark .webshell-input,
@@ -636,22 +660,22 @@ const handleCreate = async () => {
   background-color: var(--active-color);
   border: none;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(var(--active-color-rgb, 59, 130, 246), 0.3);
+  box-shadow: 0 2px 8px var(--active-color-suppl);
 }
 
 .action-btn.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(var(--active-color-rgb, 59, 130, 246), 0.4);
+  box-shadow: 0 4px 16px var(--active-color-suppl);
   opacity: 0.95;
 }
 
 .action-btn.primary:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(var(--active-color-rgb, 59, 130, 246), 0.3);
+  box-shadow: 0 2px 8px var(--active-color-suppl);
 }
 
 .action-btn.primary:focus {
-  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb, 59, 130, 246), 0.2);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 .action-btn.primary:disabled {
@@ -706,7 +730,7 @@ const handleCreate = async () => {
 /* 浅色主题优化 */
 @media (prefers-color-scheme: light) {
   .create-webshell-modal :deep(.n-dialog__header) {
-    background-color: #3b82f6;
+    background-color: var(--active-color);
   }
   
   .webshell-input,

@@ -227,7 +227,7 @@ const handleCreate = async () => {
 .project-input:focus,
 .project-textarea:focus {
   border-color: var(--active-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
   background-color: var(--card-bg);
 }
 
@@ -267,22 +267,22 @@ const handleCreate = async () => {
   background-color: var(--active-color);
   border: none;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(var(--active-color-rgb, 59, 130, 246), 0.3);
+  box-shadow: 0 2px 8px var(--active-color-suppl);
 }
 
 .action-btn.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(var(--active-color-rgb, 59, 130, 246), 0.4);
+  box-shadow: 0 4px 16px var(--active-color-suppl);
   opacity: 0.95;
 }
 
 .action-btn.primary:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(var(--active-color-rgb, 59, 130, 246), 0.3);
+  box-shadow: 0 2px 8px var(--active-color-suppl);
 }
 
 .action-btn.primary:focus {
-  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb, 59, 130, 246), 0.2);
+  box-shadow: 0 0 0 3px var(--active-color-suppl);
 }
 
 /* 深色主题优化 */
@@ -305,7 +305,7 @@ const handleCreate = async () => {
 /* 浅色主题优化 */
 @media (prefers-color-scheme: light) {
   .create-project-modal :deep(.n-dialog__header) {
-    background-color: #3b82f6;
+    background-color: var(--active-color);
   }
   
   .project-input,

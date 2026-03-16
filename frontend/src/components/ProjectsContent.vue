@@ -77,7 +77,8 @@
                     v-model:value="searchQuery"
                     placeholder="搜索 WebShell..."
                     size="small"
-                    style="width: 300px; border-radius: 8px;"
+                    class="search-input"
+                    style="width: 300px;"
                     @input="handleSearch"
                   >
                     <template #prefix>
@@ -2488,6 +2489,40 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 .dark .webshell-table-row:hover {
   background-color: var(--bg-hover) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 搜索输入框样式 */
+.search-input {
+  border-radius: 8px !important;
+  border: 1px solid #d1d5db !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.search-input:hover {
+  border-color: #9ca3af !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.search-input:focus,
+.search-input:focus-within {
+  border-color: var(--active-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb, 59, 130, 246), 0.15) !important;
+}
+
+/* 深色模式下的搜索框样式 */
+.dark .search-input {
+  border-color: #334155 !important;
+}
+
+.dark .search-input:hover {
+  border-color: #475569 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .search-input:focus,
+.dark .search-input:focus-within {
+  border-color: var(--active-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb, 59, 130, 246), 0.25) !important;
 }
 
 .pagination-container {

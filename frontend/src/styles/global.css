@@ -520,15 +520,16 @@ body {
 .n-select,
 .n-textarea {
   --n-border: var(--border-subtle) !important;
-  --n-border-hover: var(--border-subtle) !important;
-  --n-border-focus: var(--border-subtle) !important;
-  --n-border-active: var(--border-subtle) !important;
+  --n-border-hover: var(--border-strong) !important;
+  --n-border-focus: var(--active-color) !important;
+  --n-border-active: var(--active-color) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .n-input:hover,
 .n-select:hover,
 .n-textarea:hover {
-  --n-border: var(--border-subtle) !important;
+  --n-border: var(--border-strong) !important;
 }
 
 .n-input:focus,
@@ -537,8 +538,8 @@ body {
 .n-select:focus-within,
 .n-textarea:focus,
 .n-textarea:focus-within {
-  --n-border: var(--border-subtle) !important;
-  box-shadow: none !important;
+  --n-border: var(--active-color) !important;
+  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb, 59, 130, 246), 0.15) !important;
 }
 
 /* 内部元素边框移除 */

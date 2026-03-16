@@ -672,7 +672,7 @@ const handleCreate = async () => {
 
 .create-webshell-modal :deep(.n-dialog__content)::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 .dark .create-webshell-modal :deep(.n-dialog__content)::-webkit-scrollbar-track {

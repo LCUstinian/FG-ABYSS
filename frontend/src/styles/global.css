@@ -135,12 +135,31 @@
   --shadow-xl-old: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   
   /* ========== 圆角系统 ========== */
-  --radius-sm: 0.25rem;    /* 4px */
-  --radius-md: 0.375rem;   /* 6px */
-  --radius-lg: 0.5rem;     /* 8px */
-  --radius-xl: 0.75rem;    /* 12px */
-  --radius-2xl: 1rem;      /* 16px */
-  --radius-full: 9999px;
+  /* 
+   * 项目圆角规范 v2.0
+   * 统一使用以下标准圆角值，确保视觉一致性：
+   * 
+   * --radius-sm (4px):  小元素、徽章、标签、分隔条、滚动条
+   * --radius-md (6px):  按钮、输入框、下拉菜单、进度条、表格单元格
+   * --radius-lg (8px):  卡片、容器、模态框内容区、搜索框
+   * --radius-xl (12px): 大卡片、指标卡片、仪表板卡片、特殊组件
+   * --radius-2xl (16px): 大型弹窗、Logo 图标、特殊场景区
+   * --radius-full:      圆形元素、头像、徽章点
+   * 
+   * 使用规则：
+   * 1. 优先使用 CSS 变量，避免硬编码像素值
+   * 2. 同一组件内的圆角应保持层级关系（容器 > 内容 > 元素）
+   * 3. 避免使用非标准圆角值（如 1px, 2px, 3px, 5px, 10px, 14px 等）
+   * 4. 滚动条统一使用 4px 圆角
+   * 5. 按钮和输入框统一使用 6px 圆角
+   * 6. 卡片和容器统一使用 8px 或 12px 圆角
+   */
+  --radius-sm: 0.25rem;    /* 4px - 小元素 */
+  --radius-md: 0.375rem;   /* 6px - 按钮/输入框 */
+  --radius-lg: 0.5rem;     /* 8px - 卡片/容器 */
+  --radius-xl: 0.75rem;    /* 12px - 大卡片 */
+  --radius-2xl: 1rem;      /* 16px - 特殊场景 */
+  --radius-full: 9999px;   /* 圆形 */
   
   /* ========== 保留向后兼容的旧圆角变量 ========== */
   --border-radius-sm: var(--radius-sm);

@@ -450,7 +450,7 @@ const navigateTo = (page: string) => {
 .metric-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 24px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -487,7 +487,7 @@ const navigateTo = (page: string) => {
 .metric-icon {
   width: 56px;
   height: 56px;
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -666,7 +666,7 @@ const navigateTo = (page: string) => {
 .dashboard-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: visible;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
@@ -1041,7 +1041,7 @@ const navigateTo = (page: string) => {
 .stat-bar-fill {
   height: 10px;
   background: linear-gradient(90deg, var(--active-color), var(--active-color-suppl));
-  border-radius: 5px;
+  border-radius: 6px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -1368,7 +1368,7 @@ const navigateTo = (page: string) => {
 
 .card-body::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 .dark .card-body::-webkit-scrollbar-thumb {

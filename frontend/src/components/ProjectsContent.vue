@@ -1691,7 +1691,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 .modal-body::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb:hover {
@@ -2096,7 +2096,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   width: 1px;
   height: 20px;
   background-color: rgba(128, 128, 128, 0.3);
-  border-radius: 1px;
+  border-radius: 2px;
   flex-shrink: 0;
   /* 确保在深色和浅色模式下都有一致的视觉效果 */
   opacity: 0.5;

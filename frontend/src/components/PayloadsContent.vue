@@ -191,7 +191,7 @@ const { t } = useI18n()
   width: 4px;
   height: 16px;
   background: var(--active-color);
-  border-radius: 2px;
+  border-radius: 4px;
   flex-shrink: 0;
 }
 

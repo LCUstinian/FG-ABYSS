@@ -218,7 +218,7 @@ const formatTime = (time: string | number | Date) => {
 
 .recover-project-modal :deep(.n-dialog__content::-webkit-scrollbar-thumb) {
   background: var(--border-color);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 .recover-project-modal :deep(.n-dialog__content::-webkit-scrollbar-thumb:hover) {

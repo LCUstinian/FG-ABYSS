@@ -2149,7 +2149,7 @@ a {
   background: transparent !important;
 }
 
-/* 消息内容容器 - 简洁设计 */
+/* 消息内容容器 - 左右布局优化 */
 .n-message__content {
   position: relative !important;
   padding: 12px 20px !important;
@@ -2161,37 +2161,90 @@ a {
   border: 1px solid var(--border-subtle) !important;
   background: var(--card-bg) !important;
   color: var(--text-primary) !important;
-  min-width: 280px !important;
-  max-width: 450px !important;
+  min-width: 150px !important;
+  max-width: 600px !important;
+  width: max-content !important;
   font-family: var(--font-sans) !important;
   letter-spacing: 0.5px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  margin: 0 auto !important;
-}
-
-/* 消息图标 - 简洁样式 */
-.n-message__icon {
-  flex-shrink: 0 !important;
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 20px !important;
-  height: 20px !important;
-  font-size: 16px !important;
-  color: inherit !important;
-  background: transparent !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+  gap: 10px !important;
 }
 
-/* 消息文本 */
+/* 使用伪元素在左侧创建圆点 */
+.n-message__content::before {
+  content: '' !important;
+  display: inline-block !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background: #3b82f6 !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6) !important;
+  flex-shrink: 0 !important;
+}
+
+/* 错误消息 - 红色圆点 */
+.n-message--error .n-message__content::before {
+  background: #ef4444 !important;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6) !important;
+}
+
+/* 警告消息 - 橙色圆点 */
+.n-message--warning .n-message__content::before {
+  background: #f59e0b !important;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6) !important;
+}
+
+/* 成功消息 - 绿色圆点 */
+.n-message--success .n-message__content::before {
+  background: #10b981 !important;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6) !important;
+}
+
+/* 信息消息 - 蓝色圆点 */
+.n-message--info .n-message__content::before {
+  background: #3b82f6 !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6) !important;
+}
+
+/* 深色主题下的颜色调整 */
+.dark .n-message--error .n-message__content::before {
+  background: #f87171 !important;
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.6) !important;
+}
+
+.dark .n-message--warning .n-message__content::before {
+  background: #fbbf24 !important;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.6) !important;
+}
+
+.dark .n-message--success .n-message__content::before {
+  background: #34d399 !important;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.6) !important;
+}
+
+.dark .n-message--info .n-message__content::before {
+  background: #60a5fa !important;
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.6) !important;
+}
+
+/* 隐藏原生图标 */
+.n-message__icon {
+  display: none !important;
+}
+
+/* 消息文本样式 */
 .n-message__text {
-  flex: 1 !important;
-  text-align: left !important;
+  display: inline-block !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
   line-height: 1.5 !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  color: inherit !important;
+  text-align: left !important;
 }
 
 /* 禁用所有消息相关的动画和过渡 */
@@ -2338,10 +2391,6 @@ body .n-message-item {
   color: var(--error-400) !important;
 }
 
-.n-message--error .n-message__icon {
-  color: var(--error-500) !important;
-}
-
 /* 警告消息 - 橙色主题 */
 .n-message--warning .n-message-item,
 .n-message--warning .n-message {
@@ -2358,10 +2407,6 @@ body .n-message-item {
   background: rgba(245, 158, 11, 0.2) !important;
   border-color: rgba(245, 158, 11, 0.6) !important;
   color: var(--warning-400) !important;
-}
-
-.n-message--warning .n-message__icon {
-  color: var(--warning-500) !important;
 }
 
 /* 成功消息 - 绿色主题 */
@@ -2382,10 +2427,6 @@ body .n-message-item {
   color: var(--success-400) !important;
 }
 
-.n-message--success .n-message__icon {
-  color: var(--success-500) !important;
-}
-
 /* 信息消息 - 蓝色主题 */
 .n-message--info .n-message-item,
 .n-message--info .n-message {
@@ -2402,10 +2443,6 @@ body .n-message-item {
   background: rgba(59, 130, 246, 0.2) !important;
   border-color: rgba(59, 130, 246, 0.6) !important;
   color: var(--info-400) !important;
-}
-
-.n-message--info .n-message__icon {
-  color: var(--info-500) !important;
 }
 
 

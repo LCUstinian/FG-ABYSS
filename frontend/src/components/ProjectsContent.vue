@@ -2260,6 +2260,12 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 .webshell-table-card :deep(.n-card__footer) {
   padding: 16px !important;
   border-top: 1px solid var(--border-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 深色模式下的卡片页脚样式 */
+.dark .webshell-table-card :deep(.n-card__footer) {
+  border-top: 1px solid #64748b !important;
 }
 
 /* WebShell 表格样式 */
@@ -2459,19 +2465,19 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 /* 深色主题下优化表格样式，确保边框清晰可见 */
 .dark .webshell-table-container {
-  border: 1px solid var(--border-strong) !important; /* 使用高对比度边框颜色 */
+  border: 1px solid #64748b !important; /* 使用更明显的边框颜色 */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .webshell-table-header {
-  border: 1px solid var(--border-strong) !important; /* 使用高对比度边框颜色 */
+  border: 1px solid #64748b !important; /* 使用更明显的边框颜色 */
   background-color: var(--bg-tertiary) !important; /* 表头背景色 */
   color: var(--text-primary) !important; /* 表头文字颜色 */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .webshell-table-cell {
-  border: 1px solid var(--border-strong) !important; /* 使用高对比度边框颜色 */
+  border: 1px solid #64748b !important; /* 使用更明显的边框颜色 */
   background-color: transparent !important; /* 单元格背景透明 */
   color: var(--text-primary) !important; /* 单元格文字颜色 */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2481,7 +2487,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 .dark .webshell-table-header .webshell-table-cell {
   background-color: var(--bg-tertiary) !important; /* 表头单元格稍深的背景 */
   font-weight: var(--font-semibold) !important; /* 表头文字加粗 */
-  border-bottom: 2px solid var(--border-strong) !important; /* 表头底部加粗边框 */
+  border-bottom: 2px solid #64748b !important; /* 表头底部加粗边框 */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

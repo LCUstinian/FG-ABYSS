@@ -17,6 +17,7 @@ import {
   lightTheme 
 } from 'naive-ui'
 import { getSystemStatus, type SystemStatus } from './api/system'
+import { appLogger } from '@/utils/logger'
 
 const { t, locale } = useI18n()
 
@@ -321,8 +322,9 @@ const fetchSystemStatus = async () => {
   try {
     const status = await getSystemStatus()
     systemStatus.value = status
+    appLogger.debug('系统状态已更新:', status)
   } catch (error) {
-    console.error('Failed to fetch system status:', error)
+    appLogger.error('获取系统状态失败:', error)
   }
 }
 
@@ -331,10 +333,15 @@ const startStatusUpdates = () => {
   // 立即获取一次数据
   fetchSystemStatus()
   
-  // 每秒更新一次
+  // 每 3 秒更新一次（优化性能）
   updateTimer = window.setInterval(() => {
-    fetchSystemStatus()
-  }, 1000)
+    // 仅在页面可见时更新
+    if (document.visibilityState === 'visible') {
+      fetchSystemStatus()
+    }
+  }, 3000)
+  
+  appLogger.log('系统状态更新已启动，间隔：3 秒')
 }
 
 // 停止定时更新

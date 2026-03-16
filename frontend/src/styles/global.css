@@ -246,6 +246,19 @@
   --glass-border: 1px solid rgba(255, 255, 255, 0.1);
   --glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
   --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  
+  /* ========== Z-Index 层级管理 ========== */
+  /* 统一的 z-index 层级系统，避免层级冲突 */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-modal-max: 1060;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-message: 1080;
+  --z-notification: 1090;
+  --z-max: 2147483647;
 }
 
 /* ========== 暗色主题 ========== */

@@ -336,6 +336,11 @@ import * as WebShellHandler from '../../bindings/fg-abyss/internal/app/handlers/
 // 导入时间格式化工具
 import { formatTime } from '@/utils/formatTime'
 
+// 导入工具函数
+import { componentLogger } from '@/utils/logger'
+import type { Project as ProjectType } from '@/types'
+import type { Project } from '@bindings/fg-abyss/internal/domain/entity/models'
+
 // 定义 WebShell 接口
 interface WebShell {
   id: string
@@ -353,14 +358,12 @@ interface WebShell {
 
 // 统一的事件发送函数
 const emitEvent = (event: string, data?: any) => {
-  console.log('Attempting to emit event:', event, 'with data:', data);
   try {
-    console.log('Using Wails 3 Events from @wailsio/runtime');
+    componentLogger.debug('发送事件:', event)
     Events.Emit(event, data);
   } catch (error) {
-    console.error('Error emitting event:', error);
-    // 显示详细的错误信息，帮助调试
-    alert('Wails 运行时不可用，无法创建原生窗口。请检查 Wails 配置和版本。');
+    componentLogger.error('事件发送失败:', event, error)
+    message.error('Wails 运行时不可用')
   }
 };
 
@@ -462,8 +465,8 @@ const selectedProject = ref<string | null>(null)  // 存储项目 ID，初始为
 const selectedTableRow = ref<WebShell | null>(null)
 
 // 项目列表
-const projects = ref<any[]>([])
-const deletedProjects = ref<any[]>([])  // 前端临时存储已删除的项目
+const projects = ref<Project[]>([])
+const deletedProjects = ref<Project[]>([])  // 前端临时存储已删除的项目
 
 // UI 状态
 const hoveredProject = ref<string | null>(null)
@@ -2242,19 +2245,27 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   background-color: var(--card-bg) !important;
   color: var(--text-color) !important;
   font-size: 13px !important;
-  padding: 8px 12px !important;
+  padding: 10px 12px !important;
+  margin: 2px 0 !important;
+  border-radius: 6px !important;
   min-width: 120px !important; /* 确保足够宽度显示完整文字 */
   white-space: nowrap !important; /* 防止文字换行 */
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
 }
 
 .page-size-select :deep(.n-base-option:hover) {
   background-color: var(--hover-color) !important;
+  transform: translateX(2px) !important;
 }
 
 .page-size-select :deep(.n-base-option.n-base-option--selected) {
   background-color: var(--active-color-suppl) !important;
   color: var(--active-color) !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
+  padding: 10px 12px !important;
+  margin: 2px 0 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* 强制覆盖 Naive UI 默认样式 */
@@ -2264,7 +2275,8 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 .page-size-select :deep(.n-base-option--selected:hover) {
   background-color: var(--active-color-suppl) !important;
-  opacity: 0.8 !important;
+  opacity: 0.95 !important;
+  transform: translateX(2px) !important;
 }
 
 /* ========== 深色模式完整样式覆盖 ========== */
@@ -2289,21 +2301,24 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   border: 1px solid var(--border-subtle) !important;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
   border-radius: 8px !important;
-  padding: 4px !important;
+  padding: 6px !important;
 }
 
 /* 深色模式下的选项 */
 .dark .page-size-select :deep(.n-base-option) {
   background-color: var(--bg-secondary) !important;
   color: var(--text-secondary) !important;
-  border-radius: 4px !important;
-  margin-bottom: 2px !important;
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+  margin: 2px 0 !important;
   transition: all 0.2s ease !important;
+  cursor: pointer !important;
 }
 
 .dark .page-size-select :deep(.n-base-option:hover) {
   background-color: var(--bg-hover) !important;
   color: var(--text-primary) !important;
+  transform: translateX(2px) !important;
 }
 
 /* 深色模式下的选中项 */
@@ -2312,6 +2327,8 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   color: #ffffff !important;
   font-weight: 600 !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  padding: 10px 12px !important;
+  margin: 2px 0 !important;
 }
 
 .dark .page-size-select :deep(.n-base-option--selected .n-base-option__checked) {
@@ -2319,8 +2336,8 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 }
 
 .dark .page-size-select :deep(.n-base-option--selected:hover) {
-  opacity: 0.9 !important;
-  transform: translateY(-1px) !important;
+  opacity: 0.95 !important;
+  transform: translateX(2px) !important;
 }
 
 /* 分页组件样式 - 应用强调色 */

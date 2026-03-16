@@ -64,6 +64,8 @@
 import { NModal, NButton, useDialog, useMessage } from 'naive-ui'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { componentLogger } from '@/utils/logger'
+import type { Project } from '@bindings/fg-abyss/internal/domain/entity/models'
 
 const { t } = useI18n()
 const dialog = useDialog()
@@ -72,7 +74,7 @@ const recoveringAll = ref(false)
 
 const props = defineProps<{
   modelValue: boolean
-  deletedProjects: any[]
+  deletedProjects: Project[]
 }>()
 
 const emit = defineEmits<{
@@ -134,11 +136,12 @@ const handleRecoverAll = async () => {
         
         await Promise.all(recoverPromises)
         
+        componentLogger.log('批量恢复成功:', props.deletedProjects.length)
         message.success(t('projects.recoverAllSuccess', { count: props.deletedProjects.length }))
         emit('update:modelValue', false)
         emit('close')
       } catch (error) {
-        console.error('批量恢复失败:', error)
+        componentLogger.error('批量恢复失败:', error)
         message.error(t('projects.recoverAllError'))
       } finally {
         recoveringAll.value = false

@@ -85,11 +85,14 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NModal, NForm, NFormItem, NInput, NSelect, NButton } from 'naive-ui'
+import { NModal, NForm, NFormItem, NInput, NSelect, NButton, useMessage } from 'naive-ui'
 import * as WebShellHandler from '../../bindings/fg-abyss/internal/app/handlers/webshellhandler'
 import type { WebShell } from '../../bindings/fg-abyss/internal/domain/entity/models'
+import { validateUrl } from '@/utils/urlValidator'
+import { componentLogger } from '@/utils/logger'
 
 const { t } = useI18n()
+const message = useMessage()
 
 const props = defineProps<{
   modelValue: boolean
@@ -177,8 +180,22 @@ const resetForm = () => {
 }
 
 const handleCreate = async () => {
+  // 验证 URL 是否为空
   if (!webshell.url?.trim()) {
-    alert('请输入目标 URL')
+    message.error('请输入目标 URL')
+    return
+  }
+
+  // 验证 URL 格式和安全性
+  const urlValidation = validateUrl(webshell.url.trim(), {
+    allowedProtocols: ['http:', 'https:'],
+    allowLocalhost: true,  // 开发环境允许 localhost
+    allowInternalIPs: false,
+    allowIPAddresses: true
+  })
+
+  if (!urlValidation.valid) {
+    message.error(urlValidation.error || 'URL 格式不正确')
     return
   }
 
@@ -190,13 +207,18 @@ const handleCreate = async () => {
       throw new Error('未选择项目')
     }
     
+    // 使用清理后的 URL
+    const sanitizedUrl = urlValidation.sanitized || webshell.url.trim()
+    
     // 自动生成名称
-    const autoName = generateName(webshell.url)
+    const autoName = generateName(sanitizedUrl)
+    
+    componentLogger.log('创建 WebShell:', { url: sanitizedUrl, payload: webshell.payload, projectId: props.projectId })
     
     // 调用后端创建方法（传递 8 个参数）
     await WebShellHandler.CreateWebShell(
       props.projectId,
-      webshell.url || '',
+      sanitizedUrl,
       webshell.payload || 'php',
       webshell.cryption || 'none',
       webshell.encoding || 'UTF-8',
@@ -205,12 +227,14 @@ const handleCreate = async () => {
       webshell.status || 'active'
     )
     
+    message.success('WebShell 创建成功')
     resetForm()
     emit('update:modelValue', false)
     emit('created')
   } catch (error) {
-    console.error('创建 WebShell 失败:', error)
-    alert('创建 WebShell 失败：' + error)
+    componentLogger.error('创建 WebShell 失败:', error)
+    const errorMessage = error instanceof Error ? error.message : '创建 WebShell 失败'
+    message.error(errorMessage)
   } finally {
     loading.value = false
   }

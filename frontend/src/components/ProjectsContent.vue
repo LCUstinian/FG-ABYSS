@@ -115,18 +115,25 @@
                     </Tooltip>
                     <!-- 每页条数选择器容器 -->
                     <div class="page-size-container">
-                      <div class="page-size-divider"></div>
                       <NSelect
                         v-model:value="pageSize"
-                        :options="[
-                          { label: `5 ${t('projects.itemsPerPage')}`, value: 5 },
-                          { label: `10 ${t('projects.itemsPerPage')}`, value: 10 },
-                          { label: `20 ${t('projects.itemsPerPage')}`, value: 20 }
-                        ]"
+                        :options="pageSizeOptions.map(size => ({
+                          label: `${size} ${t('projects.itemsPerPage')}`,
+                          value: size
+                        }))"
                         @update:value="handlePageSizeChange"
                         size="small"
                         class="page-size-select"
+                        :disabled="isManualMode"
                       />
+                      <span 
+                        v-if="isManualMode" 
+                        class="manual-mode-indicator" 
+                        title="手动模式 - 点击重置为自动"
+                        @click="handleResetAuto"
+                      >
+                        🔒
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -261,11 +268,9 @@
               <div class="pagination-container">
                 <NPagination
                   v-model:page="page"
-                  v-model:page-size="pageSize"
-                  :page-sizes="[5, 10, 20]"
+                  :page-size="pageSize"
                   :item-count="total"
                   @update:page="handlePageChange"
-                  @update:page-size="handlePageSizeChange"
                 />
               </div>
             </template>
@@ -327,6 +332,7 @@ import Tooltip from './Tooltip.vue'
 import CreateProjectModal from './CreateProjectModal.vue'
 import CreateWebShellModal from './CreateWebShellModal.vue'
 import RecoverProjectModal from './RecoverProjectModal.vue'
+import { useSmartPagination } from '@/composables/useSmartPagination'
 
 // 导入 Wails 运行时和绑定
 import { Events } from '@wailsio/runtime'
@@ -371,10 +377,31 @@ const { t } = useI18n()
 const dialog = useDialog()
 const message = useMessage()
 
-// 分页状态
-const page = ref(1)
-const pageSize = ref(5)
+// 智能分页状态
 const total = ref(0)
+
+// 使用智能分页组合函数
+const {
+  page,
+  pageSize,
+  isManualMode,
+  pageSizeOptions,
+  setPageSize,
+  setPage,
+  resetToAuto
+} = useSmartPagination({
+  total: () => total.value,
+  onPageSizeChange: (size: number) => {
+    console.log('分页大小自动调整为:', size)
+    // 分页大小变化时，重置到第一页并重新获取数据
+    page.value = 1
+    fetchData()
+  },
+  onPageChange: () => {
+    // 页码变化时只获取数据，不重置分页
+    fetchData()
+  }
+})
 
 // 搜索状态
 const searchQuery = ref('')
@@ -883,13 +910,16 @@ const getSortIcon = (field: string) => {
 
 // 处理分页
 const handlePageChange = (pageNum: number) => {
-  page.value = pageNum
-  fetchData()
+  setPage(pageNum)
 }
 
 const handlePageSizeChange = (size: number) => {
-  pageSize.value = size
-  page.value = 1
+  setPageSize(size)
+}
+
+// 点击锁定图标重置为自动模式
+const handleResetAuto = () => {
+  resetToAuto()
   fetchData()
 }
 

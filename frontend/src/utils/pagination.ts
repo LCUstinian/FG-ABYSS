@@ -23,20 +23,14 @@ const PAGINATION_CONFIG = {
 /**
  * 计算最优分页大小
  * @param dataCount 数据总条数
- * @param viewportHeight 可视区域高度（像素）
+ * @param availableHeight 可用高度（像素）- 已经减去了所有固定元素高度的净可用高度
  * @returns 最优分页大小
  */
 export function calculateOptimalPageSize(
   dataCount: number,
-  viewportHeight: number
+  availableHeight: number
 ): number {
-  // 计算可用于显示表格的高度
-  const availableHeight = viewportHeight - 
-    PAGINATION_CONFIG.TABLE_HEADER_HEIGHT - 
-    PAGINATION_CONFIG.TABLE_FOOTER_HEIGHT - 
-    PAGINATION_CONFIG.OTHER_UI_HEIGHT
-  
-  // 根据可用高度计算理想行数
+  // availableHeight 已经是可用高度，直接计算理想行数
   const idealRows = Math.floor(availableHeight / PAGINATION_CONFIG.ROW_HEIGHT)
   
   // 确保行数在合理范围内

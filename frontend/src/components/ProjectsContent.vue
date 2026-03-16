@@ -124,16 +124,7 @@
                         @update:value="handlePageSizeChange"
                         size="small"
                         class="page-size-select"
-                        :disabled="isManualMode"
                       />
-                      <span 
-                        v-if="isManualMode" 
-                        class="manual-mode-indicator" 
-                        title="手动模式 - 点击重置为自动"
-                        @click="handleResetAuto"
-                      >
-                        🔒
-                      </span>
                     </div>
                   </div>
                 </div>
@@ -391,8 +382,9 @@ const {
   resetToAuto
 } = useSmartPagination({
   total: () => total.value,
+  enableAuto: false, // 禁用自动调整，使用默认分页大小
   onPageSizeChange: (size: number) => {
-    console.log('分页大小自动调整为:', size)
+    console.log('分页大小调整为:', size)
     // 分页大小变化时，重置到第一页并重新获取数据
     page.value = 1
     fetchData()
@@ -915,12 +907,6 @@ const handlePageChange = (pageNum: number) => {
 
 const handlePageSizeChange = (size: number) => {
   setPageSize(size)
-}
-
-// 点击锁定图标重置为自动模式
-const handleResetAuto = () => {
-  resetToAuto()
-  fetchData()
 }
 
 // 从后端获取数据

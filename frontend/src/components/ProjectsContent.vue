@@ -1605,7 +1605,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 .modal-content {
   background: var(--content-bg);
-  border-radius: 16px;
+  border-radius: 8px;
   width: 90%;
   max-width: 550px;
   max-height: 75vh;

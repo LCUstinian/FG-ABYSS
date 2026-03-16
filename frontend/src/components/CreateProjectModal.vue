@@ -92,7 +92,7 @@ const handleCreate = async () => {
 /* 弹窗容器样式 - 使用主题变量 */
 .create-project-modal :deep(.n-dialog) {
   background-color: var(--card-bg);
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--border-color);
   overflow: hidden;

@@ -167,7 +167,7 @@ const formatTime = (time: string | number | Date) => {
 /* 弹窗容器样式 */
 .recover-project-modal :deep(.n-dialog) {
   background-color: var(--card-bg);
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border-color);
   overflow: hidden;

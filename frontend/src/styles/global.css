@@ -462,37 +462,37 @@ body {
    ============================================ */
 
 /* ========== 弹窗 (Modal/Dialog) 圆角样式 ========== */
-/* 统一的弹窗圆角 - 符合设计规范的 16px 圆角半径 */
+/* 统一的弹窗圆角 - 精致的 8px 圆角半径 */
 .n-modal,
 .n-dialog {
-  border-radius: var(--radius-2xl) !important; /* 16px */
+  border-radius: var(--radius-lg) !important; /* 8px */
   overflow: hidden;
 }
 
 /* 弹窗容器 */
 .n-modal-container .n-modal,
 .n-dialog-provider .n-dialog {
-  border-radius: var(--radius-2xl) !important;
+  border-radius: var(--radius-lg) !important;
 }
 
 /* 弹窗主体 */
 .n-modal__content,
 .n-dialog__content {
-  border-radius: var(--radius-2xl) !important;
+  border-radius: var(--radius-lg) !important;
 }
 
 /* 弹窗头部保持圆角 */
 .n-modal__header,
 .n-dialog__header {
-  border-top-left-radius: var(--radius-2xl);
-  border-top-right-radius: var(--radius-2xl);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
 }
 
 /* 弹窗底部保持圆角 */
 .n-modal__footer,
 .n-dialog__footer {
-  border-bottom-left-radius: var(--radius-2xl);
-  border-bottom-right-radius: var(--radius-2xl);
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
 }
 
 /* ========== 输入框边框样式 ========== */

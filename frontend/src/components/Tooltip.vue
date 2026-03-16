@@ -173,7 +173,7 @@ onUnmounted(() => {
   box-shadow: 
     0 4px 16px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  color: #1e293b;
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
@@ -204,7 +204,7 @@ onUnmounted(() => {
   box-shadow: 
     0 4px 16px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  color: #e2e8f0;
+  color: var(--text-secondary);
 }
 
 .tooltip-text.dark::before {

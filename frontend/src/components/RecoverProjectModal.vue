@@ -168,11 +168,15 @@ const formatTime = (time: string | number | Date) => {
 .recover-project-modal :deep(.n-dialog) {
   background-color: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border-color);
   overflow: hidden;
   max-width: 650px;
   width: 90%;
+}
+
+.dark .recover-project-modal :deep(.n-dialog) {
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 /* 弹窗头部样式 */
@@ -290,7 +294,7 @@ const formatTime = (time: string | number | Date) => {
   align-items: center;
   gap: 14px;
   padding: 16px;
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(0, 0, 0, 0.02) 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-hover) 100%);
   border-radius: 10px;
   border: 1px solid var(--border-color);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -305,7 +309,7 @@ const formatTime = (time: string | number | Date) => {
   top: 0;
   bottom: 0;
   width: 3px;
-  background: linear-gradient(180deg, rgba(239, 68, 68, 0.5) 0%, rgba(239, 68, 68, 0.2) 100%);
+  background: linear-gradient(180deg, var(--error-500) 0%, var(--error-700) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -316,19 +320,24 @@ const formatTime = (time: string | number | Date) => {
 
 .recover-item:hover {
   transform: translateX(6px);
-  border-color: rgba(76, 175, 80, 0.4);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(76, 175, 80, 0.1);
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, var(--bg-secondary) 100%);
+  border-color: var(--success-500);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--success-100);
+  background: linear-gradient(135deg, var(--success-50) 0%, var(--bg-secondary) 100%);
 }
 
 .dark .recover-item:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(76, 175, 80, 0.2);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--success-900);
+  background: linear-gradient(135deg, rgba(var(--success-500), 0.1) 0%, var(--bg-secondary) 100%);
 }
 
 .recover-item-icon {
   font-size: 22px;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+.dark .recover-item-icon {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .recover-item-info {
@@ -369,7 +378,11 @@ const formatTime = (time: string | number | Date) => {
 
 .recover-item-btn:hover {
   transform: scale(1.06) translateY(-1px);
-  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.25);
+  box-shadow: 0 6px 16px var(--success-200);
+}
+
+.dark .recover-item-btn:hover {
+  box-shadow: 0 6px 16px rgba(var(--success-500), 0.4);
 }
 
 /* 按钮动作区域 */
@@ -389,22 +402,22 @@ const formatTime = (time: string | number | Date) => {
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.95) 0%, rgba(76, 175, 80, 0.85) 100%);
+  background: linear-gradient(135deg, var(--success-500) 0%, var(--success-600) 100%);
   color: #ffffff;
-  border: 1px solid rgba(76, 175, 80, 0.3);
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--success-400);
+  box-shadow: var(--shadow-sm), var(--shadow-success-enhanced), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .recover-all-action-btn:hover {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 1) 0%, rgba(76, 175, 80, 0.9) 100%);
-  border-color: rgba(76, 175, 80, 0.5);
+  background: linear-gradient(135deg, var(--success-600) 0%, var(--success-700) 100%);
+  border-color: var(--success-500);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-md), var(--shadow-success-enhanced-hover), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .recover-all-action-btn:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-sm), var(--shadow-success-enhanced), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .recover-all-action-btn :deep(.btn-icon) {
@@ -412,51 +425,14 @@ const formatTime = (time: string | number | Date) => {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-/* 深色主题优化 */
-.dark .recover-all-action-btn {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.85) 0%, rgba(76, 175, 80, 0.75) 100%);
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
 
-.dark .recover-all-action-btn:hover {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.95) 0%, rgba(76, 175, 80, 0.85) 100%);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-}
-
-/* 浅色主题优化 */
-@media (prefers-color-scheme: light) {
-  .recover-all-action-btn {
-    background: linear-gradient(135deg, rgba(76, 175, 80, 0.9) 0%, rgba(76, 175, 80, 0.8) 100%);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  }
-  
-  .recover-all-action-btn:hover {
-    background: linear-gradient(135deg, rgba(76, 175, 80, 1) 0%, rgba(76, 175, 80, 0.9) 100%);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  }
-}
 
 /* 深色主题优化 */
 .dark .recover-project-modal :deep(.n-dialog__header) {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(76, 175, 80, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(var(--success-500), 0.15) 0%, rgba(var(--success-500), 0.08) 100%);
 }
 
 .dark .empty-icon {
   filter: grayscale(0.5) brightness(0.8);
-}
-
-/* 浅色主题优化 */
-@media (prefers-color-scheme: light) {
-  .recover-project-modal :deep(.n-dialog__header) {
-    background: linear-gradient(135deg, rgba(76, 175, 80, 0.12) 0%, rgba(76, 175, 80, 0.06) 100%);
-  }
-  
-  .recover-item {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  }
-  
-  .recover-item:hover {
-    background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, #f8fafc 100%);
-  }
 }
 </style>

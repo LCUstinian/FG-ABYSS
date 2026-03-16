@@ -97,6 +97,12 @@
   --border-subtle: #e5e7eb;
   --border-strong: #d1d5db;
   
+  /* ========== 滚动条颜色 ========== */
+  --bg-scroll-track: rgba(0, 0, 0, 0.05);
+  --bg-scroll-thumb: rgba(0, 0, 0, 0.2);
+  --bg-scroll-track-dark: rgba(255, 255, 255, 0.05);
+  --bg-scroll-thumb-dark: rgba(255, 255, 255, 0.2);
+  
   /* ========== 保留向后兼容的旧变量名 ========== */
   --bg-color: var(--bg-primary);
   --text-color: var(--text-primary);
@@ -2883,6 +2889,13 @@ body .n-message-item {
 .n-select.n-select--active {
   border-color: var(--active-color) !important;
   box-shadow: 0 0 0 3px var(--active-color-suppl) !important;
+}
+
+/* 全局强制覆盖深色模式下拉菜单选中项背景 */
+.dark .n-base-option--selected,
+.dark .n-select-option--selected {
+  background-color: var(--active-color) !important;
+  color: #ffffff !important;
 }
 
 /* 响应式适配 */

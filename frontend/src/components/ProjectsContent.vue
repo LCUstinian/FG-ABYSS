@@ -2234,11 +2234,17 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   color: var(--active-color) !important;
 }
 
+.page-size-select :deep(.n-base-selection) {
+  min-width: 120px !important; /* 确保选择器本身也足够宽 */
+}
+
 .page-size-select :deep(.n-base-option) {
   background-color: var(--card-bg) !important;
   color: var(--text-color) !important;
   font-size: 13px !important;
   padding: 8px 12px !important;
+  min-width: 120px !important; /* 确保足够宽度显示完整文字 */
+  white-space: nowrap !important; /* 防止文字换行 */
 }
 
 .page-size-select :deep(.n-base-option:hover) {
@@ -2259,6 +2265,62 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 .page-size-select :deep(.n-base-option--selected:hover) {
   background-color: var(--active-color-suppl) !important;
   opacity: 0.8 !important;
+}
+
+/* ========== 深色模式完整样式覆盖 ========== */
+/* 使用 CSS 变量而非硬编码颜色，确保主题一致性 */
+.dark .page-size-select :deep(.n-base-selection) {
+  background-color: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-strong) !important;
+  border-radius: 6px !important;
+}
+
+.dark .page-size-select :deep(.n-base-selection-label) {
+  color: var(--text-primary) !important;
+}
+
+.dark .page-size-select :deep(.n-base-selection:hover) {
+  border-color: var(--border-strong) !important;
+}
+
+/* 深色模式下拉菜单弹出层 */
+.dark .page-size-select :deep(.n-base-selection__menu) {
+  background-color: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-subtle) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 8px !important;
+  padding: 4px !important;
+}
+
+/* 深色模式下的选项 */
+.dark .page-size-select :deep(.n-base-option) {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-secondary) !important;
+  border-radius: 4px !important;
+  margin-bottom: 2px !important;
+  transition: all 0.2s ease !important;
+}
+
+.dark .page-size-select :deep(.n-base-option:hover) {
+  background-color: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 深色模式下的选中项 */
+.dark .page-size-select :deep(.n-base-option.n-base-option--selected) {
+  background-color: var(--active-color) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .page-size-select :deep(.n-base-option--selected .n-base-option__checked) {
+  color: #ffffff !important;
+}
+
+.dark .page-size-select :deep(.n-base-option--selected:hover) {
+  opacity: 0.9 !important;
+  transform: translateY(-1px) !important;
 }
 
 /* 分页组件样式 - 应用强调色 */
@@ -2354,7 +2416,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 /* 深色模式下的卡片页脚样式 */
 .dark .webshell-table-card :deep(.n-card__footer) {
-  border-top: 1px solid #64748b !important;
+  border-top: 1px solid var(--border-strong) !important;
 }
 
 /* WebShell 表格样式 */
@@ -2554,19 +2616,19 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 /* 深色主题下优化表格样式，确保边框清晰可见 */
 .dark .webshell-table-container {
-  border: 1px solid #64748b !important; /* 使用更明显的边框颜色 */
+  border: 1px solid var(--border-strong) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .webshell-table-header {
-  border: 1px solid #64748b !important; /* 使用更明显的边框颜色 */
+  border: 1px solid var(--border-strong) !important;
   background-color: var(--bg-tertiary) !important; /* 表头背景色 */
   color: var(--text-primary) !important; /* 表头文字颜色 */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .webshell-table-cell {
-  border: 1px solid #64748b !important; /* 使用更明显的边框颜色 */
+  border: 1px solid var(--border-strong) !important;
   background-color: transparent !important; /* 单元格背景透明 */
   color: var(--text-primary) !important; /* 单元格文字颜色 */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2576,7 +2638,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 .dark .webshell-table-header .webshell-table-cell {
   background-color: var(--bg-tertiary) !important; /* 表头单元格稍深的背景 */
   font-weight: var(--font-semibold) !important; /* 表头文字加粗 */
-  border-bottom: 2px solid #64748b !important; /* 表头底部加粗边框 */
+  border-bottom: 2px solid var(--border-strong) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -2606,11 +2668,11 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 /* 深色模式下的搜索框样式 */
 .dark .search-input {
-  border-color: #334155 !important;
+  border-color: var(--border-subtle) !important;
 }
 
 .dark .search-input:hover {
-  border-color: #475569 !important;
+  border-color: var(--border-strong) !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -2878,9 +2940,9 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 /* 深色主题下优化菜单背景色，使用精确的深蓝色调确保与整体主题协调 */
 .dark .n-dropdown-menu {
-  border: 1px solid #475569 !important;
+  border: 1px solid var(--border-strong) !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
-  background-color: #1e293b !important; /* 使用精确的深空蓝 #1e293b，与侧边栏一致 */
+  background-color: var(--bg-secondary) !important;
   backdrop-filter: blur(16px); /* 增强毛玻璃效果 */
 }
 
@@ -2924,12 +2986,12 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 /* 深色主题下优化菜单项对比度和背景色，使用精确颜色值 */
 .dark .n-menu-item {
-  color: #f1f5f9 !important; /* 使用精确的浅灰色 #f1f5f9 */
+  color: var(--text-primary) !important;
 }
 
 .dark .n-menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.08) !important; /* 半透明白色增强悬停效果 */
-  color: #f1f5f9 !important;
+  background-color: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
 }
 
 .dark .n-menu-item.n-menu-item--selected {
@@ -2980,16 +3042,16 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 <style>
 /* 深色主题下强制应用正确的背景色 */
 .dark .n-dropdown-menu {
-  background-color: #1e293b !important; /* 精确的深空蓝 */
-  border: 1px solid #475569 !important;
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-strong) !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
   backdrop-filter: blur(16px) !important;
 }
 
 /* 浅色主题下的背景色 */
 .n-dropdown-menu {
-  background-color: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-subtle) !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(8px) !important;
 }

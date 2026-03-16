@@ -555,7 +555,7 @@ const handleCreate = async () => {
 .dark .webshell-input,
 .dark .webshell-select,
 .dark .webshell-textarea {
-  background-color: rgba(15, 23, 42, 0.5) !important;
+  background-color: var(--content-bg) !important;
 }
 
 .dark .webshell-input:hover,
@@ -564,7 +564,7 @@ const handleCreate = async () => {
 .dark .webshell-input:focus,
 .dark .webshell-select:focus,
 .dark .webshell-textarea:focus {
-  background-color: rgba(30, 41, 59, 0.8) !important;
+  background-color: var(--card-bg) !important;
 }
 
 /* 浏览器兼容性优化 */
@@ -690,21 +690,21 @@ const handleCreate = async () => {
 }
 
 .create-webshell-modal :deep(.n-dialog__content)::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--bg-scroll-track);
   border-radius: 3px;
 }
 
 .create-webshell-modal :deep(.n-dialog__content)::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--bg-scroll-thumb);
   border-radius: 4px;
 }
 
 .dark .create-webshell-modal :deep(.n-dialog__content)::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-scroll-track-dark);
 }
 
 .dark .create-webshell-modal :deep(.n-dialog__content)::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--bg-scroll-thumb-dark);
 }
 
 /* 深色主题优化 */
@@ -715,7 +715,7 @@ const handleCreate = async () => {
 .dark .webshell-input,
 .dark .webshell-select,
 .dark .webshell-textarea {
-  background-color: rgba(15, 23, 42, 0.5);
+  background-color: var(--content-bg);
 }
 
 .dark .webshell-input:hover,
@@ -724,28 +724,8 @@ const handleCreate = async () => {
 .dark .webshell-input:focus,
 .dark .webshell-select:focus,
 .dark .webshell-textarea:focus {
-  background-color: rgba(30, 41, 59, 0.8);
+  background-color: var(--card-bg);
 }
 
-/* 浅色主题优化 */
-@media (prefers-color-scheme: light) {
-  .create-webshell-modal :deep(.n-dialog__header) {
-    background-color: var(--active-color);
-  }
-  
-  .webshell-input,
-  .webshell-select,
-  .webshell-textarea {
-    background-color: #f9fafb;
-  }
-  
-  .webshell-input:hover,
-  .webshell-select:hover,
-  .webshell-textarea:hover,
-  .webshell-input:focus,
-  .webshell-select:focus,
-  .webshell-textarea:focus {
-    background-color: #ffffff;
-  }
-}
+
 </style>

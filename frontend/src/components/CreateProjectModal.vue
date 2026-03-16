@@ -181,6 +181,15 @@ const handleCreate = async () => {
   transform: scale(1.1);
 }
 
+/* 深色模式关闭按钮 */
+.dark .create-project-modal :deep(.n-dialog__close) {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark .create-project-modal :deep(.n-dialog__close:hover) {
+  color: #ffffff;
+}
+
 /* 表单样式 */
 .modal-content {
   padding: 0;
@@ -290,34 +299,29 @@ const handleCreate = async () => {
   background-color: var(--active-color);
 }
 
+.dark .create-project-modal :deep(.n-dialog) {
+  background-color: var(--card-bg);
+}
+
+.dark .create-project-modal :deep(.n-dialog__content) {
+  background-color: var(--card-bg);
+}
+
+.dark .create-project-modal :deep(.n-dialog__footer) {
+  background-color: var(--content-bg);
+}
+
 .dark .project-input,
 .dark .project-textarea {
-  background-color: rgba(15, 23, 42, 0.5);
+  background-color: var(--content-bg);
 }
 
 .dark .project-input:hover,
 .dark .project-textarea:hover,
 .dark .project-input:focus,
 .dark .project-textarea:focus {
-  background-color: rgba(30, 41, 59, 0.8);
+  background-color: var(--card-bg);
 }
 
-/* 浅色主题优化 */
-@media (prefers-color-scheme: light) {
-  .create-project-modal :deep(.n-dialog__header) {
-    background-color: var(--active-color);
-  }
-  
-  .project-input,
-  .project-textarea {
-    background-color: #f9fafb;
-  }
-  
-  .project-input:hover,
-  .project-textarea:hover,
-  .project-input:focus,
-  .project-textarea:focus {
-    background-color: #ffffff;
-  }
-}
+
 </style>

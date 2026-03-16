@@ -496,6 +496,9 @@ const changeAccentColor = async (color: string) => {
     if (rgb) {
       document.documentElement.style.setProperty('--active-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`)
       document.documentElement.style.setProperty('--active-color-suppl', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.1)`)
+      // 设置强调色悬停颜色（提亮 10%）
+      const hoverColor = lightenColor(color, 10)
+      document.documentElement.style.setProperty('--active-color-hover', hoverColor)
     }
     // 同时更新 localStorage 作为缓存
     localStorage.setItem('accentColor', color)
@@ -515,6 +518,9 @@ const changeAccentColor = async (color: string) => {
     if (savedRgb) {
       document.documentElement.style.setProperty('--active-color-rgb', `${savedRgb.r}, ${savedRgb.g}, ${savedRgb.b}`)
       document.documentElement.style.setProperty('--active-color-suppl', `rgba(${savedRgb.r}, ${savedRgb.g}, ${savedRgb.b}, 0.1)`)
+      // 设置强调色悬停颜色
+      const hoverColor = lightenColor(savedColor, 10)
+      document.documentElement.style.setProperty('--active-color-hover', hoverColor)
     }
   }
 }
@@ -527,6 +533,16 @@ const hexToRgb = (hex: string) => {
     g: parseInt(result[2], 16),
     b: parseInt(result[3], 16)
   } : null
+}
+
+// 颜色提亮函数
+const lightenColor = (color: string, percent: number): string => {
+  const num = parseInt(color.replace('#', ''), 16)
+  const amt = Math.round(2.55 * percent)
+  const R = Math.min(255, (num >> 16) + amt)
+  const G = Math.min(255, ((num >> 8) & 0x00FF) + amt)
+  const B = Math.min(255, (num & 0x0000FF) + amt)
+  return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1)
 }
 
 // 验证 HEX 颜色格式
@@ -675,6 +691,9 @@ onMounted(async () => {
           if (rgb) {
             document.documentElement.style.setProperty('--active-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`)
             document.documentElement.style.setProperty('--active-color-suppl', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.1)`)
+            // 设置强调色悬停颜色
+            const hoverColor = lightenColor(setting.value, 10)
+            document.documentElement.style.setProperty('--active-color-hover', hoverColor)
           }
           localStorage.setItem('accentColor', setting.value)
           break

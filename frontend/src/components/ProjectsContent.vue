@@ -2281,6 +2281,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 .webshell-table-header-row {
   background: var(--hover-color);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 确保所有表头单元格的基线对齐 */
@@ -2300,7 +2301,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   cursor: pointer;
   user-select: none;
   position: relative;
-  transition: background-color 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   height: 53px !important; /* 固定表头高度 53px */
   line-height: 53px !important; /* 垂直居中 */
   overflow: hidden !important; /* 隐藏溢出 */
@@ -2308,12 +2309,14 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   white-space: nowrap !important; /* 不换行 */
   display: table-cell !important; /* 确保作为表格单元格显示 */
   vertical-align: middle !important; /* 垂直居中 */
+  color: var(--text-color);
 }
 
 .webshell-table-header span {
   display: inline-block !important;
   vertical-align: middle !important;
   line-height: normal !important; /* 使用默认行高，确保文字清晰 */
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .webshell-table-header:hover {
@@ -2322,7 +2325,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 
 .webshell-table-row {
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   height: 53px !important; /* 固定行高 53px（比 40px 增加约三分之一） */
 }
 
@@ -2343,6 +2346,7 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   text-overflow: ellipsis !important; /* 显示省略号 */
   white-space: nowrap !important; /* 不换行 */
   display: table-cell !important; /* 确保作为表格单元格显示 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 所有单元格内的内容都使用 flex 布局确保垂直居中 */
@@ -2455,18 +2459,21 @@ const handleContextMenuOutside = (event: MouseEvent) => {
 /* 深色主题下优化表格样式，确保边框清晰可见 */
 .dark .webshell-table-container {
   border: 1px solid var(--border-strong) !important; /* 使用高对比度边框颜色 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .webshell-table-header {
   border: 1px solid var(--border-strong) !important; /* 使用高对比度边框颜色 */
   background-color: var(--bg-tertiary) !important; /* 表头背景色 */
   color: var(--text-primary) !important; /* 表头文字颜色 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .webshell-table-cell {
   border: 1px solid var(--border-strong) !important; /* 使用高对比度边框颜色 */
   background-color: transparent !important; /* 单元格背景透明 */
   color: var(--text-primary) !important; /* 单元格文字颜色 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 深色模式下增强表头与单元格的视觉区分 */
@@ -2474,12 +2481,13 @@ const handleContextMenuOutside = (event: MouseEvent) => {
   background-color: var(--bg-tertiary) !important; /* 表头单元格稍深的背景 */
   font-weight: var(--font-semibold) !important; /* 表头文字加粗 */
   border-bottom: 2px solid var(--border-strong) !important; /* 表头底部加粗边框 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 深色模式下悬停效果优化 */
 .dark .webshell-table-row:hover {
   background-color: var(--bg-hover) !important;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .pagination-container {

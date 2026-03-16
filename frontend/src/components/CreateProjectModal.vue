@@ -29,11 +29,8 @@
     </div>
     <template #action>
       <div class="modal-actions">
-        <NButton @click="handleCancel" class="action-btn">
-          取消
-        </NButton>
         <NButton type="primary" @click="handleCreate" class="action-btn primary">
-          创建
+          创建项目
         </NButton>
       </div>
     </template>
@@ -201,47 +198,43 @@ const handleCreate = async () => {
 /* 按钮样式 */
 .modal-actions {
   display: flex;
-  gap: 12px;
-  justify-content: flex-end;
+  justify-content: center;
   width: 100%;
+  padding: 8px 0 4px 0;
 }
 
 .action-btn {
-  min-width: 88px;
-  height: 38px;
-  border-radius: var(--border-radius-md);
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  min-width: 140px;
+  height: 42px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-sm);
 }
 
 .action-btn.primary {
   background-color: var(--active-color);
   border: none;
   color: #ffffff;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 8px rgba(var(--active-color-rgb, 59, 130, 246), 0.3);
 }
 
 .action-btn.primary:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(var(--active-color-rgb, 59, 130, 246), 0.4);
   opacity: 0.95;
 }
 
 .action-btn.primary:active {
   transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(var(--active-color-rgb, 59, 130, 246), 0.3);
 }
 
-.action-btn:not(.primary) {
-  background-color: var(--hover-color);
-  border: none;
-  color: var(--text-color);
-}
-
-.action-btn:not(.primary):hover {
-  background-color: var(--border-color);
-  color: var(--text-color);
+.action-btn.primary:focus {
+  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb, 59, 130, 246), 0.2);
 }
 
 /* 深色主题优化 */

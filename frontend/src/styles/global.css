@@ -128,6 +128,16 @@
   --shadow-warning: 0 0 0 3px rgba(245, 158, 11, 0.2);
   --shadow-error: 0 0 0 3px rgba(239, 68, 68, 0.2);
   
+  /* ========== 按钮增强阴影 ========== */
+  --shadow-primary-enhanced: 0 1px 2px rgba(59, 130, 246, 0.3);
+  --shadow-primary-enhanced-hover: 0 4px 8px rgba(59, 130, 246, 0.4);
+  --shadow-success-enhanced: 0 1px 2px rgba(16, 185, 129, 0.3);
+  --shadow-success-enhanced-hover: 0 4px 8px rgba(16, 185, 129, 0.4);
+  --shadow-warning-enhanced: 0 1px 2px rgba(245, 158, 11, 0.3);
+  --shadow-warning-enhanced-hover: 0 4px 8px rgba(245, 158, 11, 0.4);
+  --shadow-error-enhanced: 0 1px 2px rgba(239, 68, 68, 0.3);
+  --shadow-error-enhanced-hover: 0 4px 8px rgba(239, 68, 68, 0.4);
+  
   /* ========== 保留向后兼容的旧阴影变量 ========== */
   --shadow-sm-old: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md-old: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -618,7 +628,7 @@ body {
 .n-textarea:focus,
 .n-textarea:focus-within {
   --n-border: var(--active-color) !important;
-  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb, 59, 130, 246), 0.15) !important;
+  box-shadow: 0 0 0 3px var(--active-color-suppl) !important;
 }
 
 /* 内部元素边框移除 */
@@ -932,12 +942,12 @@ body {
   &.btn-primary {
     background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
     color: white;
-    box-shadow: var(--shadow-sm), 0 1px 2px rgba(59, 130, 246, 0.3);
+    box-shadow: var(--shadow-sm), var(--shadow-primary-enhanced);
     
     &:hover {
       background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
       transform: translateY(-1px);
-      box-shadow: var(--shadow-md), 0 4px 8px rgba(59, 130, 246, 0.4);
+      box-shadow: var(--shadow-md), var(--shadow-primary-enhanced-hover);
     }
     
     &:active {
@@ -1002,12 +1012,12 @@ body {
   &.btn-danger {
     background: linear-gradient(135deg, var(--error-500), var(--error-600));
     color: white;
-    box-shadow: var(--shadow-sm), 0 1px 2px rgba(239, 68, 68, 0.3);
+    box-shadow: var(--shadow-sm), var(--shadow-error-enhanced);
     
     &:hover {
       background: linear-gradient(135deg, var(--error-600), var(--error-700));
       transform: translateY(-1px);
-      box-shadow: var(--shadow-md), 0 4px 8px rgba(239, 68, 68, 0.4);
+      box-shadow: var(--shadow-md), var(--shadow-error-enhanced-hover);
     }
     
     &:active {
@@ -1024,12 +1034,12 @@ body {
   &.btn-success {
     background: linear-gradient(135deg, var(--success-500), var(--success-600));
     color: white;
-    box-shadow: var(--shadow-sm), 0 1px 2px rgba(16, 185, 129, 0.3);
+    box-shadow: var(--shadow-sm), var(--shadow-success-enhanced);
     
     &:hover {
       background: linear-gradient(135deg, var(--success-600), var(--success-700));
       transform: translateY(-1px);
-      box-shadow: var(--shadow-md), 0 4px 8px rgba(16, 185, 129, 0.4);
+      box-shadow: var(--shadow-md), var(--shadow-success-enhanced-hover);
     }
     
     &:active {
@@ -1046,12 +1056,12 @@ body {
   &.btn-warning {
     background: linear-gradient(135deg, var(--warning-500), var(--warning-600));
     color: white;
-    box-shadow: var(--shadow-sm), 0 1px 2px rgba(245, 158, 11, 0.3);
+    box-shadow: var(--shadow-sm), var(--shadow-warning-enhanced);
     
     &:hover {
       background: linear-gradient(135deg, var(--warning-600), var(--warning-700));
       transform: translateY(-1px);
-      box-shadow: var(--shadow-md), 0 4px 8px rgba(245, 158, 11, 0.4);
+      box-shadow: var(--shadow-md), var(--shadow-warning-enhanced-hover);
     }
     
     &:active {
@@ -1067,19 +1077,19 @@ body {
   /* 轮廓按钮 - 仅边框 */
   &.btn-outline {
     background: transparent;
-    color: var(--primary-500);
-    border: 1px solid var(--primary-500);
+    color: var(--active-color);
+    border: 1px solid var(--active-color);
     
     &:hover {
-      background: var(--primary-50);
-      color: var(--primary-600);
-      border-color: var(--primary-600);
+      background: var(--active-color-suppl);
+      color: var(--active-color);
+      border-color: var(--active-color);
       transform: translateY(-1px);
       box-shadow: var(--shadow-sm);
     }
     
     .dark &:hover {
-      background: rgba(59, 130, 246, 0.1);
+      background: var(--active-color-suppl);
     }
     
     &:active {
@@ -1087,7 +1097,7 @@ body {
     }
     
     &:focus-visible {
-      outline: 2px solid var(--primary-500);
+      outline: 2px solid var(--active-color);
       outline-offset: 2px;
     }
   }
@@ -1255,8 +1265,8 @@ body {
   
   /* 焦点状态 */
   &:focus {
-    border-color: var(--primary-500);
-    box-shadow: var(--shadow-primary);
+    border-color: var(--active-color);
+    box-shadow: 0 0 0 3px var(--active-color-suppl);
     background: var(--bg-primary);
   }
   
@@ -1651,16 +1661,17 @@ body {
       
       /* 选中状态 */
       &.selected {
-        background: rgba(59, 130, 246, 0.08);
-        border-left: 3px solid var(--primary-500);
+        background: var(--active-color-suppl);
+        border-left: 3px solid var(--active-color);
         
         td {
-          color: var(--primary-600);
+          color: var(--active-color);
           font-weight: var(--font-medium);
         }
         
         &:hover {
-          background: rgba(59, 130, 246, 0.12);
+          background: var(--active-color-suppl);
+          opacity: 0.8;
         }
       }
       
@@ -1827,12 +1838,13 @@ body {
 
 /* 链接悬停下划线效果 */
 a {
-  color: var(--primary-500);
+  color: var(--active-color);
   text-decoration: none;
   transition: color var(--duration-fast) var(--ease-standard);
   
   &:hover {
-    color: var(--primary-600);
+    color: var(--active-color);
+    opacity: 0.8;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
@@ -1851,12 +1863,12 @@ a {
   white-space: nowrap;
   
   &.badge-primary {
-    background: var(--primary-100);
-    color: var(--primary-700);
+    background: var(--active-color-suppl);
+    color: var(--active-color);
     
     .dark & {
-      background: rgba(59, 130, 246, 0.2);
-      color: var(--primary-300);
+      background: rgba(var(--active-color-rgb), 0.2);
+      color: var(--active-color-suppl);
     }
   }
   
@@ -2181,33 +2193,33 @@ a {
   width: 10px !important;
   height: 10px !important;
   border-radius: 50% !important;
-  background: #3b82f6 !important;
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6) !important;
+  background: var(--active-color) !important;
+  box-shadow: 0 0 8px rgba(var(--active-color-rgb), 0.6) !important;
   flex-shrink: 0 !important;
 }
 
-/* 错误消息 - 红色圆点 */
+/* 错误消息 - 红色圆点 (语义色，固定) */
 .n-message--error .n-message__content::before {
   background: #ef4444 !important;
   box-shadow: 0 0 8px rgba(239, 68, 68, 0.6) !important;
 }
 
-/* 警告消息 - 橙色圆点 */
+/* 警告消息 - 橙色圆点 (语义色，固定) */
 .n-message--warning .n-message__content::before {
   background: #f59e0b !important;
   box-shadow: 0 0 8px rgba(245, 158, 11, 0.6) !important;
 }
 
-/* 成功消息 - 绿色圆点 */
+/* 成功消息 - 绿色圆点 (语义色，固定) */
 .n-message--success .n-message__content::before {
   background: #10b981 !important;
   box-shadow: 0 0 8px rgba(16, 185, 129, 0.6) !important;
 }
 
-/* 信息消息 - 蓝色圆点 */
+/* 信息消息 - 使用强调色 */
 .n-message--info .n-message__content::before {
-  background: #3b82f6 !important;
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6) !important;
+  background: var(--active-color) !important;
+  box-shadow: 0 0 8px rgba(var(--active-color-rgb), 0.6) !important;
 }
 
 /* 深色主题下的颜色调整 */
@@ -2227,8 +2239,8 @@ a {
 }
 
 .dark .n-message--info .n-message__content::before {
-  background: #60a5fa !important;
-  box-shadow: 0 0 8px rgba(96, 165, 250, 0.6) !important;
+  background: var(--active-color) !important;
+  box-shadow: 0 0 8px rgba(var(--active-color-rgb), 0.6) !important;
 }
 
 /* 隐藏原生图标 */
@@ -2434,14 +2446,14 @@ body .n-message-item {
 }
 
 .n-message--info .n-message__content {
-  background: rgba(59, 130, 246, 0.1) !important;
-  border-color: rgba(59, 130, 246, 0.4) !important;
+  background: var(--active-color-suppl) !important;
+  border-color: var(--active-color) !important;
   color: var(--info-700) !important;
 }
 
 .dark .n-message--info .n-message__content {
-  background: rgba(59, 130, 246, 0.2) !important;
-  border-color: rgba(59, 130, 246, 0.6) !important;
+  background: rgba(var(--active-color-rgb), 0.2) !important;
+  border-color: var(--active-color) !important;
   color: var(--info-400) !important;
 }
 
@@ -2449,15 +2461,15 @@ body .n-message-item {
 
 /* 高亮文本 */
 .highlight {
-  background: linear-gradient(120deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
+  background: linear-gradient(120deg, var(--active-color-suppl) 0%, rgba(var(--active-color-rgb), 0.1) 100%);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
-  color: var(--primary-700);
+  color: var(--active-color);
   font-weight: var(--font-medium);
   
   .dark & {
-    background: linear-gradient(120deg, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0.15) 100%);
-    color: var(--primary-300);
+    background: linear-gradient(120deg, rgba(var(--active-color-rgb), 0.3) 0%, rgba(var(--active-color-rgb), 0.15) 100%);
+    color: var(--active-color-suppl);
   }
 }
 
@@ -2497,7 +2509,7 @@ body .n-message-item {
     background: var(--info-50);
     
     .dark & {
-      background: rgba(59, 130, 246, 0.1);
+      background: var(--active-color-suppl);
     }
   }
   
@@ -2560,8 +2572,8 @@ body .n-message-item {
     }
     
     &.active {
-      color: var(--primary-500);
-      border-bottom-color: var(--primary-500);
+      color: var(--active-color);
+      border-bottom-color: var(--active-color);
     }
   }
 }
@@ -2594,7 +2606,7 @@ body .n-message-item {
       
       &:hover {
         background: var(--bg-hover);
-        color: var(--primary-500);
+        color: var(--active-color);
       }
       
       &.divider {
@@ -2627,8 +2639,8 @@ body .n-message-item {
 }
 
 .drag-over {
-  border: 2px dashed var(--primary-500) !important;
-  background: rgba(59, 130, 246, 0.05) !important;
+  border: 2px dashed var(--active-color) !important;
+  background: var(--active-color-suppl) !important;
 }
 
 /* 聚焦环 */
@@ -2679,6 +2691,10 @@ body .n-message-item {
   align-items: center;
   padding: 12px 16px;
   background: var(--bg-tertiary);
+}
+
+/* 深色模式下显示顶部边框 */
+.dark .pagination-container {
   border-top: 1px solid var(--border-subtle);
 }
 
@@ -2687,7 +2703,7 @@ body .n-message-item {
   --n-item-text-color: var(--text-color) !important;
   --n-item-text-color-hover: var(--active-color) !important;
   --n-item-text-color-active: var(--active-color) !important;
-  --n-item-color-active: rgba(59, 130, 246, 0.1) !important;
+  --n-item-color-active: var(--active-color-suppl) !important;
   --n-item-border-color: var(--border-color) !important;
   --n-item-border-color-hover: var(--active-color) !important;
   --n-item-border-color-active: var(--active-color) !important;
@@ -2706,7 +2722,7 @@ body .n-message-item {
 /* 分页按钮激活状态 */
 .pagination-container :deep(.n-pagination-item.n-pagination-item--active) {
   border-color: var(--active-color) !important;
-  background-color: rgba(59, 130, 246, 0.1) !important;
+  background-color: var(--active-color-suppl) !important;
   font-weight: 500 !important;
 }
 
@@ -2742,7 +2758,7 @@ body .n-message-item {
   
   &:focus {
     border-color: var(--active-color) !important;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+    box-shadow: 0 0 0 2px var(--active-color-suppl) !important;
   }
   
   &.n-select--disabled {
@@ -2811,7 +2827,7 @@ body .n-message-item {
   }
   
   &.n-select-option--selected {
-    background: rgba(59, 130, 246, 0.1) !important;
+    background: var(--active-color-suppl) !important;
     color: var(--active-color) !important;
     font-weight: 500 !important;
   }

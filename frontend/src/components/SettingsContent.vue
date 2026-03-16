@@ -95,12 +95,13 @@
                     :class="{ active: currentAccentColor === color.value }"
                     :style="{ backgroundColor: color.value }"
                     @click="changeAccentColor(color.value)"
+                    :title="color.value"
                   >
                     <span v-if="currentAccentColor === color.value" class="accent-color-check">✓</span>
                   </button>
                 </div>
                 
-                <!-- 自定义颜色选择器 - 紧凑单行版本 -->
+                <!-- 自定义颜色选择器 - 实时应用 -->
                 <div class="custom-color-picker-compact">
                   <div class="color-picker-row">
                     <!-- 颜色预览 -->
@@ -126,23 +127,11 @@
                         class="color-text-input"
                         placeholder="#3182CE"
                         @input="validateHexColor"
-                        @blur="applyCustomColor"
                       />
                     </div>
                     
                     <!-- 操作按钮 -->
                     <div class="color-actions-compact">
-                      <NButton 
-                        type="primary" 
-                        size="small"
-                        @click="applyCustomColor"
-                        class="btn-apply"
-                      >
-                        <template #icon>
-                          <span class="btn-icon">✓</span>
-                        </template>
-                        {{ t('settings.applyColor') }}
-                      </NButton>
                       <NButton 
                         size="small"
                         @click="resetToDefaultColor"
@@ -385,6 +374,8 @@
 import { ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Palette, Globe, Wifi, Info } from 'lucide-vue-next'
+// 导入 Wails 设置 API
+import { UpdateSetting, GetAllSettings } from '../../bindings/fg-abyss/internal/app/handlers/settinghandler'
 
 const { t, locale } = useI18n()
 
@@ -404,6 +395,10 @@ const emit = defineEmits(['update:theme-mode'])
 const localThemeMode = ref(props.themeMode)
 const currentLanguage = ref(locale.value)
 const currentSettingsTab = ref('appearance')
+
+// Loading 和错误状态
+const settingsLoading = ref(false)
+const settingsError = ref<string | null>(null)
 
 // 强调色选项 - 极客风格
 const accentColors = [
@@ -469,28 +464,43 @@ const handleThemeChange = () => {
 }
 
 // 处理语言切换
-const changeLanguage = (lang: string) => {
+const changeLanguage = async (lang: string) => {
   locale.value = lang
   currentLanguage.value = lang
-  localStorage.setItem('locale', lang)
-  // 触发storage事件，让其他组件知道语言变化
-  window.dispatchEvent(new StorageEvent('storage', {
-    key: 'locale',
-    newValue: lang
-  }))
+  
+  try {
+    // 写入数据库
+    await UpdateSetting('language', lang)
+    // 同时更新 localStorage 作为缓存
+    localStorage.setItem('locale', lang)
+  } catch (error) {
+    console.error('更新语言设置失败:', error)
+    // 失败时回滚
+    locale.value = localStorage.getItem('locale') || 'zh-CN'
+    currentLanguage.value = locale.value
+  }
 }
 
 // 处理强调色切换
-const changeAccentColor = (color: string) => {
+const changeAccentColor = async (color: string) => {
   currentAccentColor.value = color
   customColorValue.value = color
-  localStorage.setItem('accentColor', color)
-  document.documentElement.style.setProperty('--active-color', color)
-  // 触发 storage 事件，让其他组件知道颜色变化
-  window.dispatchEvent(new StorageEvent('storage', {
-    key: 'accentColor',
-    newValue: color
-  }))
+  
+  try {
+    // 写入数据库
+    await UpdateSetting('accentColor', color)
+    // 更新 CSS 变量
+    document.documentElement.style.setProperty('--active-color', color)
+    // 同时更新 localStorage 作为缓存
+    localStorage.setItem('accentColor', color)
+  } catch (error) {
+    console.error('更新强调色设置失败:', error)
+    // 失败时回滚
+    const savedColor = localStorage.getItem('accentColor') || '#18a058'
+    currentAccentColor.value = savedColor
+    customColorValue.value = savedColor
+    document.documentElement.style.setProperty('--active-color', savedColor)
+  }
 }
 
 // 验证 HEX 颜色格式
@@ -503,19 +513,23 @@ const validateHexColor = (event: Event) => {
   
   if (hexColorRegex.test(value)) {
     colorError.value = false
-    // 格式化颜色值（添加#号）
-    if (!value.startsWith('#')) {
-      customColorValue.value = '#' + value
+    // 实时更新颜色应用
+    let color = value
+    if (!color.startsWith('#')) {
+      color = '#' + value
     }
+    // 实时更新预览和应用
+    document.documentElement.style.setProperty('--active-color', color)
   } else {
     colorError.value = true
   }
 }
 
-// 处理自定义颜色选择器输入
+// 处理自定义颜色选择器输入 - 实时应用颜色
 const handleCustomColorPick = () => {
   colorError.value = false
-  // 实时更新预览，但不应用
+  // 实时应用颜色
+  changeAccentColor(customColorValue.value)
 }
 
 // 应用自定义颜色
@@ -554,27 +568,44 @@ const resetToDefaultColor = () => {
 }
 
 // 处理字体切换
-const changeFontFamily = (font: string) => {
+const changeFontFamily = async (font: string) => {
   currentFontFamily.value = font
-  localStorage.setItem('fontFamily', font)
-  document.documentElement.style.setProperty('--font-family', font)
-  // 触发storage事件，让其他组件知道字体变化
-  window.dispatchEvent(new StorageEvent('storage', {
-    key: 'fontFamily',
-    newValue: font
-  }))
+  
+  try {
+    // 写入数据库
+    await UpdateSetting('fontFamily', font)
+    // 更新 CSS 变量
+    document.documentElement.style.setProperty('--font-family', font)
+    // 同时更新 localStorage 作为缓存
+    localStorage.setItem('fontFamily', font)
+  } catch (error) {
+    console.error('更新字体设置失败:', error)
+    // 失败时回滚
+    const savedFont = localStorage.getItem('fontFamily') || '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif'
+    currentFontFamily.value = savedFont
+    document.documentElement.style.setProperty('--font-family', savedFont)
+  }
 }
 
 // 处理字体大小切换
-const changeFontSize = (size: string) => {
+const changeFontSize = async (size: string) => {
   currentFontSize.value = size
-  localStorage.setItem('fontSize', size)
-  document.documentElement.style.setProperty('--font-size', size)
-  // 触发storage事件，让其他组件知道字体大小变化
-  window.dispatchEvent(new StorageEvent('storage', {
-    key: 'fontSize',
-    newValue: size
-  }))
+  
+  try {
+    // 写入数据库
+    await UpdateSetting('fontSize', size)
+    // 更新 CSS 变量
+    document.documentElement.style.setProperty('--font-size', size)
+    // 同时更新 localStorage 作为缓存
+    localStorage.setItem('fontSize', size)
+  } catch (error) {
+    console.error('更新字体大小设置失败:', error)
+    // 失败时回滚
+    const savedSize = localStorage.getItem('fontSize') || '14px'
+    currentFontSize.value = savedSize
+    fontSizeValue.value = parseInt(savedSize)
+    document.documentElement.style.setProperty('--font-size', savedSize)
+  }
 }
 
 // 应用字体大小
@@ -592,15 +623,64 @@ const openGithubRepo = () => {
   window.open('https://github.com/FG-ABYSS', '_blank')
 }
 
-// 初始化语言、强调色、字体和字体大小
-onMounted(() => {
+// 初始化设置：从后端数据库读取
+onMounted(async () => {
+  settingsLoading.value = true
+  settingsError.value = null
+  
+  try {
+    // 从后端读取所有设置
+    const settings = await GetAllSettings()
+    
+    // 遍历设置并应用
+    settings.forEach(setting => {
+      switch (setting.key) {
+        case 'language':
+          locale.value = setting.value
+          currentLanguage.value = setting.value
+          localStorage.setItem('locale', setting.value)
+          break
+        case 'accentColor':
+          currentAccentColor.value = setting.value
+          customColorValue.value = setting.value
+          document.documentElement.style.setProperty('--active-color', setting.value)
+          localStorage.setItem('accentColor', setting.value)
+          break
+        case 'fontFamily':
+          currentFontFamily.value = setting.value
+          document.documentElement.style.setProperty('--font-family', setting.value)
+          localStorage.setItem('fontFamily', setting.value)
+          break
+        case 'fontSize':
+          currentFontSize.value = setting.value
+          fontSizeValue.value = parseInt(setting.value)
+          document.documentElement.style.setProperty('--font-size', setting.value)
+          localStorage.setItem('fontSize', setting.value)
+          break
+        case 'theme':
+          localThemeMode.value = setting.value
+          localStorage.setItem('theme', setting.value)
+          break
+      }
+    })
+  } catch (error) {
+    console.error('读取设置失败:', error)
+    settingsError.value = '读取设置失败，使用本地缓存'
+    // 如果读取失败，使用 localStorage 作为 fallback
+    loadSettingsFromLocalStorage()
+  } finally {
+    settingsLoading.value = false
+  }
+})
+
+// 从 localStorage 读取设置的 fallback 函数
+const loadSettingsFromLocalStorage = () => {
   const savedLanguage = localStorage.getItem('locale')
   if (savedLanguage) {
     locale.value = savedLanguage
     currentLanguage.value = savedLanguage
   }
   
-  // 初始化强调色
   const savedAccentColor = localStorage.getItem('accentColor')
   if (savedAccentColor) {
     currentAccentColor.value = savedAccentColor
@@ -609,7 +689,6 @@ onMounted(() => {
     document.documentElement.style.setProperty('--active-color', currentAccentColor.value)
   }
   
-  // 初始化字体
   const savedFontFamily = localStorage.getItem('fontFamily')
   if (savedFontFamily) {
     currentFontFamily.value = savedFontFamily
@@ -618,7 +697,6 @@ onMounted(() => {
     document.documentElement.style.setProperty('--font-family', currentFontFamily.value)
   }
   
-  // 初始化字体大小
   const savedFontSize = localStorage.getItem('fontSize')
   if (savedFontSize) {
     currentFontSize.value = savedFontSize
@@ -628,25 +706,7 @@ onMounted(() => {
     fontSizeValue.value = parseInt(currentFontSize.value)
     document.documentElement.style.setProperty('--font-size', currentFontSize.value)
   }
-  
-  // 监听 localStorage 中变化
-  window.addEventListener('storage', (event) => {
-    if (event.key === 'accentColor' && event.newValue) {
-      currentAccentColor.value = event.newValue
-      document.documentElement.style.setProperty('--active-color', event.newValue)
-    } else if (event.key === 'fontFamily' && event.newValue) {
-      currentFontFamily.value = event.newValue
-      document.documentElement.style.setProperty('--font-family', event.newValue)
-    } else if (event.key === 'fontSize' && event.newValue) {
-      currentFontSize.value = event.newValue
-      fontSizeValue.value = parseInt(event.newValue)
-      document.documentElement.style.setProperty('--font-size', event.newValue)
-    } else if (event.key === 'locale' && event.newValue) {
-      locale.value = event.newValue
-      currentLanguage.value = event.newValue
-    }
-  })
-})
+}
 </script>
 
 <style scoped>

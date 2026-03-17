@@ -710,43 +710,60 @@ const handleContextMenu = (row: WebShell, event: MouseEvent) => {
   menuVisible.value = true
 }
 
+// 打开 WebShell 控制窗口
+const openWebShellControlWindow = async (webshell: WebShell) => {
+  try {
+    // 使用 Wails API 打开新窗口
+    // @ts-ignore
+    if (window.runtime) {
+      // 发送事件到后端，请求打开新窗口
+      // @ts-ignore
+      await window.runtime.EventsEmit('open-webshell-window', {
+        id: webshell.id,
+        name: webshell.name || webshell.url,
+        url: webshell.url,
+      })
+      
+      message.success(`已打开 WebShell 控制窗口：${webshell.name || webshell.url}`)
+    } else {
+      // 浏览器环境下，使用 window.open 作为降级方案
+      // 使用完整路径
+      const baseUrl = window.location.origin + window.location.pathname
+      const url = `${baseUrl}#/webshell-control?id=${webshell.id}`
+      
+      const newWindow = window.open(url, '_blank', 'width=1200,height=800,resizable=yes,scrollbars=yes')
+      
+      if (newWindow) {
+        message.success('新窗口已打开（浏览器模式）')
+      } else {
+        message.warning('浏览器阻止了弹窗，请允许弹窗后重试')
+      }
+    }
+  } catch (error: any) {
+    console.error('打开控制窗口失败:', error)
+    message.error('打开控制窗口失败：' + (error.message || '未知错误'))
+  }
+}
+
 // 处理菜单点击
 const handleMenuClick = (key: string) => {
   if (!selectedRow.value) return
   
   switch (key) {
     case 'enter':
-      console.log('Enter webshell:', selectedRow.value)
-      // 发送事件到后端创建Wails 3原生窗口
-      emitEvent('createWindow', {
-        title: '控制 WebShell',
-        width: 800,
-        height: 600,
-        x: 100,
-        y: 100
-      })
+      console.log('Control webshell:', selectedRow.value)
+      // 打开 WebShell 控制窗口
+      openWebShellControlWindow(selectedRow.value)
       break
     case 'cache':
       console.log('Cache webshell:', selectedRow.value)
-      // 发送事件到后端创建Wails 3原生窗口
-      emitEvent('createWindow', {
-        title: '缓存 WebShell',
-        width: 800,
-        height: 600,
-        x: 150,
-        y: 150
-      })
+      // TODO: 实现缓存功能
+      message.info('缓存功能尚未实现')
       break
     case 'edit':
       console.log('Edit webshell:', selectedRow.value)
-      // 发送事件到后端创建Wails 3原生窗口
-      emitEvent('createWindow', {
-        title: '编辑 WebShell',
-        width: 800,
-        height: 600,
-        x: 200,
-        y: 200
-      })
+      // TODO: 打开编辑窗口
+      message.info('编辑功能尚未实现')
       break
     case 'delete':
       console.log('Delete webshell:', selectedRow.value)

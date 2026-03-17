@@ -15,6 +15,10 @@
         <FileManager ref="fileManagerRef" />
       </n-tab-pane>
       
+      <n-tab-pane name="database" tab="数据库管理" display="flex" style="flex: 1">
+        <DatabaseManager ref="databaseManagerRef" />
+      </n-tab-pane>
+      
       <n-tab-pane name="command" tab="命令执行" display="flex" style="flex: 1">
         <CommandPanel ref="commandPanelRef" />
       </n-tab-pane>
@@ -26,12 +30,14 @@
 import { ref } from 'vue'
 import WebShellTerminal from './WebShellTerminal.vue'
 import FileManager from './FileManager.vue'
+import DatabaseManager from './DatabaseManager.vue'
 import CommandPanel from './CommandPanel.vue'
 
 const activeTab = ref('terminal')
 
 const terminalRef = ref<InstanceType<typeof WebShellTerminal> | null>(null)
 const fileManagerRef = ref<InstanceType<typeof FileManager> | null>(null)
+const databaseManagerRef = ref<InstanceType<typeof DatabaseManager> | null>(null)
 const commandPanelRef = ref<InstanceType<typeof CommandPanel> | null>(null)
 
 const handleTabChange = (name: string) => {

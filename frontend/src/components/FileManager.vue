@@ -5,7 +5,7 @@
       <div class="toolbar-left">
         <n-button size="small" @click="handleRefresh">
           <template #icon>
-            <n-icon><Refresh /></n-icon>
+            <n-icon><RefreshCw /></n-icon>
           </template>
           刷新
         </n-button>
@@ -19,7 +19,7 @@
         
         <n-button size="small" @click="showCreateFolder = true">
           <template #icon>
-            <n-icon><FolderAdd /></n-icon>
+            <n-icon><FolderPlus /></n-icon>
           </template>
           新建文件夹
         </n-button>
@@ -38,9 +38,9 @@
           下载
         </n-button>
         
-        <n-button size="small" @click="handleDelete" :disabled="!selectedFile" type="error">
+        <n-button size="small" type="error" @click="handleDelete" :disabled="!selectedFile">
           <template #icon>
-            <n-icon><Delete /></n-icon>
+            <n-icon><Trash2 /></n-icon>
           </template>
           删除
         </n-button>
@@ -104,7 +104,7 @@
         <n-upload-dragger>
           <div style="margin-bottom: 12px">
             <n-icon size="48" :depth="3">
-              <Archive />
+              <Upload />
             </n-icon>
           </div>
           <n-text style="font-size: 16px">
@@ -138,15 +138,15 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useMessage, useDialog } from 'naive-ui'
 import {
-  Refresh,
   ArrowUp,
-  FolderAdd,
+  FolderPlus,
   Upload,
   Download,
-  Delete,
+  Trash2,
   Search,
-  Archive
-} from '@vicons/carbon'
+  Archive,
+  RefreshCw
+} from 'lucide-vue-next'
 import type { DataTableColumns, DataTableRowKey } from 'naive-ui'
 
 const message = useMessage()

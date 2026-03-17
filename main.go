@@ -191,6 +191,9 @@ func main() {
 	})
 	log.Println("Window created successfully")
 
+	// TODO: Wails v3 窗口事件监听需要查阅文档
+	// 目前使用前端 window.open 作为降级方案
+
 	// 启动应用
 	log.Println("Starting application...")
 	if err := app.Run(); err != nil {

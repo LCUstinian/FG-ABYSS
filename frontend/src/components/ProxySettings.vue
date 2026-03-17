@@ -222,7 +222,7 @@ import {
   GetProxyStatus,
   DisableProxy,
   ValidateProxy,
-} from '@bindings/ProxyHandler'
+} from '@bindings/fg-abyss/internal/app/handlers/proxyhandler'
 
 const message = useMessage()
 const formRef = ref<FormInst | null>(null)

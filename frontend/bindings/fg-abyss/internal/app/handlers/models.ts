@@ -185,6 +185,30 @@ export class BatchUpdateStatusRequest {
 }
 
 /**
+ * CloseWebShellWindowRequest 关闭 WebShell 窗口请求
+ */
+export class CloseWebShellWindowRequest {
+    "webshell_id": string;
+
+    /** Creates a new CloseWebShellWindowRequest instance. */
+    constructor($$source: Partial<CloseWebShellWindowRequest> = {}) {
+        if (!("webshell_id" in $$source)) {
+            this["webshell_id"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new CloseWebShellWindowRequest instance from a string or object.
+     */
+    static createFrom($$source: any = {}): CloseWebShellWindowRequest {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new CloseWebShellWindowRequest($$parsedSource as Partial<CloseWebShellWindowRequest>);
+    }
+}
+
+/**
  * CommandResult 命令执行结果
  */
 export class CommandResult {
@@ -1806,6 +1830,38 @@ export class LogRequest {
     static createFrom($$source: any = {}): LogRequest {
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         return new LogRequest($$parsedSource as Partial<LogRequest>);
+    }
+}
+
+/**
+ * OpenWebShellWindowRequest 打开 WebShell 窗口请求
+ */
+export class OpenWebShellWindowRequest {
+    "webshell_id": string;
+    "name": string;
+    "url": string;
+
+    /** Creates a new OpenWebShellWindowRequest instance. */
+    constructor($$source: Partial<OpenWebShellWindowRequest> = {}) {
+        if (!("webshell_id" in $$source)) {
+            this["webshell_id"] = "";
+        }
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+        if (!("url" in $$source)) {
+            this["url"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new OpenWebShellWindowRequest instance from a string or object.
+     */
+    static createFrom($$source: any = {}): OpenWebShellWindowRequest {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new OpenWebShellWindowRequest($$parsedSource as Partial<OpenWebShellWindowRequest>);
     }
 }
 

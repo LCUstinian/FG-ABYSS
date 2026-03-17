@@ -151,7 +151,7 @@ import {
 } from '@vicons/ionicons5'
 import type { FormRules, FormInst, DataTableColumns } from 'naive-ui'
 import PayloadGenerator from './PayloadGenerator.vue'
-import { GetTemplates, AddTemplate, DeleteTemplate } from '../../bindings/fg-abyss/internal/app/handlers/payloadhandler.js'
+import { GetTemplates, AddTemplate, DeleteTemplate } from '../../bindings/fg-abyss/internal/app/handlers/payloadhandler'
 
 interface PayloadItem {
   id: number
@@ -503,7 +503,7 @@ const loadPayloads = () => {
 const loadTemplates = async () => {
   try {
     const response = await GetTemplates()
-    customTemplates.value = response.templates.map((t) => ({
+    customTemplates.value = response.map((t) => ({
       ...t,
       isCustom: true,
     }))
@@ -527,15 +527,15 @@ onMounted(() => {
 <style scoped lang="scss">
 .payload-workspace {
   padding: 20px;
-  height: calc(100vh - 120px);
+  min-height: calc(100vh - 140px);
 
   :deep(.n-tabs) {
-    height: 100%;
+    height: auto;
+    min-height: 100%;
   }
 
   :deep(.n-tab-pane) {
     padding: 0;
-    height: 100%;
   }
 
   .payload-content {

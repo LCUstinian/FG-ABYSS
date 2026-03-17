@@ -290,7 +290,7 @@ import {
   GenerateConfig,
   ValidateConfig,
   TestEncryption,
-} from '@bindings/EncryptionHandler'
+} from '@bindings/fg-abyss/internal/app/handlers/encryptionhandler'
 
 const message = useMessage()
 const formRef = ref<FormInst | null>(null)

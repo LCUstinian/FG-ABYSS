@@ -148,44 +148,12 @@
               </div>
               <div class="settings-card">
                 <h4>{{ t('settings.font') }}</h4>
-                <div class="font-settings">
-                  <div class="font-setting-item">
-                    <label>{{ t('settings.fontFamily') }}</label>
-                    <div class="font-family-selector">
-                      <select 
-                        v-model="currentFontFamily" 
-                        @change="changeFontFamily(currentFontFamily)"
-                        class="font-family-select"
-                      >
-                        <option 
-                          v-for="font in fontFamilies" 
-                          :key="font.value"
-                          :value="font.value"
-                          :style="{ fontFamily: font.value }"
-                        >
-                          {{ font.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="font-setting-item">
-                    <label>{{ t('settings.fontSize') }}</label>
-                    <div class="font-size-selector">
-                      <div class="font-size-input-with-button">
-                        <div class="font-size-input-group">
-                          <input 
-                            type="number" 
-                            v-model.number="fontSizeValue" 
-                            min="8" 
-                            max="24" 
-                            class="font-size-input"
-                            :placeholder="t('settings.fontSizePlaceholder')"
-                          >
-                          <span class="font-size-unit">px</span>
-                        </div>
-                        <button @click="applyFontSize" class="apply-button">{{ t('settings.apply') }}</button>
-                      </div>
-                    </div>
+                <div class="placeholder-content">
+                  <div class="placeholder-icon">🔠</div>
+                  <p>{{ t('settings.fontUnderDevelopment') }}</p>
+                  <div class="placeholder-tips">
+                    <span>{{ t('settings.tip') }}</span>
+                    <p>{{ t('settings.fontTip') }}</p>
                   </div>
                 </div>
               </div>
@@ -374,7 +342,7 @@
 import { ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Palette, Globe, Wifi, Info } from 'lucide-vue-next'
-// 导入 Wails 设置 API
+
 import { UpdateSetting, GetAllSettings } from '../../bindings/fg-abyss/internal/app/handlers/settinghandler'
 
 const { t, locale } = useI18n()

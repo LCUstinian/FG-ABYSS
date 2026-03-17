@@ -10,6 +10,17 @@
 // @ts-ignore: Unused imports
 import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Create } from "@wailsio/runtime";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import * as $models from "./models.js";
+
+/**
+ * CloseWebShellWindow 关闭 WebShell 独立窗口
+ */
+export function CloseWebShellWindow(req: $models.CloseWebShellWindowRequest | null): $CancellablePromise<void> {
+    return $Call.ByID(2051723744, req);
+}
+
 /**
  * GetSystemStatus 获取系统状态
  */
@@ -17,6 +28,22 @@ export function GetSystemStatus(): $CancellablePromise<{ [_ in string]?: any }> 
     return $Call.ByID(629513575).then(($result: any) => {
         return $$createType0($result);
     });
+}
+
+/**
+ * GetWebShellWindowStatus 获取 WebShell 窗口状态
+ */
+export function GetWebShellWindowStatus(webshellID: string): $CancellablePromise<{ [_ in string]?: any }> {
+    return $Call.ByID(4014532282, webshellID).then(($result: any) => {
+        return $$createType0($result);
+    });
+}
+
+/**
+ * OpenWebShellWindow 打开 WebShell 独立窗口
+ */
+export function OpenWebShellWindow(req: $models.OpenWebShellWindowRequest | null): $CancellablePromise<void> {
+    return $Call.ByID(1399478548, req);
 }
 
 // Private type creation functions

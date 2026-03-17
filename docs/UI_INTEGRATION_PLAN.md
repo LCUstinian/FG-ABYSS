@@ -72,50 +72,35 @@
 
 ## 三、功能集成方案
 
-### 3.1 主导航结构优化
+### 3.1 主导航结构（保持现有架构）
 
-#### 当前导航（5 个主菜单）
-```
-1. 首页 (Home)
-2. 项目 (Projects)
-3. 载荷 (Payloads)
-4. 插件 (Plugins)
-5. 设置 (Settings)
-```
-
-#### 优化后的导航结构（建议）
+#### 当前导航（5 个主菜单 - 保持不变）
 ```
 1. 首页 (Home)
    - 仪表盘 Dashboard
    - 快捷操作 Quick Actions
 
-2. 资产管理 (Assets)
+2. 项目 (Projects)
    - 项目管理 Projects
    - WebShell 管理 WebShells
    - 数据库管理 Databases
+   - 批量操作 Batch Operations
 
-3. 载荷中心 (Payloads)
+3. 载荷 (Payloads)
    - 载荷生成 Generator
    - 载荷管理 Library
    - 模板管理 Templates
 
-4. 工具集 (Tools)
-   - 文件管理 File Manager
-   - 批量操作 Batch Operations
-   - 代理设置 Proxy
-   - 流量加密 Encryption
-
-5. 监控审计 (Audit)
-   - 审计日志 Audit Logs
-   - 连接监控 Connection Monitor
-
-6. 插件扩展 (Plugins)
+4. 插件 (Plugins)
    - 插件管理 Plugin Manager
+   - 审计日志 Audit Logs (集成在此)
    - 插件商店 Plugin Store (预留)
 
-7. 系统设置 (Settings)
+5. 设置 (Settings)
    - 外观设置 Appearance
    - 功能设置 Features
+   - 代理设置 Proxy (集成在此)
+   - 流量加密 Encryption (集成在此)
    - 安全设置 Security
    - 关于 About
 ```

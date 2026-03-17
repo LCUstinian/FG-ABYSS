@@ -7,6 +7,7 @@ import ProjectsContent from './components/ProjectsContent.vue'
 import PayloadsContent from './components/PayloadsContent.vue'
 import PluginsContent from './components/PluginsContent.vue'
 import SettingsContent from './components/SettingsContent.vue'
+import WebShellControlWindow from './components/WebShellControlWindow.vue'
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { 
@@ -260,6 +261,11 @@ let updateTimer: number | null = null
 
 // 计算当前内容组件
 const currentContent = computed(() => {
+  // 检查是否在 WebShell 控制窗口模式
+  const hash = window.location.hash
+  if (hash.startsWith('#/webshell-control')) {
+    return 'webshell-control'
+  }
   return currentNavItem.value
 })
 
@@ -405,59 +411,67 @@ onUnmounted(() => {
   >
     <NMessageProvider>
       <NDialogProvider>
-        <div class="app-container" :class="{ 'dark': isDarkTheme }">
-          <TitleBar :is-dark-theme="isDarkTheme" />
-          <div class="main-content">
-            <!-- 左边导航区 -->
-            <Sidebar 
-              :current-nav-item="currentNavItem"
-              @switch-nav="switchNavItem"
-            />
-            
-            <!-- 右边内容区 -->
-            <div class="content-area">
-              <!-- 首页内容 -->
-              <HomeContent 
-                v-if="currentContent === 'home'"
-                :system-status="systemStatus"
+        <!-- 判断是否为 WebShell 控制窗口模式 -->
+        <template v-if="currentContent === 'webshell-control'">
+          <!-- 最小化布局 - 只显示控制窗口组件 -->
+          <WebShellControlWindow />
+        </template>
+        <template v-else>
+          <!-- 完整布局 - 主窗口模式 -->
+          <div class="app-container" :class="{ 'dark': isDarkTheme }">
+            <TitleBar :is-dark-theme="isDarkTheme" />
+            <div class="main-content">
+              <!-- 左边导航区 -->
+              <Sidebar 
+                :current-nav-item="currentNavItem"
+                @switch-nav="switchNavItem"
               />
               
-              <!-- 项目内容 -->
-              <ProjectsContent 
-                v-else-if="currentContent === 'projects'"
-              />
-              
-              <!-- 载荷内容 -->
+              <!-- 右边内容区 -->
+              <div class="content-area">
+                <!-- 首页内容 -->
+                <HomeContent 
+                  v-if="currentContent === 'home'"
+                  :system-status="systemStatus"
+                />
+                
+                <!-- 项目内容 -->
+                <ProjectsContent 
+                  v-else-if="currentContent === 'projects'"
+                />
+                
+                <!-- 载荷内容 -->
               <PayloadsContent 
                 v-else-if="currentContent === 'payloads'"
               />
-              
-              <!-- 插件内容 -->
-              <PluginsContent 
-                v-else-if="currentContent === 'plugins'"
-              />
-              
-              <!-- 设置内容 -->
-              <SettingsContent 
-                v-else-if="currentContent === 'settings'"
-                :is-dark-theme="isDarkTheme"
-                :theme-mode="themeMode"
-                @update:theme-mode="handleThemeChange"
-              />
-              
-              <!-- 默认内容（当没有匹配任何条件时显示） -->
-              <div v-else class="default-content">
-                <div class="default-content-inner">
-                  <h2>{{ t('common.loading') }}</h2>
-                  <p>正在加载内容...</p>
+                
+                <!-- 插件内容 -->
+                <PluginsContent 
+                  v-else-if="currentContent === 'plugins'"
+                />
+                
+                <!-- 设置内容 -->
+                <SettingsContent 
+                  v-else-if="currentContent === 'settings'"
+                  :is-dark-theme="isDarkTheme"
+                  :theme-mode="themeMode"
+                  @update:theme-mode="handleThemeChange"
+                />
+                
+                <!-- 默认内容（当没有匹配任何条件时显示） -->
+                <div v-else class="default-content">
+                  <div class="default-content-inner">
+                    <h2>{{ t('common.loading') }}</h2>
+                    <p>正在加载内容...</p>
+                  </div>
                 </div>
               </div>
             </div>
+            
+            <!-- 底部状态栏 -->
+            <StatusBar :system-status="systemStatus" />
           </div>
-          
-          <!-- 底部状态栏 -->
-          <StatusBar :system-status="systemStatus" />
-        </div>
+        </template>
       </NDialogProvider>
     </NMessageProvider>
   </NConfigProvider>
@@ -493,6 +507,9 @@ onUnmounted(() => {
   --transition-fast: 150ms ease-in-out;
   --transition-normal: 200ms ease-in-out;
   --transition-slow: 300ms ease-in-out;
+  /* 代码编辑器相关变量 */
+  --code-background: #1e293b;
+  --code-text: #f1f5f9;
 }
 
 .dark {
@@ -513,6 +530,9 @@ onUnmounted(() => {
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+  /* 代码编辑器相关变量（深色模式） */
+  --code-background: #0f172a;
+  --code-text: #e2e8f0;
 }
 
 body {

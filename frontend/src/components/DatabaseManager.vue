@@ -326,7 +326,7 @@ import {
   ExecuteQuery,
   GetTables,
   GetTableColumns,
-} from '@bindings/DatabaseHandler'
+} from '../../bindings/fg-abyss/internal/app/handlers/databasehandler'
 
 interface DatabaseConnection {
   id: number

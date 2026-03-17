@@ -14,6 +14,7 @@ declare module "@wailsio/runtime" {
         interface CustomEvents {
             "createWindow": main$0.WindowCreateEvent;
             "time": string;
+            "window-resize-correction": main$0.WindowResizeCorrectionEvent;
         }
     }
 }

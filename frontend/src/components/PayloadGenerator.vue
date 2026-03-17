@@ -126,7 +126,7 @@ const templateColumns: DataTableColumns = [
     title: '类型',
     key: 'type',
     width: 80,
-    render: (row: TemplateInfo) => h('n-tag', { type: getTypeColor(row.type) }, () => row.type.toUpperCase()),
+    render: (row) => h('n-tag', { type: getTypeColor((row as unknown as TemplateInfo).type) }, () => (row as unknown as TemplateInfo).type.toUpperCase()),
   },
   { title: '功能', key: 'function', width: 100 },
   { title: '描述', key: 'description' },
@@ -154,13 +154,15 @@ const handleGenerate = async () => {
       encoder: formData.encoder,
       obfuscation_level: formData.obfuscationLevel,
       output_filename: formData.outputFilename,
+      encryption_key: '',
+      template_name: '',
     })
 
-    if (response.success) {
+    if (response?.success) {
       previewCode.value = response.content || ''
       message.success('Payload 生成成功')
     } else {
-      message.error('生成失败：' + (response.message || '未知错误'))
+      message.error('生成失败：' + (response?.message || '未知错误'))
     }
   } catch (error: any) {
     if (error.errors) return
@@ -180,9 +182,11 @@ const handlePreview = async () => {
       encoder: formData.encoder,
       obfuscation_level: formData.obfuscationLevel,
       output_filename: formData.outputFilename,
+      encryption_key: '',
+      template_name: '',
     })
 
-    previewCode.value = response.content || ''
+    previewCode.value = response?.content || ''
     message.success('预览已更新')
   } catch (error: any) {
     if (error.errors) return
@@ -194,10 +198,10 @@ const loadTemplates = async () => {
   try {
     const response = await GetTemplates()
     templateList.value = response.map((t) => ({
-      name: t.name,
-      type: t.type,
-      function: t.function,
-      description: getTemplateDescription(t.name),
+      name: t?.name || '',
+      type: t?.type || '',
+      function: t?.function || '',
+      description: getTemplateDescription(t?.name || ''),
     }))
   } catch (error) {
     console.error('加载模板失败:', error)

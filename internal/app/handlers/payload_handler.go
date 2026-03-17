@@ -76,6 +76,9 @@ func (h *PayloadHandler) Generate(ctx context.Context, req *GenerateRequest) (*G
 		return &GenerateResponse{
 			Success: false,
 			Message: err.Error(),
+			Content: "",
+			Filename: "",
+			Size:     0,
 		}, nil
 	}
 	

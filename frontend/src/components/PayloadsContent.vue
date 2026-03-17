@@ -11,14 +11,14 @@
 
     <!-- 内容主体 -->
     <div class="content-body">
-      <n-tabs v-model="activeTab" type="line" animated>
+      <n-tabs v-model:value="activeTab" type="line" animated>
         <!-- Payload 生成标签页 -->
         <n-tab-pane name="generator" tab="Payload 生成">
           <div class="generator-container">
-            <n-grid :cols="24" :x-gap="20" :y-gap="20" style="flex: 1; min-height: 0;">
+            <n-grid :cols="24" :x-gap="24" style="flex: 1; min-height: 0;">
               <!-- 配置区域 -->
-              <n-grid-item :span="12">
-                <n-card title="Payload 配置" :bordered="false" class="config-card" style="height: 100%;">
+              <n-grid-item :span="12" style="height: 100%; min-height: 0;">
+                <n-card title="Payload 配置" :bordered="false" class="config-card">
                   <n-form ref="formRef" :model="formData" :rules="formRules" label-placement="left" :label-width="100">
                     <n-form-item label="脚本类型" path="type">
                       <n-select v-model:value="formData.type" :options="typeOptions" />
@@ -72,8 +72,8 @@
               </n-grid-item>
 
               <!-- 预览区域 -->
-              <n-grid-item :span="12">
-                <n-card title="代码预览" :bordered="false" class="preview-card" style="height: 100%;">
+              <n-grid-item :span="12" style="height: 100%; min-height: 0;">
+                <n-card title="Payload 预览" :bordered="false" class="preview-card">
                   <template #header-extra>
                     <n-space v-if="generatedResult">
                       <n-button quaternary size="small" @click="handleCopy">
@@ -91,51 +91,59 @@
                     </n-space>
                   </template>
 
+                  <!-- 生成状态 -->
+                  <div v-if="generatedResult" class="generation-status">
+                    <div class="status-content">
+                      <n-space align="center" :size="16">
+                        <n-tag :type="generatedResult.success ? 'success' : 'error'" size="medium" round>
+                          <template #icon>
+                            <n-icon :component="generatedResult.success ? CheckmarkCircle : CloseCircle" />
+                          </template>
+                          {{ generatedResult.success ? '生成成功' : '生成失败' }}
+                        </n-tag>
+                        
+                        <div class="status-divider"></div>
+                        
+                        <div class="status-item">
+                          <n-icon :component="DocumentOutline" :size="16" />
+                          <n-text depth="2" style="margin-left: 6px;">
+                            {{ generatedResult.filename }}
+                          </n-text>
+                        </div>
+                        
+                        <div class="status-divider"></div>
+                        
+                        <div class="status-item">
+                          <n-icon :component="FlashOutline" :size="16" />
+                          <n-text depth="2" style="margin-left: 6px;">
+                            {{ formatFileSize(generatedResult.size) }}
+                          </n-text>
+                        </div>
+                      </n-space>
+                    </div>
+                  </div>
+
                   <div class="code-preview">
                     <n-scrollbar style="max-height: 500px">
                       <pre v-if="previewCode"><code>{{ previewCode }}</code></pre>
                       <n-empty v-else description="点击 &quot;预览代码&quot; 或 &quot;生成 Payload&quot; 查看结果" size="small" />
                     </n-scrollbar>
                   </div>
-
-                  <n-divider v-if="generatedResult" />
-
-                  <n-space v-if="generatedResult" vertical>
-                    <n-statistic label="生成状态">
-                      <n-tag :type="generatedResult.success ? 'success' : 'error'">
-                        {{ generatedResult.success ? '成功' : '失败' }}
-                      </n-tag>
-                    </n-statistic>
-                    <n-grid :cols="2" :x-gap="12">
-                      <n-grid-item>
-                        <n-statistic label="文件名">
-                          <n-text depth="3">{{ generatedResult.filename }}</n-text>
-                        </n-statistic>
-                      </n-grid-item>
-                      <n-grid-item>
-                        <n-statistic label="文件大小">
-                          <n-text depth="3">{{ formatFileSize(generatedResult.size) }}</n-text>
-                        </n-statistic>
-                      </n-grid-item>
-                    </n-grid>
-                  </n-space>
                 </n-card>
               </n-grid-item>
             </n-grid>
-
-            <!-- 内置模板列表 -->
-            <n-card title="内置模板" :bordered="false" style="margin-top: 20px; flex-shrink: 0;">
-              <n-data-table :columns="templateColumns" :data="templateList" :pagination="false" size="small" />
-            </n-card>
           </div>
         </n-tab-pane>
 
         <!-- Payload 列表标签页 -->
         <n-tab-pane name="list" tab="Payload 列表">
-          <n-card :bordered="false">
+          <n-card :bordered="false" size="large">
             <template #header>
-              <n-space justify="space-between">
-                <n-text>已生成的 Payload</n-text>
+              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                  <n-text style="font-size: 16px; font-weight: 600; color: var(--text-primary);">已生成的 Payload</n-text>
+                  <n-text depth="3" style="font-size: 13px; margin-left: 12px;">共 {{ filteredPayloads.length }} 个</n-text>
+                </div>
                 <n-space>
                   <n-input v-model:value="searchQuery" placeholder="搜索 Payload..." clearable style="width: 240px">
                     <template #prefix>
@@ -149,58 +157,97 @@
                     刷新
                   </n-button>
                 </n-space>
-              </n-space>
+              </div>
             </template>
 
-            <n-data-table :columns="payloadColumns" :data="filteredPayloads" :row-key="row => row.id" :pagination="pagination" :scroll-x="1200" />
+            <n-data-table :columns="payloadColumns" :data="filteredPayloads" :row-key="row => row.id" :pagination="pagination" :scroll-x="1200" striped />
           </n-card>
         </n-tab-pane>
 
         <!-- 模板管理标签页 -->
         <n-tab-pane name="templates" tab="模板管理">
-          <n-card :bordered="false">
+          <n-card :bordered="false" size="large">
             <template #header>
-              <n-space justify="space-between">
-                <n-text>自定义模板</n-text>
-                <n-button type="primary" @click="showCreateTemplateModal = true">
-                  <template #icon>
-                    <n-icon :component="AddOutline" />
-                  </template>
-                  创建模板
-                </n-button>
-              </n-space>
+              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                  <n-text style="font-size: 16px; font-weight: 600; color: var(--text-primary);">自定义模板</n-text>
+                  <n-text depth="3" style="font-size: 13px; margin-left: 12px;">共 {{ customTemplates.length }} 个</n-text>
+                </div>
+                <n-space>
+                  <n-popconfirm @positive-click="handleDeleteAllTemplates">
+                    <template #trigger>
+                      <n-button type="error" quaternary>
+                        <template #icon>
+                          <n-icon :component="TrashOutline" />
+                        </template>
+                        清空全部
+                      </n-button>
+                    </template>
+                    确定要清空所有自定义模板吗？
+                  </n-popconfirm>
+                  <n-button type="primary" @click="showCreateTemplateModal = true">
+                    <template #icon>
+                      <n-icon :component="AddOutline" />
+                    </template>
+                    创建模板
+                  </n-button>
+                </n-space>
+              </div>
             </template>
 
-            <n-data-table :columns="templateColumns2" :data="customTemplates" :row-key="row => row.name" :pagination="false" />
+            <n-data-table :columns="templateColumns2" :data="customTemplates" :row-key="row => row.name" :pagination="false" striped />
           </n-card>
         </n-tab-pane>
       </n-tabs>
     </div>
 
     <!-- 创建模板弹窗 -->
-    <n-modal v-model:show="showCreateTemplateModal" preset="dialog" title="创建自定义模板" style="width: 800px">
-      <n-form ref="templateFormRef" :model="templateForm" :rules="templateFormRules" label-placement="top">
+    <n-modal v-model:show="showCreateTemplateModal" preset="dialog" title="创建自定义模板" style="width: 800px;" :close-on-esc="true" :mask-closable="true">
+      <template #header>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <n-icon :component="AddOutline" size="20" style="color: var(--active-color);" />
+          <n-text style="font-size: 18px; font-weight: 600;">创建自定义模板</n-text>
+        </div>
+      </template>
+      <n-form ref="templateFormRef" :model="templateForm" :rules="templateFormRules" label-placement="top" label-width="100">
         <n-form-item label="模板名称" path="name">
-          <n-input v-model:value="templateForm.name" placeholder="输入模板名称" />
+          <n-input v-model:value="templateForm.name" placeholder="输入模板名称，例如：My Custom PHP Shell" clearable />
         </n-form-item>
 
-        <n-form-item label="Payload 类型" path="type">
-          <n-select v-model:value="templateForm.type" :options="typeOptions" placeholder="选择类型" />
-        </n-form-item>
-
-        <n-form-item label="功能模式" path="function">
-          <n-select v-model:value="templateForm.function" :options="functionOptions" placeholder="选择功能" />
-        </n-form-item>
+        <n-grid :cols="2" :x-gap="20">
+          <n-grid-item>
+            <n-form-item label="Payload 类型" path="type">
+              <n-select v-model:value="templateForm.type" :options="typeOptions" placeholder="选择类型" />
+            </n-form-item>
+          </n-grid-item>
+          <n-grid-item>
+            <n-form-item label="功能模式" path="function">
+              <n-select v-model:value="templateForm.function" :options="functionOptions" placeholder="选择功能" />
+            </n-form-item>
+          </n-grid-item>
+        </n-grid>
 
         <n-form-item label="模板内容" path="content">
-          <n-input v-model:value="templateForm.content" type="textarea" :rows="15" placeholder="输入模板代码，使用 {{.password}} 作为密码占位符" style="font-family: monospace" />
+          <n-input 
+            v-model:value="templateForm.content" 
+            type="textarea" 
+            :rows="15" 
+            placeholder="输入模板代码，使用 {{.Password}} 作为密码占位符" 
+            style="font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13px;"
+            show-count
+          />
         </n-form-item>
       </n-form>
 
       <template #action>
         <n-space justify="end">
           <n-button @click="showCreateTemplateModal = false">取消</n-button>
-          <n-button type="primary" @click="handleCreateTemplate">创建</n-button>
+          <n-button type="primary" @click="handleCreateTemplate">
+            <template #icon>
+              <n-icon :component="AddOutline" />
+            </template>
+            创建
+          </n-button>
         </n-space>
       </template>
     </n-modal>
@@ -210,6 +257,29 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, h } from 'vue'
 import { useMessage } from 'naive-ui'
+import {
+  NTabs,
+  NTabPane,
+  NCard,
+  NForm,
+  NFormItem,
+  NInput,
+  NSelect,
+  NButton,
+  NSpace,
+  NIcon,
+  NGrid,
+  NGridItem,
+  NDataTable,
+  NModal,
+  NScrollbar,
+  NEmpty,
+  NDivider,
+  NStatistic,
+  NText,
+  NTag,
+  NPopconfirm,
+} from 'naive-ui'
 import {
   FlashOutline,
   KeyOutline,
@@ -221,6 +291,8 @@ import {
   RefreshOutline,
   AddOutline,
   TrashOutline,
+  CheckmarkCircle,
+  CloseCircle,
 } from '@vicons/ionicons5'
 import type { FormRules, FormInst, DataTableColumns } from 'naive-ui'
 import { Generate, GetTemplates, AddTemplate, DeleteTemplate } from '../../bindings/fg-abyss/internal/app/handlers/payloadhandler'
@@ -239,6 +311,7 @@ interface TemplateInfo {
   type: string
   function: string
   description: string
+  isCustom?: boolean
 }
 
 interface PayloadItem {
@@ -375,25 +448,31 @@ const templateColumns2: DataTableColumns = [
     key: 'actions',
     width: 120,
     render: (row) => h(
-      'n-popconfirm',
-      {
-        onPositiveClick: () => handleDeleteTemplate(row as unknown as TemplateInfo),
-      },
-      {
-        trigger: () => h(
-          'n-button',
+      'n-space',
+      {},
+      [
+        h(
+          'n-popconfirm',
           {
-            size: 'small',
-            quaternary: true,
-            type: 'error',
+            onPositiveClick: () => handleDeleteTemplate(row as unknown as TemplateInfo),
           },
           {
-            icon: () => h('n-icon', { component: TrashOutline }),
-            default: () => '删除',
+            trigger: () => h(
+              'n-button',
+              {
+                size: 'small',
+                quaternary: true,
+                type: 'error',
+              },
+              {
+                icon: () => h('n-icon', { component: TrashOutline }),
+                default: () => '删除',
+              }
+            ),
+            default: () => '确定要删除这个模板吗？',
           }
         ),
-        default: () => '确定要删除这个模板吗？',
-      }
+      ]
     ),
   },
 ]
@@ -545,6 +624,23 @@ const handleDeleteTemplate = async (row: TemplateInfo) => {
   }
 }
 
+const handleDeleteAllTemplates = async () => {
+  try {
+    // 删除所有自定义模板
+    for (const template of customTemplates.value) {
+      try {
+        await DeleteTemplate(template.name)
+      } catch (error) {
+        console.error('删除模板失败:', template.name, error)
+      }
+    }
+    message.success('已清空所有自定义模板')
+    loadTemplates()
+  } catch (error: any) {
+    message.error('清空模板失败：' + (error.message || '未知错误'))
+  }
+}
+
 const handleDeletePayload = (row: PayloadItem) => {
   const index = payloads.value.findIndex((p) => p.id === row.id)
   if (index !== -1) {
@@ -640,7 +736,7 @@ onMounted(() => {
       font-size: 24px;
       font-weight: 600;
       color: var(--active-color);
-      letter-spacing: 0;
+      letter-spacing: 0.5px;
     }
 
     .separator {
@@ -650,10 +746,11 @@ onMounted(() => {
     }
 
     .subtitle {
-      font-size: 16px;
-      font-weight: 400;
+      font-size: 14px;
+      font-weight: 500;
       color: var(--text-secondary);
-      letter-spacing: 0;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
     }
   }
 
@@ -662,21 +759,56 @@ onMounted(() => {
     overflow-y: auto;
     padding: 24px;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 
     :deep(.n-tabs) {
       height: 100%;
       display: flex;
       flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     :deep(.n-tabs-tab-wrapper) {
       flex-shrink: 0;
+      padding: 0;
+      background: transparent;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 0;
+    }
+
+    :deep(.n-tabs-tab) {
+      padding: 16px 24px !important;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 0;
+      margin-right: 0;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      
+      &:hover {
+        background: transparent;
+      }
+      
+      &.n-tabs-tab--active {
+        color: var(--active-color);
+        background: transparent;
+      }
     }
 
     :deep(.n-tabs-content-wrapper) {
       flex: 1;
       overflow-y: auto;
       min-height: 0;
+      padding: 24px 24px 20px 24px;
+      background: transparent;
+      margin-top: 0;
     }
 
     :deep(.n-tab-pane) {
@@ -685,42 +817,435 @@ onMounted(() => {
       min-height: 0;
       display: flex;
       flex-direction: column;
+      gap: 20px;
+      background: transparent;
     }
 
     .generator-container {
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 0;
+      gap: 24px;
+      min-height: 0;
+      flex: 1;
 
       .config-card,
       .preview-card {
         height: auto;
-        min-height: 400px;
+        min-height: 0;
+        flex: 1;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--border-color-light);
+        overflow: hidden;
+        
+        &:hover {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+          border-color: var(--border-color);
+        }
+      }
+
+      .config-card {
+        background: var(--card-bg);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .preview-card {
+        background: var(--card-bg);
+        display: flex;
+        flex-direction: column;
+
+        .generation-status {
+          padding: 12px 20px;
+          background: var(--card-bg-hover);
+          border-bottom: 1px solid var(--border-color-light);
+          border-radius: 12px 12px 0 0;
+          display: flex;
+          align-items: center;
+          flex-shrink: 0;
+          width: 100%;
+          box-sizing: border-box;
+
+          .status-content {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            overflow: hidden;
+          }
+
+          .n-space {
+            flex-wrap: nowrap;
+            overflow: hidden;
+          }
+
+          .status-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--border-color);
+            margin: 0 12px;
+            flex-shrink: 0;
+          }
+
+          .status-item {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+            flex-shrink: 0;
+
+            .n-text {
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+
+          .n-tag {
+            font-weight: 500;
+            padding: 4px 16px;
+            flex-shrink: 0;
+          }
+        }
       }
 
       .code-preview {
-        background-color: var(--code-background);
-        border-radius: 8px;
-        padding: 16px;
-        min-height: 200px;
-        max-height: 500px;
-        overflow-y: auto;
+        background: var(--code-background);
+        border-radius: 10px;
+        padding: 24px;
+        flex: 1;
+        min-height: 420px;
+        max-height: none;
+        overflow: auto;
+        border: 1px solid var(--border-color-light);
+        position: relative;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          border-color: var(--active-color);
+          box-shadow: inset 0 0 0 1px var(--active-color);
+        }
 
         pre {
           margin: 0;
-          font-family: 'Courier New', monospace;
+          font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
           font-size: 13px;
-          line-height: 1.5;
+          line-height: 1.7;
           color: var(--code-text);
           white-space: pre-wrap;
           word-wrap: break-word;
+          font-feature-settings: 'liga' 1;
+          overflow-x: auto;
 
           code {
             font-family: inherit;
           }
         }
+
+        .n-empty {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 320px;
+          color: var(--text-tertiary);
+          
+          :deep(.n-empty__icon) {
+            font-size: 64px;
+            opacity: 0.3;
+            margin-bottom: 16px;
+          }
+          
+          :deep(.n-empty__description) {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+          }
+        }
       }
+
+      .statistic-card {
+        background: var(--card-bg-hover);
+        border-radius: 10px;
+        padding: 16px;
+        margin-top: 16px;
+        border: 1px solid var(--border-color);
+      }
+    }
+
+    // 表格样式优化
+    :deep(.n-data-table) {
+      background: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      
+      .n-data-table-th {
+        background: var(--card-bg-hover);
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--text-primary);
+        border-bottom: 2px solid var(--border-color);
+      }
+      
+      .n-data-table-td {
+        font-size: 13px;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border-color-light);
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: var(--table-hover-color);
+        }
+      }
+      
+      .n-data-table-tr {
+        &:last-child .n-data-table-td {
+          border-bottom: none;
+        }
+      }
+    }
+
+    // 按钮样式优化
+    :deep(.n-button) {
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      &.n-button--type-primary {
+        background: linear-gradient(135deg, var(--active-color) 0%, var(--active-color-hover) 100%);
+        border: none;
+        box-shadow: 0 2px 8px rgba(var(--active-color-rgb), 0.3);
+        
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(var(--active-color-rgb), 0.4);
+        }
+        
+        &:active {
+          transform: translateY(0);
+        }
+      }
+      
+      &.n-button--type-default {
+        border: 1px solid var(--border-color);
+        background: var(--card-bg);
+        
+        &:hover {
+          border-color: var(--active-color);
+          background: var(--active-color-bg);
+        }
+      }
+    }
+
+    // 表单样式优化
+    :deep(.n-form-item) {
+      margin-bottom: 22px;
+      
+      .n-form-item-label__text {
+        font-weight: 500;
+        font-size: 14px;
+        color: var(--text-primary);
+        line-height: 1.5;
+      }
+    }
+
+    :deep(.n-input),
+    :deep(.n-select) {
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      
+      &:hover {
+        border-color: var(--active-color);
+      }
+      
+      &.n-input--focus,
+      &.n-select--focus {
+        border-color: var(--active-color);
+        box-shadow: 0 0 0 2px var(--active-color-bg);
+      }
+    }
+
+    // 卡片头部优化
+    :deep(.n-card__header) {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color-light);
+      background: var(--card-bg-hover);
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      
+      .n-card-header__title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+        line-height: 1.4;
+        letter-spacing: 0.3px;
+      }
+    }
+
+    // 卡片内容优化
+    :deep(.n-card__content) {
+      padding: 24px;
+      flex: 1;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    // 分割线优化
+    :deep(.n-divider) {
+      margin: 16px 0;
+      border-color: var(--border-color);
+    }
+
+    // 统计信息优化
+    :deep(.n-statistic) {
+      .n-statistic__label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+      
+      .n-statistic__value {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+    }
+
+    // 标签样式
+    :deep(.n-tag) {
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 12px;
+      padding: 4px 12px;
+    }
+  }
+
+  // 响应式设计
+  @media (max-width: 1200px) {
+    .content-body {
+      padding: 20px;
+    }
+
+    .generator-container {
+      .config-card,
+      .preview-card {
+        min-height: 450px;
+      }
+
+      .preview-card {
+        .generation-status {
+          padding: 10px 16px;
+          
+          .status-item {
+            max-width: 200px;
+            font-size: 12px;
+          }
+          
+          .status-divider {
+            margin: 0 8px;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .content-header {
+      padding: 20px 16px 16px 16px;
+      
+      .title {
+        font-size: 20px;
+      }
+      
+      .subtitle {
+        font-size: 12px;
+      }
+    }
+
+    .content-body {
+      padding: 16px;
+      
+      :deep(.n-tabs-tab) {
+        padding: 14px 16px !important;
+        font-size: 13px;
+        min-height: 48px;
+      }
+    }
+
+    .generator-container {
+      .preview-card {
+        .generation-status {
+          padding: 10px 12px;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+          
+          .status-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+          }
+          
+          .n-space {
+            flex-wrap: wrap;
+          }
+          
+          .status-divider {
+            display: none;
+          }
+          
+          .status-item {
+            max-width: none;
+          }
+        }
+      }
+    }
+  }
+
+  // 滚动条样式优化
+  .code-preview {
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 4px;
+      
+      &:hover {
+        background: var(--scrollbar-thumb-hover);
+      }
+    }
+  }
+
+  // 深色主题特殊优化
+  :deep(.dark) {
+    .generator-container {
+      .config-card,
+      .preview-card {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        
+        &:hover {
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+      }
+    }
+
+    :deep(.n-tabs) {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
   }
 }

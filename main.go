@@ -39,10 +39,18 @@ type WindowCreateEvent struct {
 	Y      int    `json:"y"`
 }
 
+// WindowResizeCorrectionEvent is the event data for correcting window size
+type WindowResizeCorrectionEvent struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
+}
+
 func init() {
 	// Register a custom event whose associated data type is string.
 	application.RegisterEvent[string]("time")
 	application.RegisterEvent[WindowCreateEvent]("createWindow")
+	// 注册窗口尺寸修正事件
+	application.RegisterEvent[WindowResizeCorrectionEvent]("window-resize-correction")
 }
 
 func main() {
@@ -191,8 +199,12 @@ func main() {
 	})
 	log.Println("Window created successfully")
 
-	// TODO: Wails v3 窗口事件监听需要查阅文档
-	// 目前使用前端 window.open 作为降级方案
+	// 窗口尺寸修正监听器
+	// 注意：Wails v3 目前不支持通过代码设置窗口尺寸
+	// 已尝试在系统处理器中注册事件监听，但 Wails v3 API 不支持
+	// 前端仍然会发送 'window-resize-correction' 事件，但后端无法处理
+	// 这是 Wails v3 框架级别的限制
+	_ = app // 避免未使用变量警告
 
 	// 启动应用
 	log.Println("Starting application...")

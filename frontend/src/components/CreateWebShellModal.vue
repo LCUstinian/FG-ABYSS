@@ -595,6 +595,7 @@ const handleCreate = async () => {
 @supports (-webkit-backdrop-filter: blur(8px)) {
   .webshell-select :deep(.n-select-menu) {
     -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
 }
 

@@ -13,10 +13,12 @@ import * as main$0 from "../../../../../fg-abyss/models.js";
 function configure() {
     Object.freeze(Object.assign($Create.Events, {
         "createWindow": $$createType0,
+        "window-resize-correction": $$createType1,
     }));
 }
 
 // Private type creation functions
 const $$createType0 = main$0.WindowCreateEvent.createFrom;
+const $$createType1 = main$0.WindowResizeCorrectionEvent.createFrom;
 
 configure();

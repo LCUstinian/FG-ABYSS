@@ -51,6 +51,16 @@ func (m *MockProjectRepository) DeleteSoft(id string) error {
 	return args.Error(0)
 }
 
+func (m *MockProjectRepository) FindDeleted() ([]entity.Project, error) {
+	args := m.Called()
+	return args.Get(0).([]entity.Project), args.Error(1)
+}
+
+func (m *MockProjectRepository) Recover(id string) error {
+	args := m.Called(id)
+	return args.Error(0)
+}
+
 func TestProjectService_GetAll(t *testing.T) {
 	mockRepo := new(MockProjectRepository)
 	service := NewProjectService(mockRepo)

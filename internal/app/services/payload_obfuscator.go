@@ -171,11 +171,11 @@ $_%s = "%s";
 
 // garbageASP ASP 垃圾代码
 func (o *CodeObfuscator) garbageASP() string {
-	return fmt.Sprintf(`<%
+	return fmt.Sprintf(`<?
 ' Obfuscation Layer %d
 Dim _%s
 _%s = %d
-%>`,
+?>`,
 		o.randomInt(1000, 9999),
 		o.randomVarName(),
 		o.randomVarName(),
@@ -185,11 +185,11 @@ _%s = %d
 
 // garbageJSP JSP 垃圾代码
 func (o *CodeObfuscator) garbageJSP() string {
-	return fmt.Sprintf(`<%
+	return fmt.Sprintf(`<?
 // Obfuscation Layer %d
 String _%s = "%s";
 int _%s = %d;
-%>`,
+?>`,
 		o.randomInt(1000, 9999),
 		o.randomVarName(), o.randomString(10),
 		o.randomVarName(), o.randomInt(0, 100),

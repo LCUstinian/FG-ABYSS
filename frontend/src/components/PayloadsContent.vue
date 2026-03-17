@@ -11,14 +11,14 @@
 
     <!-- 内容主体 -->
     <div class="content-body">
-      <n-tabs v-model:value="activeTab" type="line" animated>
+      <n-tabs v-model="activeTab" type="line" animated>
         <!-- Payload 生成标签页 -->
         <n-tab-pane name="generator" tab="Payload 生成">
           <div class="generator-container">
-            <n-grid :cols="24" :x-gap="20" :y-gap="20">
+            <n-grid :cols="24" :x-gap="20" :y-gap="20" style="flex: 1; min-height: 0;">
               <!-- 配置区域 -->
               <n-grid-item :span="12">
-                <n-card title="Payload 配置" :bordered="false" class="config-card">
+                <n-card title="Payload 配置" :bordered="false" class="config-card" style="height: 100%;">
                   <n-form ref="formRef" :model="formData" :rules="formRules" label-placement="left" :label-width="100">
                     <n-form-item label="脚本类型" path="type">
                       <n-select v-model:value="formData.type" :options="typeOptions" />
@@ -73,7 +73,7 @@
 
               <!-- 预览区域 -->
               <n-grid-item :span="12">
-                <n-card title="代码预览" :bordered="false" class="preview-card">
+                <n-card title="代码预览" :bordered="false" class="preview-card" style="height: 100%;">
                   <template #header-extra>
                     <n-space v-if="generatedResult">
                       <n-button quaternary size="small" @click="handleCopy">
@@ -124,7 +124,7 @@
             </n-grid>
 
             <!-- 内置模板列表 -->
-            <n-card title="内置模板" :bordered="false" style="margin-top: 20px">
+            <n-card title="内置模板" :bordered="false" style="margin-top: 20px; flex-shrink: 0;">
               <n-data-table :columns="templateColumns" :data="templateList" :pagination="false" size="small" />
             </n-card>
           </div>
@@ -355,7 +355,7 @@ const templateColumns: DataTableColumns = [
     title: '类型',
     key: 'type',
     width: 80,
-    render: (row: TemplateInfo) => h('n-tag', { type: getTypeColor(row.type) }, () => row.type.toUpperCase()),
+    render: (row) => h('n-tag', { type: getTypeColor((row as unknown as TemplateInfo).type) }, () => (row as unknown as TemplateInfo).type.toUpperCase()),
   },
   { title: '功能', key: 'function', width: 100 },
   { title: '描述', key: 'description' },
@@ -367,17 +367,17 @@ const templateColumns2: DataTableColumns = [
     title: '类型',
     key: 'type',
     width: 80,
-    render: (row: TemplateInfo) => h('n-tag', { type: getTypeColor(row.type) }, () => row.type.toUpperCase()),
+    render: (row) => h('n-tag', { type: getTypeColor((row as unknown as TemplateInfo).type) }, () => (row as unknown as TemplateInfo).type.toUpperCase()),
   },
   { title: '功能', key: 'function', width: 100 },
   {
     title: '操作',
     key: 'actions',
     width: 120,
-    render: (row: TemplateInfo) => h(
+    render: (row) => h(
       'n-popconfirm',
       {
-        onPositiveClick: () => handleDeleteTemplate(row),
+        onPositiveClick: () => handleDeleteTemplate(row as unknown as TemplateInfo),
       },
       {
         trigger: () => h(
@@ -404,16 +404,16 @@ const payloadColumns: DataTableColumns = [
     title: '类型',
     key: 'type',
     width: 80,
-    render: (row: PayloadItem) => h('n-tag', { type: getTypeColor(row.type) }, () => row.type.toUpperCase()),
+    render: (row) => h('n-tag', { type: getTypeColor((row as unknown as PayloadItem).type) }, () => (row as unknown as PayloadItem).type.toUpperCase()),
   },
   { title: '功能', key: 'function', width: 100 },
-  { title: '大小', key: 'size', width: 100, render: (row: PayloadItem) => formatFileSize(row.size) },
+  { title: '大小', key: 'size', width: 100, render: (row) => formatFileSize((row as unknown as PayloadItem).size) },
   { title: '创建时间', key: 'createdAt', width: 180 },
   {
     title: '操作',
     key: 'actions',
     width: 200,
-    render: (row: PayloadItem) => h('n-space', {}, [
+    render: (row) => h('n-space', {}, [
       h('n-button', { size: 'small', quaternary: true }, {
         icon: () => h('n-icon', { component: EyeOutline }),
         default: () => '查看',
@@ -423,7 +423,7 @@ const payloadColumns: DataTableColumns = [
         default: () => '下载',
       }),
       h('n-popconfirm', {
-        onPositiveClick: () => handleDeletePayload(row),
+        onPositiveClick: () => handleDeletePayload(row as unknown as PayloadItem),
       }, {
         trigger: () => h('n-button', { size: 'small', quaternary: true, type: 'error' }, {
           icon: () => h('n-icon', { component: TrashOutline }),
@@ -445,11 +445,13 @@ const handleGenerate = async () => {
       function: formData.function,
       password: formData.password,
       encoder: formData.encoder,
+      encryption_key: '',
       obfuscation_level: formData.obfuscationLevel,
       output_filename: formData.outputFilename,
+      template_name: '',
     })
 
-    if (response.success) {
+    if (response && response.success) {
       previewCode.value = response.content || ''
       generatedResult.value = {
         success: response.success,
@@ -458,7 +460,7 @@ const handleGenerate = async () => {
         size: response.size || 0,
       }
       message.success('Payload 生成成功')
-    } else {
+    } else if (response) {
       message.error('生成失败：' + (response.message || '未知错误'))
     }
   } catch (error: any) {
@@ -477,11 +479,15 @@ const handlePreview = async () => {
       function: formData.function,
       password: formData.password,
       encoder: formData.encoder,
+      encryption_key: '',
       obfuscation_level: formData.obfuscationLevel,
       output_filename: formData.outputFilename,
+      template_name: '',
     })
 
-    previewCode.value = response.content || ''
+    if (response) {
+      previewCode.value = response.content || ''
+    }
     message.success('预览已更新')
   } catch (error: any) {
     if (error.errors) return
@@ -565,13 +571,16 @@ const loadTemplates = async () => {
   try {
     const response = await GetTemplates()
     templateList.value = response.map((t) => ({
-      name: t.name,
-      type: t.type,
-      function: t.function,
-      description: getTemplateDescription(t.name),
+      name: t?.name || '',
+      type: t?.type || '',
+      function: t?.function || '',
+      description: getTemplateDescription(t?.name || ''),
     }))
     customTemplates.value = response.map((t) => ({
-      ...t,
+      name: t?.name || '',
+      type: t?.type || '',
+      function: t?.function || '',
+      description: getTemplateDescription(t?.name || ''),
       isCustom: true,
     }))
   } catch (error) {
@@ -652,6 +661,7 @@ onMounted(() => {
     flex: 1;
     overflow-y: auto;
     padding: 24px;
+    min-height: 0;
 
     :deep(.n-tabs) {
       height: 100%;
@@ -666,19 +676,26 @@ onMounted(() => {
     :deep(.n-tabs-content-wrapper) {
       flex: 1;
       overflow-y: auto;
+      min-height: 0;
     }
 
     :deep(.n-tab-pane) {
       padding: 0;
       height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .generator-container {
-      padding: 20px 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
 
       .config-card,
       .preview-card {
-        height: 100%;
+        height: auto;
         min-height: 400px;
       }
 

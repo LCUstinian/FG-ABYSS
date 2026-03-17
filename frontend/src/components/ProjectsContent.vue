@@ -720,11 +720,11 @@ const openWebShellControlWindow = async (webshell: WebShell) => {
       // @ts-ignore
       await window.runtime.EventsEmit('open-webshell-window', {
         id: webshell.id,
-        name: webshell.name || webshell.url,
+        name: webshell.remark || webshell.url,
         url: webshell.url,
       })
       
-      message.success(`已打开 WebShell 控制窗口：${webshell.name || webshell.url}`)
+      message.success(`已打开 WebShell 控制窗口：${webshell.remark || webshell.url}`)
     } else {
       // 浏览器环境下，使用 window.open 作为降级方案
       // 使用完整路径

@@ -138,15 +138,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, h, onMounted } from 'vue'
 import { useMessage, useDialog } from 'naive-ui'
 import {
   SearchOutline,
   RefreshOutline,
   AddOutline,
+  TrashOutline,
   EyeOutline,
   DownloadOutline,
-  TrashOutline,
   CopyOutline,
 } from '@vicons/ionicons5'
 import type { FormRules, FormInst, DataTableColumns } from 'naive-ui'
@@ -249,33 +249,33 @@ const payloadColumns: DataTableColumns = [
     title: '类型',
     key: 'type',
     width: 80,
-    render: (row: PayloadItem) => {
+    render: (row) => {
       const typeMap: Record<string, string> = {
         php: 'success',
         asp: 'warning',
         aspx: 'info',
         jsp: 'error',
       }
-      return h('n-tag', { type: typeMap[row.type] || 'default' }, () => row.type.toUpperCase())
+      return h('n-tag', { type: typeMap[(row as unknown as PayloadItem).type] || 'default' }, () => (row as unknown as PayloadItem).type.toUpperCase())
     },
   },
   {
     title: '功能',
     key: 'function',
     width: 100,
-    render: (row: PayloadItem) => {
+    render: (row) => {
       const funcMap: Record<string, string> = {
         basic: '基础',
         full: '完整',
       }
-      return funcMap[row.function] || row.function
+      return funcMap[(row as unknown as PayloadItem).function] || (row as unknown as PayloadItem).function
     },
   },
   {
     title: '大小',
     key: 'size',
     width: 100,
-    render: (row: PayloadItem) => formatFileSize(row.size),
+    render: (row) => formatFileSize((row as unknown as PayloadItem).size),
   },
   {
     title: '创建时间',
@@ -287,14 +287,14 @@ const payloadColumns: DataTableColumns = [
     key: 'actions',
     width: 200,
     fixed: 'right',
-    render: (row: PayloadItem) => {
+    render: (row) => {
       return h('n-space', {}, [
         h(
           'n-button',
           {
             size: 'small',
             quaternary: true,
-            onClick: () => handleViewPayload(row),
+            onClick: () => handleViewPayload(row as unknown as PayloadItem),
           },
           {
             icon: () => h('n-icon', { component: EyeOutline }),
@@ -306,7 +306,7 @@ const payloadColumns: DataTableColumns = [
           {
             size: 'small',
             quaternary: true,
-            onClick: () => handleDownloadPayload(row),
+            onClick: () => handleDownloadPayload(row as unknown as PayloadItem),
           },
           {
             icon: () => h('n-icon', { component: DownloadOutline }),
@@ -316,7 +316,7 @@ const payloadColumns: DataTableColumns = [
         h(
           'n-popconfirm',
           {
-            onPositiveClick: () => handleDeletePayload(row),
+            onPositiveClick: () => handleDeletePayload(row as unknown as PayloadItem),
           },
           {
             trigger: () =>
@@ -350,34 +350,34 @@ const templateColumns: DataTableColumns = [
     title: '类型',
     key: 'type',
     width: 80,
-    render: (row: TemplateItem) => {
+    render: (row) => {
       const typeMap: Record<string, string> = {
         php: 'success',
         asp: 'warning',
         aspx: 'info',
         jsp: 'error',
       }
-      return h('n-tag', { type: typeMap[row.type] || 'default' }, () => row.type.toUpperCase())
+      return h('n-tag', { type: typeMap[(row as unknown as TemplateItem).type] || 'default' }, () => (row as unknown as TemplateItem).type.toUpperCase())
     },
   },
   {
     title: '功能',
     key: 'function',
     width: 100,
-    render: (row: TemplateItem) => {
+    render: (row) => {
       const funcMap: Record<string, string> = {
         basic: '基础',
         full: '完整',
       }
-      return funcMap[row.function] || row.function
+      return funcMap[(row as unknown as TemplateItem).function] || (row as unknown as TemplateItem).function
     },
   },
   {
     title: '内容预览',
     key: 'content',
     ellipsis: { tooltip: true },
-    render: (row: TemplateItem) => {
-      const preview = row.content.substring(0, 100)
+    render: (row) => {
+      const preview = (row as unknown as TemplateItem).content.substring(0, 100)
       return h('n-text', { depth: 3 }, () => (preview + '...').replace(/\n/g, ' '))
     },
   },
@@ -386,12 +386,12 @@ const templateColumns: DataTableColumns = [
     key: 'actions',
     width: 120,
     fixed: 'right',
-    render: (row: TemplateItem) => {
-      if (!row.isCustom) return null
+    render: (row) => {
+      if (!(row as unknown as TemplateItem).isCustom) return null
       return h(
         'n-popconfirm',
         {
-          onPositiveClick: () => handleDeleteTemplate(row),
+          onPositiveClick: () => handleDeleteTemplate(row as unknown as TemplateItem),
         },
         {
           trigger: () =>
@@ -504,7 +504,10 @@ const loadTemplates = async () => {
   try {
     const response = await GetTemplates()
     customTemplates.value = response.map((t) => ({
-      ...t,
+      name: t?.name || '',
+      type: t?.type || '',
+      function: t?.function || '',
+      content: t?.content || '',
       isCustom: true,
     }))
   } catch (error) {

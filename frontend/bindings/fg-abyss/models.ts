@@ -44,3 +44,31 @@ export class WindowCreateEvent {
         return new WindowCreateEvent($$parsedSource as Partial<WindowCreateEvent>);
     }
 }
+
+/**
+ * WindowResizeCorrectionEvent is the event data for correcting window size
+ */
+export class WindowResizeCorrectionEvent {
+    "width": number;
+    "height": number;
+
+    /** Creates a new WindowResizeCorrectionEvent instance. */
+    constructor($$source: Partial<WindowResizeCorrectionEvent> = {}) {
+        if (!("width" in $$source)) {
+            this["width"] = 0;
+        }
+        if (!("height" in $$source)) {
+            this["height"] = 0;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new WindowResizeCorrectionEvent instance from a string or object.
+     */
+    static createFrom($$source: any = {}): WindowResizeCorrectionEvent {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new WindowResizeCorrectionEvent($$parsedSource as Partial<WindowResizeCorrectionEvent>);
+    }
+}

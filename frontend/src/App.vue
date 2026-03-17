@@ -19,6 +19,7 @@ import {
 } from 'naive-ui'
 import { getSystemStatus, type SystemStatus } from './api/system'
 import { appLogger } from '@/utils/logger'
+import { Events } from '@wailsio/runtime'
 
 const { t, locale } = useI18n()
 
@@ -389,6 +390,38 @@ onMounted(() => {
   window.addEventListener('storage', handleStorageChange)
   window.addEventListener('accent-color-change', handleAccentColorChange as EventListener)
   
+  // 监听窗口 resize 事件，检测窗口尺寸是否小于最小限制
+  // 注意：这只是尝试性的，Wails v3 可能不支持后端设置窗口尺寸
+  let resizeTimer: number | null = null
+  const handleResize = () => {
+    // 防抖处理
+    if (resizeTimer) {
+      window.clearTimeout(resizeTimer)
+    }
+    
+    resizeTimer = window.setTimeout(() => {
+      const width = window.innerWidth
+      const height = window.innerHeight
+      
+      // 如果窗口尺寸小于最小限制，发送事件到后端尝试修正
+      if (width < 1500 || height < 900) {
+        appLogger.debug('检测到窗口尺寸小于最小限制:', { width, height })
+        
+        // 发送事件到后端，尝试修正窗口尺寸
+        try {
+          Events.Emit('window-resize-correction', {
+            width: Math.max(1500, width),
+            height: Math.max(900, height)
+          })
+        } catch (error) {
+          appLogger.debug('发送窗口修正事件失败:', error)
+        }
+      }
+    }, 100)
+  }
+  
+  window.addEventListener('resize', handleResize)
+  
   // 启动系统状态定时更新
   startStatusUpdates()
 })
@@ -398,6 +431,12 @@ onUnmounted(() => {
   // 移除事件监听器
   window.removeEventListener('storage', handleStorageChange)
   window.removeEventListener('accent-color-change', handleAccentColorChange as EventListener)
+  window.removeEventListener('resize', handleResize)
+  
+  // 清理 resize 定时器
+  if (resizeTimer) {
+    window.clearTimeout(resizeTimer)
+  }
   
   // 停止系统状态更新
   stopStatusUpdates()

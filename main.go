@@ -1,17 +1,31 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"io/fs"
 	"log"
+	"os"
+	"path/filepath"
 
 	"fg-abyss/internal/app/handlers"
 	"fg-abyss/internal/app/services"
 	"fg-abyss/internal/infrastructure/database"
 	"fg-abyss/internal/infrastructure/repositories"
+	"fg-abyss/internal/plugin"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
+
+// getAppDirectory 获取应用程序所在目录
+func getAppDirectory() string {
+	exePath, err := os.Executable()
+	if err != nil {
+		log.Printf("Warning: Could not get executable path: %v", err)
+		return "."
+	}
+	return filepath.Dir(exePath)
+}
 
 //go:embed all:frontend/dist
 var assets embed.FS
@@ -79,6 +93,30 @@ func main() {
 	projectHandler := handlers.NewProjectHandler(projectService)
 	webshellHandler := handlers.NewWebShellHandler(webshellService)
 	settingHandler := handlers.NewSettingHandler(settingService)
+	connectionHandler := handlers.NewConnectionHandler()
+	commandHandler := handlers.NewCommandHandler()
+	fileHandler := handlers.NewFileHandler()
+	payloadHandler := handlers.NewPayloadHandler()
+	databaseHandler := handlers.NewDatabaseHandler()
+	batchHandler := handlers.NewBatchHandler()
+	proxyHandler := handlers.NewProxyHandler()
+	encryptionHandler := handlers.NewEncryptionHandler()
+	auditHandler := handlers.NewAuditHandler()
+
+	// 初始化插件系统
+	log.Println("=== Initializing Plugin System ===")
+	appDir := getAppDirectory()
+	pluginDir := filepath.Join(appDir, "plugins")
+	dataDir := filepath.Join(appDir, "data", "plugins")
+
+	pluginLoader := plugin.NewPluginLoader(pluginDir, dataDir, "1.0.0")
+	if err := pluginLoader.Initialize(context.Background()); err != nil {
+		log.Printf("Warning: Failed to initialize plugin system: %v", err)
+	} else {
+		log.Println("=== Plugin system initialized successfully ===")
+	}
+
+	pluginHandler := handlers.NewPluginHandler(pluginLoader)
 	log.Println("=== Handlers created ===")
 
 	// 加载前端资源
@@ -114,6 +152,16 @@ func main() {
 			application.NewService(projectHandler),
 			application.NewService(webshellHandler),
 			application.NewService(settingHandler),
+			application.NewService(connectionHandler),
+			application.NewService(commandHandler),
+			application.NewService(fileHandler),
+			application.NewService(payloadHandler),
+			application.NewService(databaseHandler),
+			application.NewService(batchHandler),
+			application.NewService(proxyHandler),
+			application.NewService(encryptionHandler),
+			application.NewService(auditHandler),
+			application.NewService(pluginHandler),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(frontendAssets),

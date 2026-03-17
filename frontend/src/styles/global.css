@@ -120,6 +120,11 @@
   --error-color: var(--error-500);
   --info-color: var(--info-500);
   
+  /* ========== 代码预览区专用变量 ========== */
+  --code-background: var(--gray-100);
+  --code-text: var(--gray-800);
+  --code-border: var(--gray-300);
+  
   /* ========== 阴影系统 - 亮色主题 ========== */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -295,6 +300,11 @@
   --warning-color: var(--warning-500);
   --error-color: var(--error-500);
   --info-color: var(--info-500);
+  
+  /* 代码预览区专用变量 - 深色模式 */
+  --code-background: #1e293b;
+  --code-text: #e2e8f0;
+  --code-border: #475569;
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);

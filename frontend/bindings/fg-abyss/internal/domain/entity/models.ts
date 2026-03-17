@@ -13,6 +13,504 @@ import * as gorm$0 from "../../../../gorm.io/gorm/models.js";
 import * as time$0 from "../../../../time/models.js";
 
 /**
+ * Connection WebShell 连接实体
+ */
+export class Connection {
+    /**
+     * ID 连接唯一标识
+     */
+    "id": string;
+
+    /**
+     * WebShellID 关联的 WebShell ID
+     */
+    "webshell_id": string;
+
+    /**
+     * Status 连接状态
+     */
+    "status": ConnectionStatus;
+
+    /**
+     * LastActiveTime 最后活跃时间
+     */
+    "last_active_time": time$0.Time;
+
+    /**
+     * CreatedAt 创建时间
+     */
+    "created_at": time$0.Time;
+
+    /**
+     * UpdatedAt 更新时间
+     */
+    "updated_at": time$0.Time;
+
+    /**
+     * Config 连接配置
+     */
+    "config"?: ConnectionConfig | null;
+
+    /**
+     * Stats 连接统计
+     */
+    "stats"?: ConnectionStats | null;
+
+    /** Creates a new Connection instance. */
+    constructor($$source: Partial<Connection> = {}) {
+        if (!("id" in $$source)) {
+            this["id"] = "";
+        }
+        if (!("webshell_id" in $$source)) {
+            this["webshell_id"] = "";
+        }
+        if (!("status" in $$source)) {
+            this["status"] = ConnectionStatus.$zero;
+        }
+        if (!("last_active_time" in $$source)) {
+            this["last_active_time"] = null;
+        }
+        if (!("created_at" in $$source)) {
+            this["created_at"] = null;
+        }
+        if (!("updated_at" in $$source)) {
+            this["updated_at"] = null;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new Connection instance from a string or object.
+     */
+    static createFrom($$source: any = {}): Connection {
+        const $$createField6_0 = $$createType1;
+        const $$createField7_0 = $$createType3;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("config" in $$parsedSource) {
+            $$parsedSource["config"] = $$createField6_0($$parsedSource["config"]);
+        }
+        if ("stats" in $$parsedSource) {
+            $$parsedSource["stats"] = $$createField7_0($$parsedSource["stats"]);
+        }
+        return new Connection($$parsedSource as Partial<Connection>);
+    }
+}
+
+/**
+ * ConnectionConfig 连接配置
+ */
+export class ConnectionConfig {
+    /**
+     * URL 目标 URL
+     */
+    "url": string;
+
+    /**
+     * Password 连接密码
+     */
+    "password"?: string;
+
+    /**
+     * Encoder 编码器类型（base64, rot13, xor, none）
+     */
+    "encoder": string;
+
+    /**
+     * EncryptionKey 加密密钥（用于 XOR 等）
+     */
+    "encryption_key"?: string;
+
+    /**
+     * Timeout 超时时间（秒）
+     */
+    "timeout": number;
+
+    /**
+     * RetryCount 重试次数
+     */
+    "retry_count": number;
+
+    /**
+     * RetryDelay 重试延迟（毫秒）
+     */
+    "retry_delay": number;
+
+    /**
+     * Headers 自定义请求头
+     */
+    "headers"?: { [_ in string]?: string };
+
+    /**
+     * Cookies Cookie 列表
+     */
+    "cookies"?: { [_ in string]?: string };
+
+    /**
+     * ProxyType 代理类型（none, http, https, socks5）
+     */
+    "proxy_type": string;
+
+    /**
+     * ProxyAddress 代理地址
+     */
+    "proxy_address"?: string;
+
+    /**
+     * SSLVerify 是否验证 SSL 证书
+     */
+    "ssl_verify": boolean;
+
+    /** Creates a new ConnectionConfig instance. */
+    constructor($$source: Partial<ConnectionConfig> = {}) {
+        if (!("url" in $$source)) {
+            this["url"] = "";
+        }
+        if (!("encoder" in $$source)) {
+            this["encoder"] = "";
+        }
+        if (!("timeout" in $$source)) {
+            this["timeout"] = 0;
+        }
+        if (!("retry_count" in $$source)) {
+            this["retry_count"] = 0;
+        }
+        if (!("retry_delay" in $$source)) {
+            this["retry_delay"] = 0;
+        }
+        if (!("proxy_type" in $$source)) {
+            this["proxy_type"] = "";
+        }
+        if (!("ssl_verify" in $$source)) {
+            this["ssl_verify"] = false;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new ConnectionConfig instance from a string or object.
+     */
+    static createFrom($$source: any = {}): ConnectionConfig {
+        const $$createField7_0 = $$createType4;
+        const $$createField8_0 = $$createType4;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("headers" in $$parsedSource) {
+            $$parsedSource["headers"] = $$createField7_0($$parsedSource["headers"]);
+        }
+        if ("cookies" in $$parsedSource) {
+            $$parsedSource["cookies"] = $$createField8_0($$parsedSource["cookies"]);
+        }
+        return new ConnectionConfig($$parsedSource as Partial<ConnectionConfig>);
+    }
+}
+
+/**
+ * ConnectionStats 连接统计
+ */
+export class ConnectionStats {
+    /**
+     * TotalRequests 总请求数
+     */
+    "total_requests": number;
+
+    /**
+     * SuccessfulRequests 成功请求数
+     */
+    "successful_requests": number;
+
+    /**
+     * FailedRequests 失败请求数
+     */
+    "failed_requests": number;
+
+    /**
+     * TotalBytesSent 发送总字节数
+     */
+    "total_bytes_sent": number;
+
+    /**
+     * TotalBytesReceived 接收总字节数
+     */
+    "total_bytes_received": number;
+
+    /**
+     * AverageResponseTime 平均响应时间（毫秒）
+     */
+    "average_response_time": number;
+
+    /**
+     * LastRequestTime 最后请求时间
+     */
+    "last_request_time": time$0.Time;
+
+    /** Creates a new ConnectionStats instance. */
+    constructor($$source: Partial<ConnectionStats> = {}) {
+        if (!("total_requests" in $$source)) {
+            this["total_requests"] = 0;
+        }
+        if (!("successful_requests" in $$source)) {
+            this["successful_requests"] = 0;
+        }
+        if (!("failed_requests" in $$source)) {
+            this["failed_requests"] = 0;
+        }
+        if (!("total_bytes_sent" in $$source)) {
+            this["total_bytes_sent"] = 0;
+        }
+        if (!("total_bytes_received" in $$source)) {
+            this["total_bytes_received"] = 0;
+        }
+        if (!("average_response_time" in $$source)) {
+            this["average_response_time"] = 0;
+        }
+        if (!("last_request_time" in $$source)) {
+            this["last_request_time"] = null;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new ConnectionStats instance from a string or object.
+     */
+    static createFrom($$source: any = {}): ConnectionStats {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new ConnectionStats($$parsedSource as Partial<ConnectionStats>);
+    }
+}
+
+/**
+ * ConnectionStatus 连接状态
+ */
+export enum ConnectionStatus {
+    /**
+     * The Go zero value for the underlying type of the enum.
+     */
+    $zero = "",
+
+    /**
+     * ConnectionStatusConnected 已连接
+     */
+    ConnectionStatusConnected = "connected",
+
+    /**
+     * ConnectionStatusDisconnected 已断开
+     */
+    ConnectionStatusDisconnected = "disconnected",
+
+    /**
+     * ConnectionStatusConnecting 连接中
+     */
+    ConnectionStatusConnecting = "connecting",
+
+    /**
+     * ConnectionStatusError 连接错误
+     */
+    ConnectionStatusError = "error",
+};
+
+/**
+ * DatabaseTable 数据库表信息
+ */
+export class DatabaseTable {
+    "name": string;
+    "schema": string;
+    "rows": number;
+    "size": number;
+    "engine": string;
+    "collation": string;
+    "comment": string;
+    "created_at": string;
+    "updated_at": string;
+
+    /** Creates a new DatabaseTable instance. */
+    constructor($$source: Partial<DatabaseTable> = {}) {
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+        if (!("schema" in $$source)) {
+            this["schema"] = "";
+        }
+        if (!("rows" in $$source)) {
+            this["rows"] = 0;
+        }
+        if (!("size" in $$source)) {
+            this["size"] = 0;
+        }
+        if (!("engine" in $$source)) {
+            this["engine"] = "";
+        }
+        if (!("collation" in $$source)) {
+            this["collation"] = "";
+        }
+        if (!("comment" in $$source)) {
+            this["comment"] = "";
+        }
+        if (!("created_at" in $$source)) {
+            this["created_at"] = "";
+        }
+        if (!("updated_at" in $$source)) {
+            this["updated_at"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new DatabaseTable instance from a string or object.
+     */
+    static createFrom($$source: any = {}): DatabaseTable {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new DatabaseTable($$parsedSource as Partial<DatabaseTable>);
+    }
+}
+
+/**
+ * PayloadFunction Payload 功能类型
+ */
+export enum PayloadFunction {
+    /**
+     * The Go zero value for the underlying type of the enum.
+     */
+    $zero = "",
+
+    /**
+     * PayloadFunctionBasic 基础版本
+     */
+    PayloadFunctionBasic = "basic",
+
+    /**
+     * PayloadFunctionFile 文件管理
+     */
+    PayloadFunctionFile = "file",
+
+    /**
+     * PayloadFunctionCommand 命令执行
+     */
+    PayloadFunctionCommand = "command",
+
+    /**
+     * PayloadFunctionDatabase 数据库管理
+     */
+    PayloadFunctionDatabase = "database",
+
+    /**
+     * PayloadFunctionFull 完整版本
+     */
+    PayloadFunctionFull = "full",
+};
+
+/**
+ * PayloadTemplate Payload 模板
+ */
+export class PayloadTemplate {
+    /**
+     * Name 模板名称
+     */
+    "name": string;
+
+    /**
+     * Description 模板描述
+     */
+    "description": string;
+
+    /**
+     * Type Payload 类型
+     */
+    "type": PayloadType;
+
+    /**
+     * Function 功能类型
+     */
+    "function": PayloadFunction;
+
+    /**
+     * Content 模板内容
+     */
+    "content": string;
+
+    /**
+     * Parameters 模板参数
+     */
+    "parameters": TemplateParameter[];
+
+    /**
+     * IsBuiltin 是否为内置模板
+     */
+    "is_builtin": boolean;
+
+    /** Creates a new PayloadTemplate instance. */
+    constructor($$source: Partial<PayloadTemplate> = {}) {
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+        if (!("description" in $$source)) {
+            this["description"] = "";
+        }
+        if (!("type" in $$source)) {
+            this["type"] = PayloadType.$zero;
+        }
+        if (!("function" in $$source)) {
+            this["function"] = PayloadFunction.$zero;
+        }
+        if (!("content" in $$source)) {
+            this["content"] = "";
+        }
+        if (!("parameters" in $$source)) {
+            this["parameters"] = [];
+        }
+        if (!("is_builtin" in $$source)) {
+            this["is_builtin"] = false;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new PayloadTemplate instance from a string or object.
+     */
+    static createFrom($$source: any = {}): PayloadTemplate {
+        const $$createField5_0 = $$createType6;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("parameters" in $$parsedSource) {
+            $$parsedSource["parameters"] = $$createField5_0($$parsedSource["parameters"]);
+        }
+        return new PayloadTemplate($$parsedSource as Partial<PayloadTemplate>);
+    }
+}
+
+/**
+ * PayloadType Payload 类型
+ */
+export enum PayloadType {
+    /**
+     * The Go zero value for the underlying type of the enum.
+     */
+    $zero = "",
+
+    /**
+     * PayloadTypePHP PHP Payload
+     */
+    PayloadTypePHP = "php",
+
+    /**
+     * PayloadTypeASP ASP Payload
+     */
+    PayloadTypeASP = "asp",
+
+    /**
+     * PayloadTypeASPX ASPX Payload
+     */
+    PayloadTypeASPX = "aspx",
+
+    /**
+     * PayloadTypeJSP JSP Payload
+     */
+    PayloadTypeJSP = "jsp",
+};
+
+/**
  * Project 项目实体
  */
 export class Project {
@@ -160,6 +658,117 @@ export class Setting {
 }
 
 /**
+ * TableColumn 数据库列信息
+ */
+export class TableColumn {
+    "name": string;
+    "type": string;
+    "length": string;
+    "nullable": boolean;
+    "default": string;
+    "auto_inc": boolean;
+    "primary_key": boolean;
+    "comment": string;
+
+    /** Creates a new TableColumn instance. */
+    constructor($$source: Partial<TableColumn> = {}) {
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+        if (!("type" in $$source)) {
+            this["type"] = "";
+        }
+        if (!("length" in $$source)) {
+            this["length"] = "";
+        }
+        if (!("nullable" in $$source)) {
+            this["nullable"] = false;
+        }
+        if (!("default" in $$source)) {
+            this["default"] = "";
+        }
+        if (!("auto_inc" in $$source)) {
+            this["auto_inc"] = false;
+        }
+        if (!("primary_key" in $$source)) {
+            this["primary_key"] = false;
+        }
+        if (!("comment" in $$source)) {
+            this["comment"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new TableColumn instance from a string or object.
+     */
+    static createFrom($$source: any = {}): TableColumn {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new TableColumn($$parsedSource as Partial<TableColumn>);
+    }
+}
+
+/**
+ * TemplateParameter 模板参数
+ */
+export class TemplateParameter {
+    /**
+     * Name 参数名称
+     */
+    "name": string;
+
+    /**
+     * Description 参数描述
+     */
+    "description": string;
+
+    /**
+     * Type 参数类型
+     */
+    "type": string;
+
+    /**
+     * Required 是否必需
+     */
+    "required": boolean;
+
+    /**
+     * Default 默认值
+     */
+    "default": string;
+
+    /** Creates a new TemplateParameter instance. */
+    constructor($$source: Partial<TemplateParameter> = {}) {
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+        if (!("description" in $$source)) {
+            this["description"] = "";
+        }
+        if (!("type" in $$source)) {
+            this["type"] = "";
+        }
+        if (!("required" in $$source)) {
+            this["required"] = false;
+        }
+        if (!("default" in $$source)) {
+            this["default"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new TemplateParameter instance from a string or object.
+     */
+    static createFrom($$source: any = {}): TemplateParameter {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new TemplateParameter($$parsedSource as Partial<TemplateParameter>);
+    }
+}
+
+/**
  * WebShell WebShell 实体
  */
 export class WebShell {
@@ -222,3 +831,12 @@ export class WebShell {
         return new WebShell($$parsedSource as Partial<WebShell>);
     }
 }
+
+// Private type creation functions
+const $$createType0 = ConnectionConfig.createFrom;
+const $$createType1 = $Create.Nullable($$createType0);
+const $$createType2 = ConnectionStats.createFrom;
+const $$createType3 = $Create.Nullable($$createType2);
+const $$createType4 = $Create.Map($Create.Any, $Create.Any);
+const $$createType5 = TemplateParameter.createFrom;
+const $$createType6 = $Create.Array($$createType5);

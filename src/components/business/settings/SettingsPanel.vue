@@ -153,22 +153,10 @@
                     </div>
                   </div>
                   <div class="card-content">
-                    <div class="accent-color-options">
-                      <button 
-                        v-for="color in accentColors" 
-                        :key="color.value"
-                        class="accent-color-option"
-                        :class="{ active: currentAccentColor === color.value }"
-                        :style="{ backgroundColor: color.value }"
-                        @click="changeAccentColor(color.value)"
-                      >
-                        <span v-if="currentAccentColor === color.value" class="accent-check">
-                          <svg width="18" height="18" viewBox="0 0 18 18" fill="white">
-                            <path fill-rule="evenodd" d="M13.707 5.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414L7 10.586l5.293-5.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                          </svg>
-                        </span>
-                      </button>
-                    </div>
+                    <AccentColorPicker 
+                      v-model="currentAccentColor"
+                      @apply="handleAccentColorChange"
+                    />
                   </div>
                 </div>
               </div>
@@ -252,6 +240,7 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PageHeader from '@/components/shared/PageHeader.vue'
+import AccentColorPicker from '@/components/shared/AccentColorPicker.vue'
 
 const { t, locale } = useI18n()
 
@@ -259,15 +248,6 @@ const currentSettingsTab = ref('appearance')
 const localThemeMode = ref(localStorage.getItem('themeMode') || 'light')
 const currentLanguage = ref(locale.value)
 const currentAccentColor = ref(localStorage.getItem('accentColor') || '#3b82f6')
-
-const accentColors = [
-  { value: '#3b82f6' },
-  { value: '#8b5cf6' },
-  { value: '#ec4899' },
-  { value: '#f59e0b' },
-  { value: '#10b981' },
-  { value: '#06b6d4' },
-]
 
 const handleThemeChange = () => {
   localStorage.setItem('themeMode', localThemeMode.value)
@@ -302,8 +282,7 @@ const changeLanguage = (lang: string) => {
   }))
 }
 
-const changeAccentColor = (color: string) => {
-  currentAccentColor.value = color
+const handleAccentColorChange = (color: string) => {
   localStorage.setItem('accentColor', color)
   document.documentElement.style.setProperty('--active-color', color)
   

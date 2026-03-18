@@ -2,10 +2,10 @@
 import TitleBar from './components/layout/TitleBar.vue'
 import StatusBar from './components/layout/StatusBar.vue'
 import Sidebar from './components/layout/Sidebar.vue'
-import HomeContent from './components/HomeContent.vue'
+import Dashboard from './components/business/home/Dashboard.vue'
 import ProjectsContent from './components/business/project/ProjectList.vue'
 import PayloadsContent from './components/business/payload/PayloadList.vue'
-import PluginsContent from './components/PluginsContent.vue'
+import PluginsManagement from './components/business/plugins/PluginsManagement.vue'
 import SettingsContent from './components/business/settings/SettingsPanel.vue'
 import WebShellControlWindow from './components/business/webshell/WebShellControlWindow.vue'
 import DatabaseManager from './components/business/database/DatabaseManager.vue'
@@ -471,7 +471,7 @@ onUnmounted(() => {
               <!-- 右边内容区 -->
               <div class="content-area">
                 <!-- 首页内容 -->
-                <HomeContent 
+                <Dashboard 
                   v-if="currentContent === 'home'"
                   :system-status="systemStatus"
                 />
@@ -487,7 +487,7 @@ onUnmounted(() => {
               />
                 
                 <!-- 插件内容 -->
-                <PluginsContent 
+                <PluginsManagement 
                   v-else-if="currentContent === 'plugins'"
                 />
                 

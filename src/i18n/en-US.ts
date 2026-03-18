@@ -139,6 +139,7 @@ export default {
     title: 'Settings',
     subtitle: 'System configuration and appearance settings',
     appearance: 'Appearance',
+    connection: 'Connection',
     proxy: 'Proxy',
     appBehavior: 'Application Behavior',
     network: 'Network',

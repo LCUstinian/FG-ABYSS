@@ -156,6 +156,7 @@ export default {
     title: '设置',
     subtitle: '系统配置和外观设置',
     appearance: '外观',
+    connection: '连接',
     proxy: '代理',
     appBehavior: '应用程序行为',
     network: '网络',

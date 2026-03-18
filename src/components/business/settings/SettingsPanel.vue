@@ -8,13 +8,9 @@
             <span class="nav-icon">🎨</span>
             <span>{{ t('settings.appearance') }}</span>
           </div>
-          <div class="settings-nav-item" :class="{ active: currentSettingsTab === 'proxy' }" @click="currentSettingsTab = 'proxy'">
-            <span class="nav-icon">🌐</span>
-            <span>{{ t('settings.proxy') }}</span>
-          </div>
-          <div class="settings-nav-item" :class="{ active: currentSettingsTab === 'network' }" @click="currentSettingsTab = 'network'">
-            <span class="nav-icon">📡</span>
-            <span>{{ t('settings.network') }}</span>
+          <div class="settings-nav-item" :class="{ active: currentSettingsTab === 'connection' }" @click="currentSettingsTab = 'connection'">
+            <span class="nav-icon">🔗</span>
+            <span>{{ t('settings.connection') }}</span>
           </div>
           <div class="settings-nav-item" :class="{ active: currentSettingsTab === 'about' }" @click="currentSettingsTab = 'about'">
             <span class="nav-icon">ℹ️</span>
@@ -162,22 +158,44 @@
               </div>
             </template>
 
-            <template v-else-if="currentSettingsTab === 'proxy'">
-              <div class="settings-card">
-                <h4>{{ t('settings.proxySettings') }}</h4>
-                <div class="placeholder-content">
-                  <span class="placeholder-icon">🌐</span>
-                  <p>{{ t('settings.proxyUnderDevelopment') }}</p>
+            <template v-else-if="currentSettingsTab === 'connection'">
+              <div class="connection-container">
+                <!-- 代理设置卡片 -->
+                <div class="settings-card proxy-card">
+                  <div class="card-header-section">
+                    <div class="card-icon-wrapper">
+                      <span class="card-icon">🌐</span>
+                    </div>
+                    <div class="card-title-section">
+                      <h4 class="card-title">{{ t('settings.proxySettings') }}</h4>
+                      <p class="card-description">{{ t('settings.proxyDescription') }}</p>
+                    </div>
+                  </div>
+                  <div class="card-content">
+                    <div class="placeholder-content">
+                      <span class="placeholder-icon">🌐</span>
+                      <p>{{ t('settings.proxyUnderDevelopment') }}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </template>
 
-            <template v-else-if="currentSettingsTab === 'network'">
-              <div class="settings-card">
-                <h4>{{ t('settings.networkSettings') }}</h4>
-                <div class="placeholder-content">
-                  <span class="placeholder-icon">📡</span>
-                  <p>{{ t('settings.networkUnderDevelopment') }}</p>
+                <!-- 网络设置卡片 -->
+                <div class="settings-card network-card">
+                  <div class="card-header-section">
+                    <div class="card-icon-wrapper">
+                      <span class="card-icon">📡</span>
+                    </div>
+                    <div class="card-title-section">
+                      <h4 class="card-title">{{ t('settings.networkSettings') }}</h4>
+                      <p class="card-description">{{ t('settings.networkDescription') }}</p>
+                    </div>
+                  </div>
+                  <div class="card-content">
+                    <div class="placeholder-content">
+                      <span class="placeholder-icon">📡</span>
+                      <p>{{ t('settings.networkUnderDevelopment') }}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </template>
@@ -354,10 +372,11 @@ watch(() => locale.value, (newVal) => {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
-  background: var(--active-color);
+  width: 4px;
+  background: linear-gradient(180deg, var(--active-color), var(--active-color-suppl));
   transform: scaleY(0);
   transition: transform var(--transition-fast);
+  opacity: 0;
 }
 
 .settings-nav-item:hover {
@@ -366,15 +385,24 @@ watch(() => locale.value, (newVal) => {
 
 .settings-nav-item:hover::before {
   transform: scaleY(0.5);
+  opacity: 0.7;
 }
 
 .settings-nav-item.active {
-  background: var(--active-color-suppl);
+  background: linear-gradient(90deg, var(--active-color-suppl), transparent);
   color: var(--active-color);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px rgba(var(--active-color-rgb), 0.1);
 }
 
 .settings-nav-item.active::before {
   transform: scaleY(1);
+  opacity: 1;
+}
+
+.dark .settings-nav-item.active {
+  background: linear-gradient(90deg, rgba(var(--active-color-rgb), 0.15), transparent);
+  box-shadow: inset 0 0 0 1px rgba(var(--active-color-rgb), 0.2);
 }
 
 .nav-icon {
@@ -398,6 +426,13 @@ watch(() => locale.value, (newVal) => {
 
 /* ===== 外观设置容器 ===== */
 .appearance-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ===== 连接设置容器 ===== */
+.connection-container {
   display: flex;
   flex-direction: column;
   gap: 24px;

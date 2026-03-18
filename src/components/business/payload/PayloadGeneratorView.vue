@@ -403,6 +403,18 @@ onMounted(async () => {
 .payload-generator-view {
   width: 100%;
   height: 100%;
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .generator-layout {
@@ -426,32 +438,118 @@ onMounted(async () => {
   gap: 16px;
 }
 
-.code-preview-container {
-  background: var(--code-bg, var(--card-bg-hover));
+/* 卡片样式优化 */
+:deep(.n-card) {
+  background: var(--card-bg);
   border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:deep(.n-card:hover) {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+:deep(.n-card-header) {
+  border-bottom: 1px solid var(--border-color);
+  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--card-bg-hover) 100%);
+}
+
+:deep(.n-card-header__main) {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+:deep(.n-card__content) {
+  padding: 24px;
+}
+
+/* 按钮样式优化 */
+:deep(.n-button) {
   border-radius: 8px;
-  padding: 20px;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:deep(.n-button:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 代码预览容器优化 */
+.code-preview-container {
+  background: linear-gradient(135deg, var(--code-bg, var(--card-bg-hover)) 0%, var(--card-bg) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
   min-height: 400px;
   max-height: 600px;
   overflow: auto;
+  position: relative;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.code-preview-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--active-color) 0%, transparent 100%);
+  border-radius: 12px 12px 0 0;
+}
+
+/* 自定义滚动条 */
+.code-preview-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.code-preview-container::-webkit-scrollbar-track {
+  background: var(--sidebar-bg);
+  border-radius: 4px;
+}
+
+.code-preview-container::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.code-preview-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
 
 .code-block {
   margin: 0;
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.7;
   white-space: pre-wrap;
   word-wrap: break-word;
-  color: var(--code-text);
+  color: var(--code-text, var(--text-primary));
+  position: relative;
+  z-index: 1;
 }
 
 .status-bar {
   margin-top: 16px;
-  padding: 12px;
-  background: var(--card-bg-hover);
-  border-radius: 8px;
-  border-top: 1px solid var(--border-color);
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--card-bg-hover) 0%, var(--card-bg) 100%);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.status-bar:hover {
+  border-color: var(--active-color);
+  box-shadow: 0 4px 12px rgba(var(--active-color-rgb), 0.1);
 }
 
 .history-list {
@@ -464,15 +562,112 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 12px 16px;
   background: var(--card-bg-hover);
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.history-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, var(--active-color-bg) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .history-item:hover {
   background: var(--active-color-bg);
+  border-color: var(--active-color);
   transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(var(--active-color-rgb), 0.15);
+}
+
+.history-item:hover::before {
+  opacity: 1;
+}
+
+/* 分割线优化 */
+:deep(.n-divider) {
+  border-color: var(--border-color);
+  margin: 20px 0;
+}
+
+/* 表单样式优化 */
+:deep(.n-form-item-label) {
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+:deep(.n-input),
+:deep(.n-select) {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+:deep(.n-input:hover),
+:deep(.n-select:hover) {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+:deep(.n-input:focus-within),
+:deep(.n-select:focus-within) {
+  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb), 0.1);
+}
+
+/* 滑块样式优化 */
+:deep(.n-slider-rail) {
+  border-radius: 4px;
+}
+
+:deep(.n-slider-fill) {
+  background: linear-gradient(90deg, var(--active-color) 0%, var(--active-color) 100%);
+}
+
+/* 桌面端优化 */
+@media (min-width: 1440px) {
+  .generator-layout {
+    gap: 32px;
+    max-width: 1800px;
+  }
+  
+  .code-preview-container {
+    padding: 28px;
+  }
+  
+  .code-block {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .generator-layout {
+    gap: 16px;
+  }
+  
+  .code-preview-container {
+    padding: 16px;
+    min-height: 300px;
+  }
+  
+  .code-block {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  
+  .status-bar {
+    padding: 12px 16px;
+  }
 }
 </style>

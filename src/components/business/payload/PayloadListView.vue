@@ -201,11 +201,208 @@ refreshList()
 .payload-list-view {
   width: 100%;
   height: 100%;
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 卡片样式优化 */
+:deep(.n-card) {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:deep(.n-card-header) {
+  border-bottom: 1px solid var(--border-color);
+  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--card-bg-hover) 100%);
+  flex-shrink: 0;
+}
+
+:deep(.n-card-header__main) {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+:deep(.n-card__content) {
+  padding: 24px;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .filter-bar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  padding: 16px;
+  background: var(--card-bg-hover);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+/* 按钮样式优化 */
+:deep(.n-button) {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:deep(.n-button:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 输入框和选择器样式优化 */
+:deep(.n-input),
+:deep(.n-select) {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+:deep(.n-input:hover),
+:deep(.n-select:hover) {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+:deep(.n-input:focus-within),
+:deep(.n-select:focus-within) {
+  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb), 0.1);
+}
+
+/* 数据表格样式优化 */
+:deep(.n-data-table) {
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+:deep(.n-data-table-wrapper) {
+  border-radius: 12px;
+}
+
+:deep(.n-data-table-th) {
+  background: linear-gradient(135deg, var(--card-bg-hover) 0%, var(--card-bg) 100%);
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 16px 20px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+:deep(.n-data-table-td) {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+:deep(.n-data-table-tr:hover .n-data-table-td) {
+  background: rgba(var(--active-color-rgb), 0.05);
+}
+
+:deep(.n-data-table-tr--selected .n-data-table-td) {
+  background: rgba(var(--active-color-rgb), 0.1);
+}
+
+/* 标签样式优化 */
+:deep(.n-tag) {
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 4px 12px;
+}
+
+/* 分页样式优化 */
+:deep(.n-pagination) {
+  margin-top: 20px;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+:deep(.n-pagination-item) {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+:deep(.n-pagination-item:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:deep(.n-pagination-item--active) {
+  background: var(--active-color) !important;
+  color: white !important;
+}
+
+/* 桌面端优化 */
+@media (min-width: 1440px) {
+  :deep(.n-card-header) {
+    padding: 24px 28px;
+  }
+  
+  :deep(.n-card-header__main) {
+    font-size: 20px;
+  }
+  
+  :deep(.n-card__content) {
+    padding: 28px;
+  }
+  
+  .filter-bar {
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  :deep(.n-data-table-th),
+  :deep(.n-data-table-td) {
+    padding: 18px 24px;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  :deep(.n-card-header) {
+    padding: 16px 20px;
+  }
+  
+  :deep(.n-card__content) {
+    padding: 16px;
+  }
+  
+  .filter-bar {
+    gap: 12px;
+    padding: 12px;
+  }
+  
+  :deep(.n-data-table-th),
+  :deep(.n-data-table-td) {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+  
+  :deep(.n-pagination) {
+    justify-content: center;
+  }
 }
 </style>

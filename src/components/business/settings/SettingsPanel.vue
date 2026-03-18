@@ -25,74 +25,151 @@
         <div class="settings-main">
           <div class="settings-panel">
             <template v-if="currentSettingsTab === 'appearance'">
-              <div class="settings-card">
-                <h4>{{ t('settings.theme') }}</h4>
-                <div class="theme-options">
-                  <button 
-                    class="theme-option" 
-                    :class="{ active: localThemeMode === 'light' }"
-                    @click="localThemeMode = 'light'; handleThemeChange()"
-                  >
-                    <span class="theme-icon">☀️</span>
-                    <span>{{ t('settings.lightMode') }}</span>
-                    <span v-if="localThemeMode === 'light'" class="theme-check">✓</span>
-                  </button>
-                  <button 
-                    class="theme-option" 
-                    :class="{ active: localThemeMode === 'dark' }"
-                    @click="localThemeMode = 'dark'; handleThemeChange()"
-                  >
-                    <span class="theme-icon">🌙</span>
-                    <span>{{ t('settings.darkMode') }}</span>
-                    <span v-if="localThemeMode === 'dark'" class="theme-check">✓</span>
-                  </button>
-                  <button 
-                    class="theme-option" 
-                    :class="{ active: localThemeMode === 'system' }"
-                    @click="localThemeMode = 'system'; handleThemeChange()"
-                  >
-                    <span class="theme-icon">🖥️</span>
-                    <span>{{ t('settings.systemMode') }}</span>
-                    <span v-if="localThemeMode === 'system'" class="theme-check">✓</span>
-                  </button>
+              <div class="appearance-container">
+                <!-- 主题设置卡片 -->
+                <div class="settings-card theme-card">
+                  <div class="card-header-section">
+                    <div class="card-icon-wrapper">
+                      <span class="card-icon">🎨</span>
+                    </div>
+                    <div class="card-title-section">
+                      <h4 class="card-title">{{ t('settings.theme') }}</h4>
+                      <p class="card-description">{{ t('settings.themeDescription') }}</p>
+                    </div>
+                  </div>
+                  <div class="card-content">
+                    <div class="theme-options">
+                      <button 
+                        class="theme-option" 
+                        :class="{ active: localThemeMode === 'light' }"
+                        @click="localThemeMode = 'light'; handleThemeChange()"
+                      >
+                        <div class="option-content">
+                          <span class="theme-icon">☀️</span>
+                          <span class="option-text">{{ t('settings.lightMode') }}</span>
+                        </div>
+                        <span v-if="localThemeMode === 'light'" class="option-check">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                          </svg>
+                        </span>
+                      </button>
+                      <button 
+                        class="theme-option" 
+                        :class="{ active: localThemeMode === 'dark' }"
+                        @click="localThemeMode = 'dark'; handleThemeChange()"
+                      >
+                        <div class="option-content">
+                          <span class="theme-icon">🌙</span>
+                          <span class="option-text">{{ t('settings.darkMode') }}</span>
+                        </div>
+                        <span v-if="localThemeMode === 'dark'" class="option-check">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                          </svg>
+                        </span>
+                      </button>
+                      <button 
+                        class="theme-option" 
+                        :class="{ active: localThemeMode === 'system' }"
+                        @click="localThemeMode = 'system'; handleThemeChange()"
+                      >
+                        <div class="option-content">
+                          <span class="theme-icon">🖥️</span>
+                          <span class="option-text">{{ t('settings.systemMode') }}</span>
+                        </div>
+                        <span v-if="localThemeMode === 'system'" class="option-check">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="settings-card">
-                <h4>{{ t('settings.language') }}</h4>
-                <div class="language-options">
-                  <button 
-                    class="language-option" 
-                    :class="{ active: currentLanguage === 'zh-CN' }"
-                    @click="changeLanguage('zh-CN')"
-                  >
-                    <span class="language-icon">🇨🇳</span>
-                    <span>{{ t('settings.chinese') }}</span>
-                    <span v-if="currentLanguage === 'zh-CN'" class="language-check">✓</span>
-                  </button>
-                  <button 
-                    class="language-option" 
-                    :class="{ active: currentLanguage === 'en-US' }"
-                    @click="changeLanguage('en-US')"
-                  >
-                    <span class="language-icon">🇺🇸</span>
-                    <span>{{ t('settings.english') }}</span>
-                    <span v-if="currentLanguage === 'en-US'" class="language-check">✓</span>
-                  </button>
+
+                <!-- 语言设置卡片 -->
+                <div class="settings-card language-card">
+                  <div class="card-header-section">
+                    <div class="card-icon-wrapper">
+                      <span class="card-icon">🌐</span>
+                    </div>
+                    <div class="card-title-section">
+                      <h4 class="card-title">{{ t('settings.language') }}</h4>
+                      <p class="card-description">{{ t('settings.languageDescription') }}</p>
+                    </div>
+                  </div>
+                  <div class="card-content">
+                    <div class="language-options">
+                      <button 
+                        class="language-option" 
+                        :class="{ active: currentLanguage === 'zh-CN' }"
+                        @click="changeLanguage('zh-CN')"
+                      >
+                        <div class="option-content">
+                          <span class="language-flag">🇨🇳</span>
+                          <div class="option-text-group">
+                            <span class="option-label">中文</span>
+                            <span class="option-sublabel">Chinese</span>
+                          </div>
+                        </div>
+                        <span v-if="currentLanguage === 'zh-CN'" class="option-check">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                          </svg>
+                        </span>
+                      </button>
+                      <button 
+                        class="language-option" 
+                        :class="{ active: currentLanguage === 'en-US' }"
+                        @click="changeLanguage('en-US')"
+                      >
+                        <div class="option-content">
+                          <span class="language-flag">🇺🇸</span>
+                          <div class="option-text-group">
+                            <span class="option-label">English</span>
+                            <span class="option-sublabel">English</span>
+                          </div>
+                        </div>
+                        <span v-if="currentLanguage === 'en-US'" class="option-check">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="settings-card">
-                <h4>{{ t('settings.accentColor') }}</h4>
-                <div class="accent-color-options">
-                  <button 
-                    v-for="color in accentColors" 
-                    :key="color.value"
-                    class="accent-color-option"
-                    :class="{ active: currentAccentColor === color.value }"
-                    :style="{ backgroundColor: color.value }"
-                    @click="changeAccentColor(color.value)"
-                  >
-                    <span v-if="currentAccentColor === color.value" class="accent-color-check">✓</span>
-                  </button>
+
+                <!-- 强调色设置卡片 -->
+                <div class="settings-card accent-card">
+                  <div class="card-header-section">
+                    <div class="card-icon-wrapper">
+                      <span class="card-icon">🎨</span>
+                    </div>
+                    <div class="card-title-section">
+                      <h4 class="card-title">{{ t('settings.accentColor') }}</h4>
+                      <p class="card-description">{{ t('settings.accentColorDescription') }}</p>
+                    </div>
+                  </div>
+                  <div class="card-content">
+                    <div class="accent-color-options">
+                      <button 
+                        v-for="color in accentColors" 
+                        :key="color.value"
+                        class="accent-color-option"
+                        :class="{ active: currentAccentColor === color.value }"
+                        :style="{ backgroundColor: color.value }"
+                        @click="changeAccentColor(color.value)"
+                      >
+                        <span v-if="currentAccentColor === color.value" class="accent-check">
+                          <svg width="18" height="18" viewBox="0 0 18 18" fill="white">
+                            <path fill-rule="evenodd" d="M13.707 5.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414L7 10.586l5.293-5.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </template>
@@ -258,46 +335,81 @@ watch(() => locale.value, (newVal) => {
 .settings-layout {
   display: flex;
   height: 100%;
-  background: var(--border-color);
+  background: var(--content-bg);
+  gap: 1px;
 }
 
 .settings-sidebar {
-  width: 240px;
+  width: 260px;
+  flex-shrink: 0;
   background: var(--sidebar-bg);
-  padding: 20px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  border-right: 1px solid var(--border-color);
+}
+
+.dark .settings-sidebar {
+  border-right-color: var(--border-strong);
 }
 
 .settings-nav-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 14px 16px;
   border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all var(--transition-normal);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.settings-nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--active-color);
+  transform: scaleY(0);
+  transition: transform var(--transition-fast);
 }
 
 .settings-nav-item:hover {
   background: var(--hover-color);
 }
 
+.settings-nav-item:hover::before {
+  transform: scaleY(0.5);
+}
+
 .settings-nav-item.active {
-  background: var(--active-color);
-  color: white;
+  background: var(--active-color-suppl);
+  color: var(--active-color);
+}
+
+.settings-nav-item.active::before {
+  transform: scaleY(1);
 }
 
 .nav-icon {
-  font-size: 20px;
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 .settings-main {
   flex: 1;
   overflow: auto;
-  background: var(--card-bg);
-  padding: 24px;
+  background: var(--content-bg);
+  padding: 32px;
 }
 
 .settings-panel {
@@ -305,19 +417,90 @@ watch(() => locale.value, (newVal) => {
   margin: 0 auto;
 }
 
+/* ===== 外观设置容器 ===== */
+.appearance-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ===== 设置卡片基础样式 ===== */
 .settings-card {
-  background: var(--content-bg);
+  background: var(--card-bg);
   border-radius: var(--border-radius-lg);
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: 0;
+  margin-bottom: 0;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+}
+
+.dark .settings-card {
+  border-color: var(--border-strong);
+}
+
+.settings-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--active-color-suppl);
+  transform: translateY(-2px);
+}
+
+/* ===== 卡片头部区域 ===== */
+.card-header-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--border-color);
+  background: linear-gradient(135deg, var(--card-bg), var(--content-bg));
+}
+
+.dark .card-header-section {
+  border-bottom-color: var(--border-strong);
+}
+
+.card-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--border-radius-md);
+  background: linear-gradient(135deg, var(--active-color-suppl), var(--card-bg));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   box-shadow: var(--shadow-sm);
 }
 
-.settings-card h4 {
-  margin: 0 0 16px 0;
-  font-size: 16px;
+.card-icon {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.card-title-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-color);
+  letter-spacing: 0.3px;
+  line-height: 1.4;
+}
+
+.card-description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ===== 卡片内容区域 ===== */
+.card-content {
+  padding: 24px 28px;
 }
 
 .theme-options,
@@ -328,39 +511,198 @@ watch(() => locale.value, (newVal) => {
   flex-wrap: wrap;
 }
 
-.theme-option,
+/* ===== 主题选项按钮 ===== */
+.theme-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  background: var(--content-bg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  min-width: 160px;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .theme-option {
+  border-color: var(--border-strong);
+}
+
+.theme-option::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,0.08), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.theme-option:hover::before {
+  transform: translateX(100%);
+}
+
+.theme-option:hover {
+  border-color: var(--active-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.dark .theme-option:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.theme-option.active {
+  border-color: var(--active-color);
+  background: linear-gradient(135deg, var(--active-color-suppl), var(--card-bg));
+  color: var(--active-color);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .theme-option.active {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.option-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.option-text {
+  font-weight: 500;
+}
+
+.theme-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.option-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--active-color);
+  flex-shrink: 0;
+  animation: checkmark 0.3s ease-out;
+}
+
+@keyframes checkmark {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ===== 语言选项按钮 ===== */
 .language-option {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
   border: 2px solid var(--border-color);
   border-radius: var(--border-radius-md);
-  background: var(--card-bg);
+  background: var(--content-bg);
   cursor: pointer;
   transition: all var(--transition-fast);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+  overflow: hidden;
 }
 
-.theme-option:hover,
+.dark .language-option {
+  border-color: var(--border-strong);
+}
+
+.language-option::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,0.08), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.language-option:hover::before {
+  transform: translateX(100%);
+}
+
 .language-option:hover {
   border-color: var(--active-color);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
-.theme-option.active,
+.dark .language-option:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
 .language-option.active {
   border-color: var(--active-color);
-  background: var(--active-color-suppl);
+  background: linear-gradient(135deg, var(--active-color-suppl), var(--card-bg));
+  color: var(--active-color);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.theme-icon,
-.language-icon {
-  font-size: 20px;
+.dark .language-option.active {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.language-flag {
+  font-size: 24px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.option-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.option-label {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.option-sublabel {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* ===== 强调色选择器 ===== */
+.accent-color-options {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .accent-color-option {
-  width: 40px;
-  height: 40px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   border: 3px solid var(--border-color);
   cursor: pointer;
@@ -368,28 +710,75 @@ watch(() => locale.value, (newVal) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.dark .accent-color-option {
+  border-color: var(--border-strong);
+}
+
+.accent-color-option::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+  border-radius: 50%;
+}
+
+.accent-color-option::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), transparent);
+  border-radius: 50%;
 }
 
 .accent-color-option:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
+  box-shadow: var(--shadow-md);
+  border-color: var(--active-color);
 }
 
 .accent-color-option.active {
-  border-color: var(--active-color);
-  box-shadow: 0 0 0 3px var(--active-color-suppl);
+  border-color: white;
+  box-shadow: 0 0 0 4px var(--active-color-suppl), var(--shadow-md);
+  animation: pulse-ring 2s infinite;
 }
 
-.placeholder-content {
-  text-align: center;
-  padding: 40px 20px;
+.accent-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  animation: checkmark-bounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.placeholder-icon {
-  font-size: 48px;
-  display: block;
-  margin-bottom: 16px;
+@keyframes pulse-ring {
+  0%, 100% {
+    box-shadow: 0 0 0 4px var(--active-color-suppl), var(--shadow-md);
+  }
+  50% {
+    box-shadow: 0 0 0 8px var(--active-color-suppl), var(--shadow-md);
+  }
+}
+
+@keyframes checkmark-bounce {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .about-page-container {
@@ -399,47 +788,100 @@ watch(() => locale.value, (newVal) => {
 
 .about-header {
   text-align: center;
-  padding: 40px 20px;
-  background: var(--active-color-suppl);
+  padding: 48px 32px;
+  background: linear-gradient(135deg, var(--active-color-suppl), var(--card-bg));
   border-radius: var(--border-radius-lg);
-  margin-bottom: 24px;
+  margin-bottom: 28px;
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .about-header {
+  border-color: var(--border-strong);
+}
+
+.about-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, var(--active-color-suppl) 0%, transparent 70%);
+  opacity: 0.1;
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .app-logo {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .app-name {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--active-color);
-  margin: 0 0 8px 0;
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--active-color), var(--active-color-suppl));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 12px 0;
+  position: relative;
+  z-index: 1;
+  letter-spacing: 1px;
 }
 
 .app-version {
   font-size: 14px;
   color: var(--text-secondary);
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
 }
 
 .app-description {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-color);
-  opacity: 0.8;
+  opacity: 0.85;
   margin: 0;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
 }
 
 .about-card {
-  background: var(--content-bg);
+  background: var(--card-bg);
   border-radius: var(--border-radius-lg);
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   overflow: hidden;
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-normal);
+}
+
+.dark .about-card {
+  border-color: var(--border-strong);
+}
+
+.about-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .card-header {
-  padding: 16px 20px;
-  background: var(--active-color-suppl);
+  padding: 18px 24px;
+  background: linear-gradient(135deg, var(--active-color-suppl), var(--card-bg));
   border-bottom: 1px solid var(--border-color);
+}
+
+.dark .card-header {
+  border-bottom-color: var(--border-strong);
 }
 
 .card-header h3 {
@@ -447,51 +889,218 @@ watch(() => locale.value, (newVal) => {
   font-size: 16px;
   font-weight: 600;
   color: var(--text-color);
+  letter-spacing: 0.3px;
 }
 
 .card-body {
-  padding: 20px;
+  padding: 24px;
 }
 
 .author-info {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 }
 
 .author-details h4 {
   margin: 0 0 8px 0;
   font-size: 18px;
   color: var(--text-color);
+  font-weight: 600;
 }
 
 .author-details p {
   margin: 0;
   font-size: 14px;
   color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 .github-link-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  background: var(--card-bg);
+  gap: 12px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--card-bg), var(--content-bg));
   border: 2px solid var(--border-color);
   border-radius: var(--border-radius-md);
   text-decoration: none;
   color: var(--text-color);
   font-weight: 600;
+  font-size: 14px;
   transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.dark .github-link-btn {
+  border-color: var(--border-strong);
 }
 
 .github-link-btn:hover {
   border-color: var(--active-color);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, var(--active-color-suppl), var(--card-bg));
+}
+
+.github-link-btn:active {
+  transform: translateY(-1px);
 }
 
 .github-link-btn svg {
   flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.github-link-btn:hover svg {
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .settings-layout {
+    flex-direction: column;
+  }
+  
+  .settings-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 16px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .dark .settings-sidebar {
+    border-bottom-color: var(--border-strong);
+  }
+  
+  .settings-nav-item {
+    flex-shrink: 0;
+    padding: 12px 14px;
+  }
+  
+  .settings-main {
+    padding: 20px 16px;
+  }
+  
+  .settings-card {
+    border-radius: var(--border-radius-md);
+  }
+  
+  .card-header-section {
+    padding: 20px;
+    gap: 12px;
+  }
+  
+  .card-icon-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .card-icon {
+    font-size: 20px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+  }
+  
+  .card-description {
+    font-size: 13px;
+  }
+  
+  .card-content {
+    padding: 20px;
+  }
+  
+  .theme-option {
+    min-width: 140px;
+    padding: 14px 16px;
+  }
+  
+  .language-option {
+    min-width: 180px;
+    padding: 14px 16px;
+  }
+  
+  .accent-color-option {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .about-header {
+    padding: 32px 20px;
+  }
+  
+  .app-name {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-sidebar {
+    gap: 8px;
+  }
+  
+  .settings-nav-item {
+    font-size: 13px;
+    gap: 8px;
+  }
+  
+  .nav-icon {
+    font-size: 16px;
+  }
+  
+  .card-header-section {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+  
+  .card-icon-wrapper {
+    margin-bottom: 8px;
+  }
+  
+  .card-title-section {
+    text-align: center;
+  }
+  
+  .card-title {
+    font-size: 17px;
+  }
+  
+  .card-description {
+    font-size: 13px;
+  }
+  
+  .card-content {
+    padding: 16px;
+  }
+  
+  .theme-options,
+  .language-options {
+    flex-direction: column;
+  }
+  
+  .theme-option,
+  .language-option {
+    width: 100%;
+    min-width: unset;
+    justify-content: center;
+  }
+  
+  .accent-color-options {
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .accent-color-option {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .appearance-container {
+    gap: 16px;
+  }
 }
 </style>

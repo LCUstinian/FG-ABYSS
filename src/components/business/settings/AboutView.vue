@@ -60,6 +60,18 @@ const { t } = useI18n()
   height: auto;
   display: flex;
   flex-direction: column;
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .about-container {
@@ -82,14 +94,50 @@ const { t } = useI18n()
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.about-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--active-color) 0%, transparent 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.about-header:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.about-header:hover::before {
+  transform: scaleX(1);
 }
 
 .app-logo {
   margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.about-header:hover .app-logo {
+  transform: scale(1.05);
 }
 
 .logo-icon {
   font-size: 72px;
+  transition: transform 0.3s ease;
+}
+
+.about-header:hover .logo-icon {
+  transform: rotate(5deg);
 }
 
 .app-name {
@@ -97,12 +145,32 @@ const { t } = useI18n()
   font-weight: 700;
   color: var(--text-primary);
   margin: 0 0 12px 0;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.app-name::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--active-color);
+  transition: width 0.3s ease;
+}
+
+.about-header:hover .app-name::after {
+  width: 80%;
 }
 
 .app-version {
   font-size: 14px;
   color: var(--text-secondary);
   margin: 0 0 12px 0;
+  transition: color 0.3s ease;
 }
 
 .app-description {
@@ -112,6 +180,7 @@ const { t } = useI18n()
   line-height: 1.7;
   max-width: 700px;
   margin: 0 auto;
+  transition: color 0.3s ease;
 }
 
 .about-content {
@@ -128,12 +197,43 @@ const { t } = useI18n()
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.about-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--active-color) 0%, transparent 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.about-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.about-card:hover::before {
+  transform: scaleX(1);
 }
 
 .card-header {
   padding: 24px 28px;
   background: var(--card-bg-hover);
   border-bottom: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.about-card:hover .card-header {
+  background: var(--card-bg);
+  border-bottom-color: var(--active-color);
 }
 
 .card-header h3 {
@@ -141,20 +241,36 @@ const { t } = useI18n()
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
+  transition: color 0.3s ease;
+}
+
+.about-card:hover .card-header h3 {
+  color: var(--active-color);
 }
 
 .card-body {
   padding: 28px 32px;
+  transition: all 0.3s ease;
 }
 
 .author-info {
   display: flex;
   align-items: center;
   gap: 20px;
+  transition: all 0.3s ease;
+}
+
+.about-card:hover .author-info {
+  transform: translateX(8px);
 }
 
 .author-avatar {
   font-size: 56px;
+  transition: transform 0.3s ease;
+}
+
+.about-card:hover .author-avatar {
+  transform: scale(1.1) rotate(5deg);
 }
 
 .author-details h4 {
@@ -162,6 +278,11 @@ const { t } = useI18n()
   font-weight: 600;
   color: var(--text-primary);
   margin: 0 0 8px 0;
+  transition: color 0.3s ease;
+}
+
+.about-card:hover .author-details h4 {
+  color: var(--active-color);
 }
 
 .author-details p {
@@ -169,6 +290,7 @@ const { t } = useI18n()
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.6;
+  transition: color 0.3s ease;
 }
 
 .github-link-btn {
@@ -181,16 +303,39 @@ const { t } = useI18n()
   border-radius: 8px;
   text-decoration: none;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.github-link-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+  transition: left 0.6s ease;
+}
+
+.github-link-btn:hover::before {
+  left: 100%;
 }
 
 .github-link-btn:hover {
   background: var(--active-color-bg-hover);
-  transform: translateX(4px);
+  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(var(--active-color-rgb), 0.2);
 }
 
 .github-link-btn svg {
   flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.github-link-btn:hover svg {
+  transform: rotate(10deg);
 }
 
 /* 桌面端优化 */
@@ -212,12 +357,80 @@ const { t } = useI18n()
     font-size: 40px;
   }
   
+  .app-description {
+    font-size: 16px;
+  }
+  
   .about-card {
     max-width: 1100px;
   }
   
   .card-body {
     padding: 32px 40px;
+  }
+  
+  .card-header h3 {
+    font-size: 20px;
+  }
+  
+  .author-details h4 {
+    font-size: 22px;
+  }
+  
+  .author-details p {
+    font-size: 15px;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .about-container {
+    padding: 0 24px 32px;
+    gap: 16px;
+  }
+  
+  .about-header {
+    padding: 32px 24px;
+  }
+  
+  .logo-icon {
+    font-size: 56px;
+  }
+  
+  .app-name {
+    font-size: 28px;
+  }
+  
+  .app-description {
+    font-size: 14px;
+  }
+  
+  .about-card {
+    padding: 0;
+  }
+  
+  .card-header {
+    padding: 20px 24px;
+  }
+  
+  .card-body {
+    padding: 24px 28px;
+  }
+  
+  .author-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .author-avatar {
+    font-size: 48px;
+  }
+  
+  .github-link-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

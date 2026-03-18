@@ -17,7 +17,8 @@
             :class="['tab-item', { active: currentSettingsTab === tab.name }]"
             @click="currentSettingsTab = tab.name"
           >
-            {{ tab.label }}
+            <span class="tab-icon">{{ tab.icon }}</span>
+            <span class="tab-label">{{ tab.label }}</span>
           </div>
         </div>
       </div>
@@ -70,9 +71,9 @@ const currentSettingsTab = ref('appearance')
 const currentLanguage = ref(locale.value)
 
 const tabs = [
-  { name: 'appearance', label: '外观' },
-  { name: 'connection', label: '连接' },
-  { name: 'about', label: '关于' }
+  { name: 'appearance', label: '外观', icon: '🎨' },
+  { name: 'connection', label: '连接', icon: '🔗' },
+  { name: 'about', label: '关于', icon: 'ℹ️' }
 ]
 
 watch(() => props.themeMode, (newVal) => {
@@ -97,6 +98,7 @@ const changeLanguage = (lang: string) => {
   width: 100%;
   background: var(--content-bg);
   overflow: hidden;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .settings-content {
@@ -113,6 +115,8 @@ const changeLanguage = (lang: string) => {
   background: var(--sidebar-bg);
   overflow-y: auto;
   overflow-x: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .tab-list {
@@ -126,15 +130,60 @@ const changeLanguage = (lang: string) => {
   font-size: 15px;
   font-weight: 500;
   color: var(--text-secondary);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-left: 3px solid transparent;
   cursor: pointer;
   text-align: left;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tab-icon {
+  font-size: 20px;
+  line-height: 1;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-label {
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tab-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(var(--active-color-rgb), 0.05) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .tab-item:hover {
   color: var(--text-primary);
   background: rgba(128, 128, 128, 0.1);
+  transform: translateX(4px);
+}
+
+.tab-item:hover .tab-icon {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.tab-item:hover .tab-label {
+  font-weight: 600;
+}
+
+.tab-item:hover::before {
+  opacity: 1;
 }
 
 .tab-item.active {
@@ -142,6 +191,29 @@ const changeLanguage = (lang: string) => {
   font-weight: 600;
   border-left-color: var(--active-color);
   background: rgba(var(--active-color-rgb), 0.1);
+  box-shadow: 0 2px 8px rgba(var(--active-color-rgb), 0.15);
+}
+
+.tab-item.active .tab-icon {
+  transform: scale(1.1);
+  animation: iconPulse 2s infinite;
+}
+
+.tab-item.active .tab-label {
+  font-weight: 600;
+}
+
+.tab-item.active::before {
+  opacity: 1;
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
 }
 
 .settings-main {
@@ -151,6 +223,31 @@ const changeLanguage = (lang: string) => {
   overflow-x: hidden;
   background: var(--content-bg);
   padding: 40px 0;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 自定义滚动条 */
+.settings-main::-webkit-scrollbar,
+.settings-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.settings-main::-webkit-scrollbar-track,
+.settings-sidebar::-webkit-scrollbar-track {
+  background: var(--sidebar-bg);
+  border-radius: 4px;
+}
+
+.settings-main::-webkit-scrollbar-thumb,
+.settings-sidebar::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.settings-main::-webkit-scrollbar-thumb:hover,
+.settings-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
 
 /* 桌面端优化 */
@@ -165,6 +262,18 @@ const changeLanguage = (lang: string) => {
   min-height: 100%;
   display: flex;
   flex-direction: column;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 桌面端优化 */
@@ -175,7 +284,65 @@ const changeLanguage = (lang: string) => {
   
   .tab-item {
     padding: 18px 28px;
+    gap: 14px;
+  }
+  
+  .tab-icon {
+    font-size: 22px;
+  }
+  
+  .tab-label {
     font-size: 15px;
+  }
+  
+  .settings-main {
+    padding: 60px 0;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .settings-content {
+    flex-direction: column;
+  }
+  
+  .settings-sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .tab-list {
+    flex-direction: row;
+    padding: 0;
+    overflow-x: auto;
+  }
+  
+  .tab-item {
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    padding: 16px 20px;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .tab-icon {
+    font-size: 24px;
+  }
+  
+  .tab-label {
+    font-size: 13px;
+  }
+  
+  .tab-item.active {
+    border-left: none;
+    border-bottom-color: var(--active-color);
+  }
+  
+  .settings-main {
+    padding: 24px 0;
   }
 }
 </style>

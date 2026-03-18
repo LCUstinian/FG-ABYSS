@@ -497,7 +497,7 @@ onUnmounted(() => {
                 <div v-else class="default-content">
                   <div class="default-content-inner">
                     <h2>{{ t('common.loading') }}</h2>
-                    <p>正在加载内容...</p>
+                    <p>{{ t('common.loadingContent') }}</p>
                   </div>
                 </div>
               </div>

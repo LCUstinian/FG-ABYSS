@@ -20,7 +20,7 @@
                 <div class="progress-bar">
                   <div class="progress-fill projects" style="width: 75%"></div>
                 </div>
-                <span class="progress-text">75% 使用率</span>
+                <span class="progress-text">75% usage</span>
               </div>
             </div>
           </div>
@@ -42,7 +42,7 @@
                 <div class="progress-bar">
                   <div class="progress-fill webshells" style="width: 60%"></div>
                 </div>
-                <span class="progress-text">60% 活跃</span>
+                <span class="progress-text">60% active</span>
               </div>
             </div>
           </div>
@@ -64,7 +64,7 @@
                 <div class="progress-bar">
                   <div class="progress-fill payloads" style="width: 45%"></div>
                 </div>
-                <span class="progress-text">45% 使用率</span>
+                <span class="progress-text">45% usage</span>
               </div>
             </div>
           </div>
@@ -86,7 +86,7 @@
                 <div class="progress-bar">
                   <div class="progress-fill plugins" style="width: 30%"></div>
                 </div>
-                <span class="progress-text">30% 使用率</span>
+                <span class="progress-text">30% usage</span>
               </div>
             </div>
           </div>
@@ -190,8 +190,8 @@
                   <Check :size="14" />
                 </div>
                 <div class="activity-content">
-                  <div class="activity-text">成功连接 WebShell</div>
-                  <div class="activity-time">5 分钟前</div>
+                  <div class="activity-text">{{ t('home.activityConnectSuccess') }}</div>
+                  <div class="activity-time">5 minutes ago</div>
                 </div>
               </div>
               <div class="activity-item">
@@ -199,8 +199,8 @@
                   <Plus :size="14" />
                 </div>
                 <div class="activity-content">
-                  <div class="activity-text">创建新项目 "测试项目"</div>
-                  <div class="activity-time">10 分钟前</div>
+                  <div class="activity-text">{{ t('home.activityCreateProject') }} "Test Project"</div>
+                  <div class="activity-time">10 minutes ago</div>
                 </div>
               </div>
               <div class="activity-item">
@@ -208,8 +208,8 @@
                   <Edit :size="14" />
                 </div>
                 <div class="activity-content">
-                  <div class="activity-text">更新 WebShell 配置</div>
-                  <div class="activity-time">15 分钟前</div>
+                  <div class="activity-text">{{ t('home.activityUpdateConfig') }}</div>
+                  <div class="activity-time">15 minutes ago</div>
                 </div>
               </div>
               <div class="activity-item">
@@ -217,8 +217,8 @@
                   <AlertTriangle :size="14" />
                 </div>
                 <div class="activity-content">
-                  <div class="activity-text">插件版本需要更新</div>
-                  <div class="activity-time">1 小时前</div>
+                  <div class="activity-text">{{ t('home.activityPluginUpdate') }}</div>
+                  <div class="activity-time">1 hour ago</div>
                 </div>
               </div>
               <div class="activity-item">
@@ -226,8 +226,8 @@
                   <Download :size="14" />
                 </div>
                 <div class="activity-content">
-                  <div class="activity-text">下载新的 Payload 模板</div>
-                  <div class="activity-time">3 小时前</div>
+                  <div class="activity-text">{{ t('home.activityDownloadTemplate') }}</div>
+                  <div class="activity-time">3 hours ago</div>
                 </div>
               </div>
             </div>

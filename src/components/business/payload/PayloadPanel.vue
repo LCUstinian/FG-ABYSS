@@ -2,22 +2,22 @@
   <div class="payload-panel">
     <!-- 页面标题 -->
     <PageHeader 
-      title="载荷" 
-      subtitle="WebShell 生成器" 
+      :title="$t('payloads.panelTitle')" 
+      :subtitle="$t('payloads.panelSubtitle')" 
     />
 
     <div class="content-body">
       <!-- Tab 切换 -->
       <n-tabs v-model:value="activeTab" type="line" animated>
-        <n-tab-pane name="generator" tab="Payload 生成">
+        <n-tab-pane name="generator" :tab="$t('payloads.generator')">
           <PayloadGeneratorView />
         </n-tab-pane>
 
-        <n-tab-pane name="list" tab="Payload 列表">
+        <n-tab-pane name="list" :tab="$t('payloads.list')">
           <PayloadListView />
         </n-tab-pane>
 
-        <n-tab-pane name="templates" tab="Payload 模板">
+        <n-tab-pane name="templates" :tab="$t('payloads.templates')">
           <PayloadTemplateManagerView />
         </n-tab-pane>
       </n-tabs>

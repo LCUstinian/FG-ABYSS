@@ -10,8 +10,8 @@
       <!-- 功能按钮组 -->
       <div class="button-group">
         <!-- 主题切换按钮 -->
-        <Tooltip :text="isDarkTheme ? '切换到浅色主题' : '切换到深色主题'">
-          <button @click="toggleTheme" class="control-button theme-button" type="button" aria-label="切换主题">
+        <Tooltip :text="isDarkTheme ? 'Switch to light theme' : 'Switch to dark theme'">
+          <button @click="toggleTheme" class="control-button theme-button" type="button" aria-label="Toggle theme">
             <div class="button-icon">
               <Sun v-if="isDarkTheme" :size="18" :stroke-width="2" />
               <Moon v-else :size="18" :stroke-width="2" />
@@ -20,8 +20,8 @@
         </Tooltip>
         
         <!-- 语言切换按钮 -->
-        <Tooltip :text="locale === 'zh-CN' ? 'Switch to English' : '切换到中文'">
-          <button @click="toggleLanguage" class="control-button language-button" type="button" aria-label="切换语言">
+        <Tooltip :text="locale === 'zh-CN' ? 'Switch to English' : 'Switch to Chinese'">
+          <button @click="toggleLanguage" class="control-button language-button" type="button" aria-label="Toggle language">
             <div class="button-icon">
               <span class="language-icon">{{ locale === 'zh-CN' ? '🇨🇳' : '🇺🇸' }}</span>
             </div>
@@ -36,7 +36,7 @@
       <div class="button-group window-controls">
         <!-- 最小化按钮 -->
         <Tooltip :text="t('status.minimize')">
-          <button @click="minimizeWindow" class="window-control minimize" type="button" aria-label="最小化">
+          <button @click="minimizeWindow" class="window-control minimize" type="button" :aria-label="t('window.minimize')">
             <div class="button-icon">
               <Minus :size="18" :stroke-width="2" />
             </div>
@@ -55,7 +55,7 @@
         
         <!-- 关闭按钮 -->
         <Tooltip :text="t('status.close')">
-          <button @click="handleClose" class="window-control close" type="button" aria-label="关闭">
+          <button @click="handleClose" class="window-control close" type="button" :aria-label="t('window.close')">
             <div class="button-icon">
               <X :size="18" :stroke-width="2" />
             </div>
@@ -89,7 +89,7 @@ const props = defineProps({
 const { isMaximized, minimizeWindow, toggleMaximize, closeWindow, checkMaximizeState } = useWindowControl()
 
 // 应用名称
-const appName = ref('FG-ABYSS 非攻 - 渊渟')
+const appName = ref('FG-ABYSS')
 
 // 窗口状态更新定时器
 let resizeCheckTimer: number | null = null
@@ -107,7 +107,7 @@ const handleToggleMaximize = async () => {
     }, 100)
   } catch (error) {
     console.error('切换最大化状态失败:', error)
-    message.error('窗口操作失败')
+    message.error(t('window.windowOperationFailed'))
   }
 }
 
@@ -120,7 +120,7 @@ const handleClose = async () => {
     await closeWindow()
   } catch (error) {
     console.error('关闭窗口失败:', error)
-    message.error('关闭窗口失败')
+    message.error(t('window.closeWindowFailed'))
   }
 }
 

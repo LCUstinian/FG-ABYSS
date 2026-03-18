@@ -2,8 +2,8 @@
   <div class="plugins-panel">
     <!-- 页面标题 -->
     <PageHeader 
-      title="插件" 
-      subtitle="扩展功能与插件管理" 
+      :title="t('plugins.title')" 
+      :subtitle="t('plugins.subtitle')" 
     />
 
     <div class="content-body">
@@ -14,8 +14,11 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import PageHeader from '@/components/shared/PageHeader.vue'
 import PluginsManagementView from './PluginsManagementView.vue'
+
+const { t } = useI18n()
 </script>
 
 <style scoped>

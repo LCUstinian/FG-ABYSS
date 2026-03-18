@@ -2,8 +2,8 @@
   <div class="project-panel">
     <!-- 页面标题 -->
     <PageHeader 
-      title="项目" 
-      subtitle="管理您的 WebShell 项目" 
+      :title="t('projects.title')" 
+      :subtitle="t('projects.subtitle')" 
     />
 
     <div class="content-body">
@@ -14,8 +14,11 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import PageHeader from '@/components/shared/PageHeader.vue'
 import ProjectListView from './ProjectListView.vue'
+
+const { t } = useI18n()
 </script>
 
 <style scoped>

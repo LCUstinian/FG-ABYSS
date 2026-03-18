@@ -31,7 +31,7 @@
           <n-input 
             v-model:value="currentPath" 
             size="small"
-            placeholder="当前路径"
+            :placeholder="t('webshell.currentPathPlaceholder')"
             @keydown.enter="handleNavigate"
           >
             <template #prefix>
@@ -76,7 +76,7 @@
               连接 WebShell 后可以使用文件管理功能
             </p>
             <p class="placeholder-text">
-              WebShell ID: {{ webshellId || '未指定' }}
+              {{ t('webshell.webshellId') }} {{ webshellId || t('webshell.webshellIdNotSpecified') }}
             </p>
           </div>
           
@@ -208,7 +208,7 @@ const load = async () => {
   // 模拟连接
   connected.value = true
   currentPath.value = '/'
-  message.success('文件管理器已加载')
+  message.success(t('webshell.fileManagerLoaded'))
 }
 
 const cleanup = () => {
@@ -217,7 +217,7 @@ const cleanup = () => {
 }
 
 const handleRefresh = () => {
-  message.success('刷新文件列表')
+  message.success(t('webshell.refreshFiles'))
 }
 
 const handleGoUp = () => {
@@ -233,11 +233,11 @@ const handleNavigate = () => {
 }
 
 const handleUpload = () => {
-  message.info('上传文件功能开发中')
+  message.info(t('webshell.uploadInDev'))
 }
 
 const handleNewFolder = () => {
-  message.info('新建文件夹功能开发中')
+  message.info(t('webshell.createFolderInDev'))
 }
 
 const handleFileClick = (file: FileItem) => {
@@ -249,7 +249,7 @@ const handleFileClick = (file: FileItem) => {
 
 const handleContextMenu = (e: MouseEvent, file: FileItem) => {
   e.preventDefault()
-  message.info('右键菜单功能开发中')
+  message.info(t('webshell.rightClickInDev'))
 }
 
 const handleDownload = (file: FileItem) => {

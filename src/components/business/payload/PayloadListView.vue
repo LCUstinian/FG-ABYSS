@@ -1,19 +1,19 @@
 <template>
   <div class="payload-list-view">
-    <n-card title="历史载荷列表" :bordered="false">
+    <n-card :title="t('payload.historyTitle')" :bordered="false">
       <template #header-extra>
         <n-space>
           <n-button size="small" @click="refreshList">
             <template #icon>
               <span>🔄</span>
             </template>
-            刷新
+            {{ t('common.refresh') }}
           </n-button>
           <n-button size="small" type="error" @click="clearAll">
             <template #icon>
               <span>🗑️</span>
             </template>
-            清空
+            {{ t('common.clear') }}
           </n-button>
         </n-space>
       </template>
@@ -23,14 +23,14 @@
         <n-space>
           <n-input
             v-model:value="searchQuery"
-            placeholder="搜索文件名..."
+            :placeholder="t('common.searchFilenamePlaceholder')"
             style="width: 200px;"
             clearable
           />
           <n-select
             v-model:value="filterType"
             :options="[
-              { label: '全部类型', value: 'all' },
+              { label: t('payload.allTypes'), value: 'all' },
               { label: 'PHP', value: 'php' },
               { label: 'JSP', value: 'jsp' },
               { label: 'ASPX', value: 'aspx' },
@@ -55,10 +55,12 @@
 
 <script setup lang="ts">
 import { ref, computed, h } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useMessage, NTag, NButton } from 'naive-ui'
 import { usePayloadStore } from '@/stores/payload'
 import type { DataTableColumns } from 'naive-ui'
 
+const { t } = useI18n()
 const message = useMessage()
 const payloadStore = usePayloadStore()
 
@@ -69,13 +71,13 @@ const filterType = ref('all')
 // 表格列定义
 const columns: DataTableColumns = [
   {
-    title: '文件名',
+    title: t('payload.filename'),
     key: 'filename',
     width: 250,
     sorter: 'default',
   },
   {
-    title: '类型',
+    title: t('payload.type'),
     key: 'type',
     width: 100,
     render(row) {
@@ -94,22 +96,22 @@ const columns: DataTableColumns = [
     },
   },
   {
-    title: '功能',
+    title: t('payload.function'),
     key: 'function_type',
     width: 120,
     render(row) {
       const funcMap: Record<string, string> = {
-        basic: '基础连接',
-        file_manager: '文件管理',
-        process_manager: '进程管理',
-        registry: '注册表',
-        network: '网络',
+        basic: t('payload.functionBasic'),
+        file_manager: t('payload.functionFileManager'),
+        process_manager: t('payload.functionProcessManager'),
+        registry: t('payload.functionRegistry'),
+        network: t('payload.functionNetwork'),
       }
-      return funcMap[row.function_type] || '未知'
+      return funcMap[row.function_type] || t('payload.functionUnknown')
     },
   },
   {
-    title: '大小',
+    title: t('payload.size'),
     key: 'size',
     width: 100,
     render(row) {
@@ -120,19 +122,19 @@ const columns: DataTableColumns = [
     },
   },
   {
-    title: '状态',
+    title: t('payload.status'),
     key: 'success',
     width: 100,
     render(row) {
       return h(
         NTag,
         { type: row.success ? 'success' : 'error', size: 'small' },
-        { default: () => (row.success ? '成功' : '失败') }
+        { default: () => (row.success ? t('payload.statusSuccess') : t('payload.statusFailed')) }
       )
     },
   },
   {
-    title: '操作',
+    title: t('payload.action'),
     key: 'actions',
     width: 150,
     fixed: 'right',
@@ -144,7 +146,7 @@ const columns: DataTableColumns = [
           type: 'primary',
           onClick: () => viewPayload(row),
         },
-        { default: () => '查看' }
+        { default: () => t('payload.actionView') }
       )
     },
   },
@@ -175,9 +177,9 @@ const refreshList = async () => {
   loading.value = true
   try {
     await payloadStore.loadHistory()
-    message.success('列表已刷新')
+    message.success(t('payload.refreshSuccess'))
   } catch (error: any) {
-    message.error('刷新失败')
+    message.error(t('payload.refreshError'))
   } finally {
     loading.value = false
   }
@@ -185,12 +187,12 @@ const refreshList = async () => {
 
 const clearAll = () => {
   payloadStore.clearHistory()
-  message.success('已清空所有历史记录')
+  message.success(t('payload.clearSuccess'))
 }
 
 const viewPayload = (row: any) => {
   payloadStore.generatedResult = row
-  message.success('已加载载荷详情')
+  message.success(t('payload.loadSuccess'))
 }
 
 // 初始化加载

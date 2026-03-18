@@ -45,7 +45,7 @@
           <h3 class="execution-title">命令执行</h3>
           <n-space>
             <n-tag size="small" :type="connected ? 'success' : 'default'">
-              {{ connected ? '已连接' : '未连接' }}
+              {{ connected ? t('webshell.connected') : t('webshell.disconnected') }}
             </n-tag>
           </n-space>
         </div>
@@ -143,40 +143,40 @@ const selectedTemplate = ref<CommandTemplate | null>(null)
 const commandTemplates = ref<CommandTemplate[]>([
   {
     id: '1',
-    name: '系统信息',
-    description: '查看服务器基本信息',
+    name: t('webshell.sysInfo'),
+    description: t('webshell.sysInfoDesc'),
     command: 'uname -a && whoami && pwd && date',
     icon: '💻',
     category: 'system'
   },
   {
     id: '2',
-    name: '网络配置',
-    description: '查看网络接口信息',
+    name: t('webshell.networkConfig'),
+    description: t('webshell.networkConfigDesc'),
     command: 'ifconfig || ip addr',
     icon: '🌐',
     category: 'network'
   },
   {
     id: '3',
-    name: '进程列表',
-    description: '查看运行中的进程',
+    name: t('webshell.processList'),
+    description: t('webshell.processListDesc'),
     command: 'ps aux | head -20',
     icon: '📊',
     category: 'system'
   },
   {
     id: '4',
-    name: '磁盘空间',
-    description: '查看磁盘使用情况',
+    name: t('webshell.diskSpace'),
+    description: t('webshell.diskSpaceDesc'),
     command: 'df -h',
     icon: '💾',
     category: 'system'
   },
   {
     id: '5',
-    name: '内存使用',
-    description: '查看内存使用情况',
+    name: t('webshell.memoryUsage'),
+    description: t('webshell.memoryUsageDesc'),
     command: 'free -m',
     icon: '🧠',
     category: 'system'
@@ -215,8 +215,8 @@ const commandTemplates = ref<CommandTemplate[]>([
   },
   {
     id: '10',
-    name: '查看日志',
-    description: '查看系统日志',
+    name: t('webshell.viewLogs'),
+    description: t('webshell.viewLogsDesc'),
     command: 'tail -f /var/log/syslog',
     icon: '📜',
     category: 'logs'
@@ -247,7 +247,7 @@ const executeCommand = async (template: CommandTemplate) => {
       '10': 'Jan 15 10:30:45 webserver systemd[1]: Started Session 1 of user www-data.\nJan 15 10:30:46 webserver apache2[1234]: AH00094: Command line: \'/usr/sbin/apache2\'\nJan 15 10:30:47 webserver kernel: [UFW BLOCK] IN=eth0 OUT= MAC=00:00:00:00:00:00'
     }
     
-    output.value += '执行结果:\n' + (mockOutputs[template.id] || '命令执行成功')
+    output.value += t('webshell.executeResult') + '\n' + (mockOutputs[template.id] || t('webshell.commandSuccess'))
     output.value += '\n\n[命令执行完成]'
     executing.value = false
     message.success(`${template.name} 执行成功`)
@@ -256,7 +256,7 @@ const executeCommand = async (template: CommandTemplate) => {
 
 const handleExecuteCustom = async () => {
   if (!customCommand.value.trim()) {
-    message.warning('请输入命令')
+    message.warning(t('webshell.inputCommand'))
     return
   }
   
@@ -267,12 +267,12 @@ const handleExecuteCustom = async () => {
   setTimeout(() => {
     output.value += '执行结果:\n命令执行成功\n\n[命令执行完成]'
     executing.value = false
-    message.success('命令执行成功')
+    message.success(t('webshell.executeSuccess'))
   }, 1000)
 }
 
 const handleRefresh = () => {
-  message.success('刷新命令模板')
+  message.success(t('webshell.refreshTemplates'))
 }
 
 const handleClear = () => {
@@ -287,7 +287,7 @@ const handleClearOutput = () => {
 const handleCopyOutput = () => {
   if (output.value) {
     navigator.clipboard.writeText(output.value)
-    message.success('复制成功')
+    message.success(t('webshell.copySuccess'))
   }
 }
 

@@ -51,7 +51,7 @@
 
             <n-empty
               v-if="connections.length === 0"
-              description="暂无数据库连接"
+              :description="t('plugins.database.noConnections')"
               size="small"
             />
           </n-scrollbar>
@@ -95,7 +95,7 @@
                       type="number"
                       :min="1"
                       :max="10000"
-                      placeholder="限制行数"
+                      :placeholder="t('plugins.database.limitRowsPlaceholder')"
                       style="width: 120px"
                     />
                   </n-space>
@@ -133,7 +133,7 @@
             </n-card>
           </n-tab-pane>
 
-          <n-tab-pane name="tables" tab="表结构" display="flex">
+          <n-tab-pane name="tables" :tab="t('plugins.database.tables')" display="flex">
             <n-card :bordered="false" class="tables-card">
               <template #header>
                 <n-space justify="space-between">
@@ -177,18 +177,18 @@
 
               <n-empty
                 v-if="tables.length === 0"
-                description="暂无数据表"
+                :description="t('plugins.database.noTables')"
                 size="small"
               />
             </n-card>
           </n-tab-pane>
 
-          <n-tab-pane name="columns" tab="表结构详情" display="flex">
+          <n-tab-pane name="columns" :tab="t('plugins.database.tableDetails')" display="flex">
             <n-card :bordered="false" class="columns-card">
               <template #header>
                 <n-space justify="space-between">
                   <n-text>
-                    {{ selectedTable ? `${selectedTable.name} - 列信息` : '请选择表' }}
+                    {{ selectedTable ? `${selectedTable.name} - 列信息` : t('plugins.database.selectTable') }}
                   </n-text>
                 </n-space>
               </template>
@@ -203,7 +203,7 @@
 
               <n-empty
                 v-if="tableColumns.length === 0"
-                description="请先选择数据表"
+                :description="t('plugins.database.selectTable')"
                 size="small"
               />
             </n-card>
@@ -215,7 +215,7 @@
     <n-modal
       v-model:show="showAddModal"
       preset="dialog"
-      title="添加数据库连接"
+      :title="t('plugins.database.addConnection')"
       style="width: 700px"
     >
       <n-form
@@ -226,63 +226,63 @@
       >
         <n-grid :cols="2" :x-gap="16">
           <n-grid-item :span="2">
-            <n-form-item label="连接名称" path="name">
-              <n-input v-model:value="connForm.name" placeholder="自定义连接名称" />
+            <n-form-item :label="t('plugins.database.connectionName')" path="name">
+              <n-input v-model:value="connForm.name" :placeholder="t('plugins.database.connectionNamePlaceholder')" />
             </n-form-item>
           </n-grid-item>
 
           <n-grid-item :span="1">
-            <n-form-item label="数据库类型" path="type">
+            <n-form-item :label="t('plugins.database.databaseType')" path="type">
               <n-select
                 v-model:value="connForm.type"
                 :options="dbTypeOptions"
-                placeholder="选择类型"
+                :placeholder="t('plugins.database.databaseTypePlaceholder')"
               />
             </n-form-item>
           </n-grid-item>
 
           <n-grid-item :span="1">
-            <n-form-item label="字符集" path="charset">
+            <n-form-item :label="t('plugins.database.charset')" path="charset">
               <n-input v-model:value="connForm.charset" placeholder="utf8" />
             </n-form-item>
           </n-grid-item>
 
           <n-grid-item :span="1">
-            <n-form-item label="主机地址" path="host">
+            <n-form-item :label="t('plugins.database.host')" path="host">
               <n-input v-model:value="connForm.host" placeholder="localhost" />
             </n-form-item>
           </n-grid-item>
 
           <n-grid-item :span="1">
-            <n-form-item label="端口" path="port">
+            <n-form-item :label="t('plugins.database.port')" path="port">
               <n-input-number
                 v-model:value="connForm.port"
-                placeholder="默认端口"
+                :placeholder="t('plugins.database.portPlaceholder')"
                 style="width: 100%"
               />
             </n-form-item>
           </n-grid-item>
 
           <n-grid-item :span="1">
-            <n-form-item label="用户名" path="username">
+            <n-form-item :label="t('plugins.database.username')" path="username">
               <n-input v-model:value="connForm.username" placeholder="root" />
             </n-form-item>
           </n-grid-item>
 
           <n-grid-item :span="1">
-            <n-form-item label="密码" path="password">
+            <n-form-item :label="t('plugins.database.password')" path="password">
               <n-input
                 v-model:value="connForm.password"
                 type="password"
                 show-password-on="click"
-                placeholder="密码"
+                :placeholder="t('plugins.database.passwordPlaceholder')"
               />
             </n-form-item>
           </n-grid-item>
 
           <n-grid-item :span="2">
-            <n-form-item label="数据库名" path="database">
-              <n-input v-model:value="connForm.database" placeholder="数据库名称" />
+            <n-form-item :label="t('plugins.database.database')" path="database">
+              <n-input v-model:value="connForm.database" :placeholder="t('plugins.database.databasePlaceholder')" />
             </n-form-item>
           </n-grid-item>
 
@@ -373,13 +373,13 @@ const connForm = reactive({
 })
 
 const connFormRules = {
-  name: { required: true, message: '请输入连接名称', trigger: 'blur' },
-  type: { required: true, message: '请选择数据库类型', trigger: 'change' },
-  host: { required: true, message: '请输入主机地址', trigger: 'blur' },
-  port: { required: true, message: '请输入端口', trigger: 'blur' },
-  username: { required: true, message: '请输入用户名', trigger: 'blur' },
-  password: { required: true, message: '请输入密码', trigger: 'blur' },
-  database: { required: true, message: '请输入数据库名', trigger: 'blur' },
+  name: { required: true, message: t('plugins.database.requiredName'), trigger: 'blur' },
+  type: { required: true, message: t('plugins.database.requiredType'), trigger: 'change' },
+  host: { required: true, message: t('plugins.database.requiredHost'), trigger: 'blur' },
+  port: { required: true, message: t('plugins.database.requiredPort'), trigger: 'blur' },
+  username: { required: true, message: t('plugins.database.requiredUsername'), trigger: 'blur' },
+  password: { required: true, message: t('plugins.database.requiredPassword'), trigger: 'blur' },
+  database: { required: true, message: t('plugins.database.requiredDatabase'), trigger: 'blur' },
 }
 
 const dbTypeOptions = [
@@ -407,29 +407,29 @@ const resultColumns = computed(() => {
 })
 
 const columnColumns = [
-  { title: '列名', key: 'name', width: 150 },
-  { title: '类型', key: 'type', width: 120 },
-  { title: '长度', key: 'length', width: 80 },
+  { title: t('plugins.database.columnName'), key: 'name', width: 150 },
+  { title: t('plugins.database.columnType'), key: 'type', width: 120 },
+  { title: t('plugins.database.columnLength'), key: 'length', width: 80 },
   {
-    title: '可空',
+    title: t('plugins.database.columnNullable'),
     key: 'nullable',
     width: 60,
-    render: (row: TableColumn) => row.nullable ? '是' : '否',
+    render: (row: TableColumn) => row.nullable ? t('plugins.database.columnNullableYes') : t('plugins.database.columnNullableNo'),
   },
-  { title: '默认值', key: 'default', width: 120 },
+  { title: t('plugins.database.columnDefault'), key: 'default', width: 120 },
   {
-    title: '主键',
+    title: t('plugins.database.columnPrimary'),
     key: 'primary_key',
     width: 60,
     render: (row: TableColumn) => row.primary_key ? '✓' : '',
   },
   {
-    title: '自增',
+    title: t('plugins.database.columnAutoIncrement'),
     key: 'auto_inc',
     width: 60,
     render: (row: TableColumn) => row.auto_inc ? '✓' : '',
   },
-  { title: '注释', key: 'comment', ellipsis: { tooltip: true } },
+  { title: t('plugins.database.columnComment'), key: 'comment', ellipsis: { tooltip: true } },
 ]
 
 const getDatabaseIcon = (type: string) => {
@@ -442,7 +442,7 @@ const getDatabaseIcon = (type: string) => {
   return icons[type] || '📊'
 }
 
-const getConnectionStatus = (connId: number) => '已连接'
+const getConnectionStatus = (connId: number) => t('plugins.database.connected')
 const getConnectionStatusType = (connId: number) => 'success'
 
 const selectConnection = (conn: DatabaseConnection) => {
@@ -468,7 +468,7 @@ const handleAddConnection = async () => {
     })
 
     connections.value.push({ ...connForm, id: Date.now() })
-    message.success('连接添加成功')
+    message.success(t('plugins.database.addSuccess'))
     showAddModal.value = false
 
     Object.assign(connForm, {
@@ -484,7 +484,7 @@ const handleAddConnection = async () => {
     })
   } catch (error: any) {
     if (error.errors) return
-    message.error('添加连接失败：' + (error.message || '未知错误'))
+    message.error(t('plugins.database.addError') + (error.message || t('common.unknownError')))
   }
 }
 
@@ -504,7 +504,7 @@ const handleTestNewConnection = async () => {
     })
 
     if (response && response.success) {
-      message.success('连接测试成功')
+      message.success(t('plugins.database.testSuccess'))
     } else {
       message.error('连接测试失败')
     }
@@ -528,7 +528,7 @@ const handleTestConnection = async (conn: DatabaseConnection) => {
     })
 
     if (response && response.success) {
-      message.success('连接测试成功')
+      message.success(t('plugins.database.testSuccess'))
     } else {
       message.error('连接测试失败')
     }

@@ -3,14 +3,14 @@
     <div class="generator-layout">
       <!-- 左侧配置区 -->
       <div class="config-panel">
-        <n-card title="生成配置" :bordered="false" size="small">
+        <n-card :title="$t('payloads.configTitle')" :bordered="false" size="small">
           <!-- 模式切换 -->
-          <n-form-item label="生成模式" label-placement="top" size="small">
+          <n-form-item :label="$t('payloads.generateMode')" label-placement="top" size="small">
             <n-segmented
               v-model:value="config.mode"
               :options="[
-                { label: '极简模式', value: 'simple' },
-                { label: '高级加密', value: 'advanced' },
+                { label: $t('payloads.simpleMode'), value: 'simple' },
+                { label: $t('payloads.advancedMode'), value: 'advanced' },
               ]"
               block
               @update:value="onModeChange"
@@ -23,7 +23,7 @@
           <div class="config-form">
             <!-- 第一行：脚本类型 + 功能类型 -->
             <div class="form-row">
-              <n-form-item label="脚本类型" label-placement="top" size="small" class="form-item-half">
+              <n-form-item :label="$t('payloads.scriptType')" label-placement="top" size="small" class="form-item-half">
                 <n-select
                   v-model:value="config.script_type"
                   :options="[
@@ -32,16 +32,16 @@
                     { label: 'ASPX', value: 'aspx' },
                     { label: 'ASP', value: 'asp' },
                   ]"
-                  placeholder="请选择"
+                  :placeholder="$t('payloads.selectScriptType')"
                   size="small"
                 />
               </n-form-item>
 
-              <n-form-item label="功能类型" label-placement="top" size="small" class="form-item-half">
+              <n-form-item :label="$t('payloads.funcType')" label-placement="top" size="small" class="form-item-half">
                 <n-select
                   v-model:value="config.function_type"
                   :options="FUNCTION_TYPE_OPTIONS"
-                  placeholder="请选择"
+                  :placeholder="$t('payloads.selectScriptType')"
                   size="small"
                 />
               </n-form-item>
@@ -51,19 +51,19 @@
             <div class="form-row">
               <!-- Simple 模式专属选项 -->
               <template v-if="isSimpleMode">
-                <n-form-item label="编码器" label-placement="top" size="small" class="form-item-half">
+                <n-form-item :label="$t('payloads.encoder')" label-placement="top" size="small" class="form-item-half">
                   <n-select
                     v-model:value="config.encode_type"
                     :options="[
-                      { label: '无编码', value: 'none' },
-                      { label: 'Base64', value: 'base64' },
-                      { label: 'XOR', value: 'xor' },
-                      { label: 'GZInflate', value: 'gzinflate' },
-                      { label: 'Hex', value: 'hex' },
-                      { label: 'URL', value: 'urlencode' },
-                      { label: 'ROT13', value: 'rot13' },
+                      { label: $t('payloads.noEncode'), value: 'none' },
+                      { label: $t('payloads.base64'), value: 'base64' },
+                      { label: $t('payloads.xor'), value: 'xor' },
+                      { label: $t('payloads.gzinflate'), value: 'gzinflate' },
+                      { label: $t('payloads.hex'), value: 'hex' },
+                      { label: $t('payloads.urlEncode'), value: 'urlencode' },
+                      { label: $t('payloads.rot13'), value: 'rot13' },
                     ]"
-                    placeholder="请选择"
+                    :placeholder="$t('payloads.selectScriptType')"
                     size="small"
                   />
                 </n-form-item>
@@ -71,29 +71,29 @@
 
               <!-- Advanced 模式专属选项 -->
               <template v-if="isAdvancedMode">
-                <n-form-item label="加密算法" label-placement="top" size="small" class="form-item-half">
+                <n-form-item :label="$t('payloads.encryption')" label-placement="top" size="small" class="form-item-half">
                   <n-select
                     v-model:value="config.encrypt_algo"
                     :options="[
-                      { label: 'AES-128', value: 'aes128_cbc' },
-                      { label: 'AES-256', value: 'aes256_cbc' },
-                      { label: 'XOR', value: 'xor' },
+                      { label: $t('payloads.aes128'), value: 'aes128_cbc' },
+                      { label: $t('payloads.aes256'), value: 'aes256_cbc' },
+                      { label: $t('payloads.xor'), value: 'xor' },
                     ]"
-                    placeholder="请选择"
+                    :placeholder="$t('payloads.selectScriptType')"
                     size="small"
                   />
                 </n-form-item>
               </template>
 
-              <n-form-item label="混淆强度" label-placement="top" size="small" class="form-item-half">
+              <n-form-item :label="$t('payloads.obfuscationLevel')" label-placement="top" size="small" class="form-item-half">
                 <n-select
                   v-model:value="obfuscationValue"
                   :options="[
-                    { label: '低', value: 1 },
-                    { label: '中', value: 2 },
-                    { label: '高', value: 3 },
+                    { label: $t('payloads.low'), value: 1 },
+                    { label: $t('payloads.medium'), value: 2 },
+                    { label: $t('payloads.high'), value: 3 },
                   ]"
-                  placeholder="请选择"
+                  :placeholder="$t('payloads.selectScriptType')"
                   size="small"
                 />
               </n-form-item>
@@ -102,19 +102,19 @@
             <!-- 第三行：连接密码 + 输出文件名 -->
             <div class="form-row">
               <n-form-item 
-                label="连接密码" 
+                :label="$t('payloads.password')" 
                 label-placement="top"
                 size="small"
                 class="form-item-half"
                 :rule="{
                   required: true,
-                  message: '请输入密码',
+                  message: $t('payloads.enterTemplateName'),
                   trigger: 'blur',
                 }"
               >
                 <n-input
                   v-model:value="config.password"
-                  placeholder="请输入密码"
+                  :placeholder="$t('payloads.passwordPlaceholder')"
                   type="password"
                   show-password-on="click"
                   clearable
@@ -122,10 +122,10 @@
                 />
               </n-form-item>
 
-              <n-form-item label="输出文件名" label-placement="top" size="small" class="form-item-half">
+              <n-form-item :label="$t('payloads.outputFilename')" label-placement="top" size="small" class="form-item-half">
                 <n-input
                   v-model:value="config.output_filename"
-                  placeholder="留空自动生成"
+                  :placeholder="$t('payloads.outputFilenamePlaceholder')"
                   clearable
                   size="small"
                 />
@@ -146,7 +146,7 @@
               <template #icon>
                 <IconCode />
               </template>
-              生成载荷
+              {{ $t('payloads.generate') }}
             </n-button>
 
             <n-button
@@ -159,7 +159,7 @@
               <template #icon>
                 <IconEye />
               </template>
-              实时预览
+              {{ $t('payloads.realTimePreview') }}
             </n-button>
           </div>
         </n-card>
@@ -167,7 +167,7 @@
 
       <!-- 右侧预览区 -->
       <div class="preview-panel">
-        <n-card title="代码预览" :bordered="false" size="medium">
+        <n-card :title="$t('payloads.codePreview')" :bordered="false" size="medium">
           <template #header-extra>
             <n-space>
               <n-tooltip>
@@ -178,7 +178,7 @@
                     </template>
                   </n-button>
                 </template>
-                复制代码
+                {{ $t('payloads.copyCode') }}
               </n-tooltip>
 
               <n-tooltip>
@@ -189,7 +189,7 @@
                     </template>
                   </n-button>
                 </template>
-                下载文件
+                {{ $t('payloads.downloadFile') }}
               </n-tooltip>
 
               <n-tooltip v-if="isAdvancedMode && generatedResult?.client_config">
@@ -200,7 +200,7 @@
                     </template>
                   </n-button>
                 </template>
-                导出客户端配置
+                {{ $t('payloads.exportConfig') }}
               </n-tooltip>
             </n-space>
           </template>
@@ -208,7 +208,7 @@
           <!-- 加载状态 -->
           <n-spin :show="isGenerating">
             <template #description>
-              正在生成载荷代码...
+              {{ $t('payloads.generating') }}
             </template>
 
             <!-- 代码预览区 -->
@@ -217,7 +217,7 @@
               
               <n-empty
                 v-else
-                description="点击生成按钮预览代码"
+                :description="$t('payloads.clickToPreview')"
                 style="padding: 60px 20px;"
               />
             </div>
@@ -227,49 +227,23 @@
           <div v-if="generatedResult" class="status-bar">
             <n-space justify="space-between">
               <n-text depth="3">
-                文件名：{{ generatedResult.filename }}
+                {{ $t('payloads.filename') }}{{ generatedResult.filename }}
               </n-text>
               <n-text depth="3">
-                大小：{{ formatSize(generatedResult.size) }}
+                {{ $t('payloads.size') }}{{ formatSize(generatedResult.size) }}
               </n-text>
             </n-space>
           </div>
         </n-card>
 
-        <!-- 历史记录 -->
-        <n-card title="生成历史" :bordered="false" size="small" style="margin-top: 16px;">
-          <template #header-extra>
-            <n-button text type="primary" @click="clearHistory">
-              清空
-            </n-button>
-          </template>
 
-          <n-scrollbar style="max-height: 200px;">
-            <div v-if="history.length > 0" class="history-list">
-              <div
-                v-for="(item, index) in history"
-                :key="index"
-                class="history-item"
-                @click="loadHistoryItem(item)"
-              >
-                <n-tag :type="item.success ? 'success' : 'error'" size="small">
-                  {{ item.filename }}
-                </n-tag>
-                <n-text depth="3" style="font-size: 12px;">
-                  {{ formatSize(item.size) }}
-                </n-text>
-              </div>
-            </div>
-            <n-empty v-else description="暂无历史记录" size="small" />
-          </n-scrollbar>
-        </n-card>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useMessage } from 'naive-ui'
 import { 
   IconCode, 
@@ -296,7 +270,6 @@ const isSimpleMode = computed(() => config.value.mode === 'simple')
 const isAdvancedMode = computed(() => config.value.mode === 'advanced')
 const isGenerating = computed(() => payloadStore.isGenerating)
 const generatedResult = computed(() => payloadStore.generatedResult)
-const history = computed(() => payloadStore.history)
 
 // 模式切换
 const onModeChange = (mode: string) => {
@@ -326,9 +299,9 @@ const handleGenerate = async () => {
   
   try {
     await payloadStore.generate()
-    message.success('载荷生成成功')
+    message.success($t('payloads.generateSuccess'))
   } catch (error: any) {
-    message.error(error.message || '生成失败')
+    message.error(error.message || $t('payloads.generateFailed'))
   }
 }
 
@@ -339,7 +312,7 @@ const handlePreview = async () => {
   try {
     await payloadStore.generatePreview(300)
   } catch (error: any) {
-    message.error(error.message || '预览失败')
+    message.error(error.message || $t('payloads.previewFailed'))
   }
 }
 
@@ -349,9 +322,9 @@ const copyCode = async () => {
   
   try {
     await payloadStore.copyCode(generatedResult.value.code)
-    message.success('代码已复制到剪贴板')
+    message.success($t('payloads.copySuccess'))
   } catch (error: any) {
-    message.error('复制失败')
+    message.error($t('payloads.copyFailed'))
   }
 }
 
@@ -369,29 +342,17 @@ const downloadFile = () => {
   document.body.removeChild(a)
   URL.revokeObjectURL(url)
   
-  message.success('文件已开始下载')
+  message.success($t('payloads.downloadStarted'))
 }
 
 // 导出客户端配置
 const exportConfig = async () => {
   try {
     // 这里可以集成 Tauri 文件对话框
-    message.info('导出配置功能开发中')
+    message.info($t('payloads.exportInProgress'))
   } catch (error: any) {
-    message.error('导出失败')
+    message.error($t('payloads.exportFailed'))
   }
-}
-
-// 加载历史记录
-const loadHistoryItem = (item: any) => {
-  payloadStore.generatedResult = item
-  message.success('已加载历史记录')
-}
-
-// 清空历史
-const clearHistory = () => {
-  payloadStore.clearHistory()
-  message.success('历史记录已清空')
 }
 
 // 格式化文件大小
@@ -400,11 +361,6 @@ const formatSize = (bytes: number) => {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
 }
-
-// 加载历史记录
-onMounted(async () => {
-  await payloadStore.loadHistory()
-})
 </script>
 
 <style scoped>
@@ -582,49 +538,6 @@ onMounted(async () => {
 .status-bar:hover {
   border-color: var(--active-color);
   box-shadow: 0 4px 12px rgba(var(--active-color-rgb), 0.1);
-}
-
-.history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.history-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--card-bg-hover);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid transparent;
-  position: relative;
-  overflow: hidden;
-}
-
-.history-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, var(--active-color-bg) 0%, transparent 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.history-item:hover {
-  background: var(--active-color-bg);
-  border-color: var(--active-color);
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(var(--active-color-rgb), 0.15);
-}
-
-.history-item:hover::before {
-  opacity: 1;
 }
 
 /* 分割线优化 */

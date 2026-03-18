@@ -1,12 +1,12 @@
 <template>
   <div class="payload-template-manager-view">
-    <n-card title="模板管理" :bordered="false">
+    <n-card :title="$t('payloads.templateManagement')" :bordered="false">
       <template #header-extra>
         <n-button type="primary" size="small" @click="showCreateModal = true">
           <template #icon>
             <span>➕</span>
           </template>
-          新建模板
+          {{ $t('payloads.newTemplate') }}
         </n-button>
       </template>
 
@@ -51,15 +51,15 @@
                     {{ template.script_type.toUpperCase() }}
                   </n-tag>
                   <n-text depth="3" style="font-size: 13px;">
-                    {{ template.description || '暂无描述' }}
+                    {{ template.description || $t('payloads.noDescription') }}
                   </n-text>
                   <n-divider style="margin: 12px 0;" />
                   <n-space justify="space-between">
                     <n-text depth="3" style="font-size: 12px;">
-                      创建：{{ formatDate(template.created_at) }}
+                      {{ $t('payloads.created') }}{{ formatDate(template.created_at) }}
                     </n-text>
                     <n-text depth="3" style="font-size: 12px;">
-                      更新：{{ formatDate(template.updated_at) }}
+                      {{ $t('payloads.updated') }}{{ formatDate(template.updated_at) }}
                     </n-text>
                   </n-space>
                 </n-space>
@@ -67,7 +67,7 @@
 
               <template #action>
                 <n-button block @click="useTemplate(template)">
-                  使用模板
+                  {{ $t('payloads.useTemplate') }}
                 </n-button>
               </template>
             </n-card>
@@ -76,7 +76,7 @@
           <!-- 空状态 -->
           <n-grid-item v-if="templates.length === 0" :span="24">
             <n-empty
-              description="暂无模板，点击右上角创建第一个模板"
+              :description="$t('payloads.noTemplates')"
               style="padding: 60px 20px;"
             />
           </n-grid-item>
@@ -87,7 +87,7 @@
     <!-- 创建/编辑模板对话框 -->
     <n-modal
       v-model:show="showCreateModal"
-      :title="editingTemplate ? '编辑模板' : '创建模板'"
+      :title="editingTemplate ? $t('payloads.editTemplate') : $t('payloads.createTemplate')"
       preset="dialog"
       :style="{ width: '600px' }"
     >
@@ -98,15 +98,15 @@
         :label-width="100"
       >
         <n-form-item
-          label="模板名称"
-          :rule="{ required: true, message: '请输入模板名称', trigger: 'blur' }"
+          :label="$t('payloads.templateName')"
+          :rule="{ required: true, message: $t('payloads.enterTemplateName'), trigger: 'blur' }"
         >
-          <n-input v-model:value="formData.name" placeholder="例如：PHP 基础连接" />
+          <n-input v-model:value="formData.name" :placeholder="$t('payloads.templateNamePlaceholder')" />
         </n-form-item>
 
         <n-form-item
-          label="脚本类型"
-          :rule="{ required: true, message: '请选择脚本类型', trigger: 'change' }"
+          :label="$t('payloads.scriptType')"
+          :rule="{ required: true, message: $t('payloads.selectScriptType'), trigger: 'change' }"
         >
           <n-select
             v-model:value="formData.script_type"
@@ -119,33 +119,33 @@
           />
         </n-form-item>
 
-        <n-form-item label="功能类型">
+        <n-form-item :label="$t('payloads.functionType')">
           <n-select
             v-model:value="formData.function_type"
             :options="[
-              { label: '基础连接', value: 'basic' },
-              { label: '文件管理', value: 'file_manager' },
-              { label: '进程管理', value: 'process_manager' },
-              { label: '注册表', value: 'registry' },
-              { label: '网络', value: 'network' },
+              { label: $t('payloads.basicConnection'), value: 'basic' },
+              { label: $t('payloads.fileManagement'), value: 'file_manager' },
+              { label: $t('payloads.processManagement'), value: 'process_manager' },
+              { label: $t('payloads.registry'), value: 'registry' },
+              { label: $t('payloads.network'), value: 'network' },
             ]"
           />
         </n-form-item>
 
-        <n-form-item label="模板描述">
+        <n-form-item :label="$t('payloads.templateDescription')">
           <n-input
             v-model:value="formData.description"
             type="textarea"
-            placeholder="简要描述模板的用途"
+            :placeholder="$t('payloads.describeTemplate')"
             :rows="3"
           />
         </n-form-item>
 
-        <n-form-item label="模板代码">
+        <n-form-item :label="$t('payloads.templateCode')">
           <n-input
             v-model:value="formData.code"
             type="textarea"
-            placeholder="输入模板代码"
+            :placeholder="$t('payloads.enterTemplateCode')"
             :rows="10"
             style="font-family: monospace;"
           />
@@ -153,8 +153,8 @@
       </n-form>
 
       <template #action>
-        <n-button @click="showCreateModal = false">取消</n-button>
-        <n-button type="primary" @click="saveTemplate">保存</n-button>
+        <n-button @click="showCreateModal = false">{{ $t('payloads.cancel') }}</n-button>
+        <n-button type="primary" @click="saveTemplate">{{ $t('payloads.save') }}</n-button>
       </template>
     </n-modal>
   </div>
@@ -227,17 +227,17 @@ const editTemplate = (template: any) => {
 
 const deleteTemplate = (id: number) => {
   templates.value = templates.value.filter(t => t.id !== id)
-  message.success('模板已删除')
+  message.success($t('payloads.templateDeleted'))
 }
 
 const useTemplate = (template: any) => {
-  message.success(`已使用模板：${template.name}`)
+  message.success(`${$t('payloads.templateUsed')}${template.name}`)
   // 这里可以集成到 PayloadGenerator
 }
 
 const saveTemplate = () => {
   if (!formData.name) {
-    message.error('请输入模板名称')
+    message.error($t('payloads.enterTemplateName'))
     return
   }
 
@@ -250,7 +250,7 @@ const saveTemplate = () => {
         ...formData,
         updated_at: new Date().toISOString(),
       }
-      message.success('模板已更新')
+      message.success($t('payloads.templateUpdated'))
     }
   } else {
     // 创建模式
@@ -260,7 +260,7 @@ const saveTemplate = () => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
-    message.success('模板已创建')
+    message.success($t('payloads.templateCreated'))
   }
 
   showCreateModal.value = false

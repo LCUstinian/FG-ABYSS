@@ -2,8 +2,8 @@
   <div class="home-panel">
     <!-- 页面标题 -->
     <PageHeader 
-      title="首页" 
-      subtitle="欢迎使用 FG-ABYSS WebShell 管理工具" 
+      :title="t('home.title')" 
+      :subtitle="t('home.subtitle')" 
     />
 
     <div class="content-body">
@@ -14,8 +14,11 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import PageHeader from '@/components/shared/PageHeader.vue'
 import DashboardView from './DashboardView.vue'
+
+const { t } = useI18n()
 </script>
 
 <style scoped>

@@ -12,7 +12,7 @@
           <div class="placeholder-info">
             <div class="info-item">
               <span class="info-label">WebShell ID:</span>
-              <span class="info-value">{{ webshellId || '未指定' }}</span>
+              <span class="info-value">{{ webshellId || t('webshell.webshellIdNotSpecified') }}</span>
             </div>
             <div class="info-item">
               <span class="info-label">状态:</span>
@@ -148,7 +148,7 @@ const connect = async () => {
     connectionStatus.value = 'disconnected'
     connecting.value = false
     console.error('Connection failed:', error)
-    alert('连接失败：' + (error instanceof Error ? error.message : '未知错误'))
+    alert(t('webshell.connectionFailedError') + (error instanceof Error ? error.message : t('common.unknownError')))
   }
 }
 

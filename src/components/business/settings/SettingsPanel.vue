@@ -2,8 +2,8 @@
   <div class="settings-panel">
     <!-- 页面标题 -->
     <PageHeader 
-      title="设置" 
-      subtitle="自定义应用外观与行为" 
+      :title="t('settings.title')" 
+      :subtitle="t('settings.subtitle')" 
     />
 
     <!-- 左右布局容器 -->
@@ -71,9 +71,9 @@ const currentSettingsTab = ref('appearance')
 const currentLanguage = ref(locale.value)
 
 const tabs = [
-  { name: 'appearance', label: '外观', icon: '🎨' },
-  { name: 'connection', label: '连接', icon: '🔗' },
-  { name: 'about', label: '关于', icon: 'ℹ️' }
+  { name: 'appearance', label: t('settings.appearance'), icon: '🎨' },
+  { name: 'connection', label: t('settings.connection'), icon: '🔗' },
+  { name: 'about', label: t('settings.about'), icon: 'ℹ️' }
 ]
 
 watch(() => props.themeMode, (newVal) => {

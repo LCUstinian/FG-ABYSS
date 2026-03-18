@@ -72,7 +72,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 16px 0 16px;">
                   <NInput
                     v-model:value="searchQuery"
-                    placeholder="搜索 WebShell..."
+                    :placeholder="t('common.searchPlaceholder')"
                     size="small"
                     class="search-input"
                     style="width: 300px;"
@@ -596,7 +596,7 @@ const handleDeleteProject = async (project: any) => {
       }
     },
     onNegativeClick: () => {
-      console.log('取消删除')
+      console.log(t('project.cancelDelete'))
     }
   })
 }
@@ -645,7 +645,7 @@ const handleRecoverProject = async (project: any) => {
 
 // 处理关闭弹窗
 const handleRecoverDialogClose = () => {
-  console.log('关闭恢复项目弹窗')
+  console.log(t('project.closeRecoverDialog'))
 }
 
 // 处理右键菜单
@@ -669,7 +669,7 @@ const openWebShellControlWindow = async (webshell: WebShell) => {
     message.success(`已打开 WebShell 控制窗口：${webshell.remark || webshell.url}`)
   } catch (error: any) {
     componentLogger.error('发送打开 WebShell 窗口事件失败:', error)
-    message.error('打开 WebShell 窗口失败：' + (error.message || '未知错误'))
+    message.error(t('project.openWebShellFailed') + (error.message || t('common.unknownError')))
   }
 }
 
@@ -686,12 +686,12 @@ const handleMenuClick = (key: string) => {
     case 'cache':
       console.log('Cache webshell:', selectedRow.value)
       // TODO: 实现缓存功能
-      message.info('缓存功能尚未实现')
+      message.info(t('project.cacheNotImplemented'))
       break
     case 'edit':
       console.log('Edit webshell:', selectedRow.value)
       // TODO: 打开编辑窗口
-      message.info('编辑功能尚未实现')
+      message.info(t('project.editNotImplemented'))
       break
     case 'delete':
       console.log('Delete webshell:', selectedRow.value)
@@ -709,7 +709,7 @@ const handleMenuClick = (key: string) => {
           }
           
           // 显示加载状态
-          const loading = message.loading('正在删除...', {
+          const loading = message.loading(t('projects.deleting'), {
             duration: 0
           })
           
@@ -750,7 +750,7 @@ const handleMenuClick = (key: string) => {
           }
         },
         onNegativeClick: () => {
-          console.log('取消删除')
+          console.log(t('project.cancelDelete'))
         }
       })
       break
@@ -770,7 +770,7 @@ const handleMenuClick = (key: string) => {
           }
           
           // 显示加载状态
-          const loading = message.loading('正在恢复...', {
+          const loading = message.loading(t('projects.recovering'), {
             duration: 0
           })
           

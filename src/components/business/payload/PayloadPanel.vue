@@ -39,18 +39,22 @@ const activeTab = ref('generator')
 .payload-panel {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
   width: 100%;
   background: var(--content-bg);
   transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
 
 .content-body {
   flex: 1;
   padding: 24px;
-  overflow-y: auto;
   background: var(--content-bg);
   animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes fadeIn {
@@ -64,30 +68,11 @@ const activeTab = ref('generator')
   }
 }
 
-/* 自定义滚动条 */
-.content-body::-webkit-scrollbar {
-  width: 8px;
-}
-
-.content-body::-webkit-scrollbar-track {
-  background: var(--sidebar-bg);
-  border-radius: 4px;
-}
-
-.content-body::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
-  transition: background 0.3s ease;
-}
-
-.content-body::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
-}
-
 :deep(.n-tabs) {
   height: 100%;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
 :deep(.n-tabs-nav) {
@@ -123,6 +108,7 @@ const activeTab = ref('generator')
 :deep(.n-tabs-tab-pane) {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   min-height: 0;
   padding: 24px 0;
   background: transparent;
@@ -142,8 +128,30 @@ const activeTab = ref('generator')
 
 :deep(.n-tabs-content) {
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 自定义滚动条 */
+:deep(.n-tabs-tab-pane)::-webkit-scrollbar {
+  width: 8px;
+}
+
+:deep(.n-tabs-tab-pane)::-webkit-scrollbar-track {
+  background: var(--sidebar-bg);
+  border-radius: 4px;
+}
+
+:deep(.n-tabs-tab-pane)::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+:deep(.n-tabs-tab-pane)::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
 
 /* 桌面端优化 */

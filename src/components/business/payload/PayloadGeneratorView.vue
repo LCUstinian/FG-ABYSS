@@ -3,139 +3,145 @@
     <div class="generator-layout">
       <!-- 左侧配置区 -->
       <div class="config-panel">
-        <n-card title="生成配置" :bordered="false" size="medium">
+        <n-card title="生成配置" :bordered="false" size="small">
           <!-- 模式切换 -->
-          <n-form-item label="生成模式" label-placement="top">
+          <n-form-item label="生成模式" label-placement="top" size="small">
             <n-segmented
               v-model:value="config.mode"
               :options="[
-                { label: '极简模式', value: 'simple', description: '编码/混淆，绕过 WAF' },
-                { label: '高级加密', value: 'advanced', description: 'AES 加密，抗分析' },
+                { label: '极简模式', value: 'simple' },
+                { label: '高级加密', value: 'advanced' },
               ]"
               block
               @update:value="onModeChange"
             />
           </n-form-item>
 
-          <n-divider />
+          <n-divider style="margin: 12px 0;" />
 
-          <!-- 基础配置 -->
-          <n-form-item label="脚本类型" label-placement="top">
-            <n-select
-              v-model:value="config.script_type"
-              :options="[
-                { label: 'PHP', value: 'php' },
-                { label: 'JSP', value: 'jsp' },
-                { label: 'ASPX', value: 'aspx' },
-                { label: 'ASP', value: 'asp' },
-              ]"
-              placeholder="选择脚本类型"
-            />
-          </n-form-item>
+          <!-- 配置表单 -->
+          <div class="config-form">
+            <!-- 第一行：脚本类型 + 功能类型 -->
+            <div class="form-row">
+              <n-form-item label="脚本类型" label-placement="top" size="small" class="form-item-half">
+                <n-select
+                  v-model:value="config.script_type"
+                  :options="[
+                    { label: 'PHP', value: 'php' },
+                    { label: 'JSP', value: 'jsp' },
+                    { label: 'ASPX', value: 'aspx' },
+                    { label: 'ASP', value: 'asp' },
+                  ]"
+                  placeholder="请选择"
+                  size="small"
+                />
+              </n-form-item>
 
-          <n-form-item label="功能类型" label-placement="top">
-            <n-select
-              v-model:value="config.function_type"
-              :options="FUNCTION_TYPE_OPTIONS"
-              placeholder="选择功能类型"
-            />
-          </n-form-item>
+              <n-form-item label="功能类型" label-placement="top" size="small" class="form-item-half">
+                <n-select
+                  v-model:value="config.function_type"
+                  :options="FUNCTION_TYPE_OPTIONS"
+                  placeholder="请选择"
+                  size="small"
+                />
+              </n-form-item>
+            </div>
 
-          <n-form-item 
-            label="连接密码" 
-            label-placement="top"
-            :rule="{
-              required: true,
-              message: '请输入连接密码',
-              trigger: 'blur',
-            }"
-          >
-            <n-input
-              v-model:value="config.password"
-              placeholder="输入连接密码"
-              type="password"
-              show-password-on="click"
-              clearable
-            />
-          </n-form-item>
+            <!-- 第二行：编码器/加密算法 + 混淆强度 -->
+            <div class="form-row">
+              <!-- Simple 模式专属选项 -->
+              <template v-if="isSimpleMode">
+                <n-form-item label="编码器" label-placement="top" size="small" class="form-item-half">
+                  <n-select
+                    v-model:value="config.encode_type"
+                    :options="[
+                      { label: '无编码', value: 'none' },
+                      { label: 'Base64', value: 'base64' },
+                      { label: 'XOR', value: 'xor' },
+                      { label: 'GZInflate', value: 'gzinflate' },
+                      { label: 'Hex', value: 'hex' },
+                      { label: 'URL', value: 'urlencode' },
+                      { label: 'ROT13', value: 'rot13' },
+                    ]"
+                    placeholder="请选择"
+                    size="small"
+                  />
+                </n-form-item>
+              </template>
 
-          <!-- Simple 模式专属选项 -->
-          <template v-if="isSimpleMode">
-            <n-form-item label="编码器" label-placement="top">
-              <n-select
-                v-model:value="config.encode_type"
-                :options="[
-                  { label: '无编码', value: 'none' },
-                  { label: 'Base64', value: 'base64' },
-                  { label: 'XOR', value: 'xor' },
-                  { label: 'GZInflate', value: 'gzinflate' },
-                  { label: 'Hex', value: 'hex' },
-                  { label: 'URL Encode', value: 'urlencode' },
-                  { label: 'ROT13', value: 'rot13' },
-                ]"
-                placeholder="选择编码器"
-              />
-              <n-text depth="3" style="font-size: 12px; margin-top: 8px;">
-                编码器用于绕过 WAF 静态规则检测
-              </n-text>
-            </n-form-item>
-          </template>
+              <!-- Advanced 模式专属选项 -->
+              <template v-if="isAdvancedMode">
+                <n-form-item label="加密算法" label-placement="top" size="small" class="form-item-half">
+                  <n-select
+                    v-model:value="config.encrypt_algo"
+                    :options="[
+                      { label: 'AES-128', value: 'aes128_cbc' },
+                      { label: 'AES-256', value: 'aes256_cbc' },
+                      { label: 'XOR', value: 'xor' },
+                    ]"
+                    placeholder="请选择"
+                    size="small"
+                  />
+                </n-form-item>
+              </template>
 
-          <!-- Advanced 模式专属选项 -->
-          <template v-if="isAdvancedMode">
-            <n-form-item label="加密算法" label-placement="top">
-              <n-select
-                v-model:value="config.encrypt_algo"
-                :options="[
-                  { label: 'AES-128-CBC', value: 'aes128_cbc' },
-                  { label: 'AES-256-CBC', value: 'aes256_cbc' },
-                  { label: 'XOR', value: 'xor' },
-                ]"
-                placeholder="选择加密算法"
-              />
-              <n-alert 
-                type="info" 
-                title="加密说明"
-                style="margin-top: 8px;"
+              <n-form-item label="混淆强度" label-placement="top" size="small" class="form-item-half">
+                <n-select
+                  v-model:value="obfuscationValue"
+                  :options="[
+                    { label: '低', value: 1 },
+                    { label: '中', value: 2 },
+                    { label: '高', value: 3 },
+                  ]"
+                  placeholder="请选择"
+                  size="small"
+                />
+              </n-form-item>
+            </div>
+
+            <!-- 第三行：连接密码 + 输出文件名 -->
+            <div class="form-row">
+              <n-form-item 
+                label="连接密码" 
+                label-placement="top"
+                size="small"
+                class="form-item-half"
+                :rule="{
+                  required: true,
+                  message: '请输入密码',
+                  trigger: 'blur',
+                }"
               >
-                高级加密模式包含完整的密钥协商和动态解密逻辑，可有效抗流量分析
-              </n-alert>
-            </n-form-item>
-          </template>
+                <n-input
+                  v-model:value="config.password"
+                  placeholder="请输入密码"
+                  type="password"
+                  show-password-on="click"
+                  clearable
+                  size="small"
+                />
+              </n-form-item>
 
-          <!-- 混淆级别 -->
-          <n-form-item label="混淆强度" label-placement="top">
-            <n-slider
-              v-model:value="obfuscationValue"
-              :marks="{
-                1: '低',
-                2: '中',
-                3: '高',
-              }"
-              :step="1"
-              :min="1"
-              :max="3"
-              show-tooltip
-            />
-          </n-form-item>
-
-          <!-- 输出文件名 -->
-          <n-form-item label="输出文件名" label-placement="top">
-            <n-input
-              v-model:value="config.output_filename"
-              placeholder="留空则自动生成"
-              clearable
-            />
-          </n-form-item>
+              <n-form-item label="输出文件名" label-placement="top" size="small" class="form-item-half">
+                <n-input
+                  v-model:value="config.output_filename"
+                  placeholder="留空自动生成"
+                  clearable
+                  size="small"
+                />
+              </n-form-item>
+            </div>
+          </div>
 
           <!-- 生成按钮 -->
-          <n-space vertical style="margin-top: 24px;">
+          <div class="button-group">
             <n-button
               type="primary"
-              size="large"
+              size="medium"
               block
               :loading="isGenerating"
               @click="handleGenerate"
+              class="primary-btn"
             >
               <template #icon>
                 <IconCode />
@@ -145,15 +151,17 @@
 
             <n-button
               secondary
+              size="medium"
               block
               @click="handlePreview"
+              class="secondary-btn"
             >
               <template #icon>
                 <IconEye />
               </template>
               实时预览
             </n-button>
-          </n-space>
+          </div>
         </n-card>
       </div>
 
@@ -402,7 +410,7 @@ onMounted(async () => {
 <style scoped>
 .payload-generator-view {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -420,14 +428,23 @@ onMounted(async () => {
 .generator-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 20px;
   max-width: 1600px;
   margin: 0 auto;
+  padding: 0;
 }
 
+/* 自适应窗口布局 */
 @media (max-width: 1200px) {
   .generator-layout {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .generator-layout {
+    gap: 12px;
   }
 }
 
@@ -436,15 +453,29 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
 }
 
-/* 卡片样式优化 */
+/* 统一卡片样式 - 所有卡片一致 */
 :deep(.n-card) {
-  background: var(--card-bg);
+  background: linear-gradient(145deg, var(--card-bg) 0%, var(--card-bg-hover) 100%);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+:deep(.n-card::before) {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--active-color), transparent, var(--active-color));
+  opacity: 0.6;
 }
 
 :deep(.n-card:hover) {
@@ -454,18 +485,19 @@ onMounted(async () => {
 
 :deep(.n-card-header) {
   border-bottom: 1px solid var(--border-color);
-  padding: 20px 24px;
-  background: linear-gradient(135deg, var(--card-bg) 0%, var(--card-bg-hover) 100%);
+  padding: 14px 18px;
+  background: transparent;
 }
 
 :deep(.n-card-header__main) {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
+  letter-spacing: 0.3px;
 }
 
 :deep(.n-card__content) {
-  padding: 24px;
+  padding: 16px 18px;
 }
 
 /* 按钮样式优化 */
@@ -598,39 +630,196 @@ onMounted(async () => {
 /* 分割线优化 */
 :deep(.n-divider) {
   border-color: var(--border-color);
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
-/* 表单样式优化 */
+/* 表单样式优化 - 紧凑版 */
+:deep(.n-form-item) {
+  margin-bottom: 10px;
+}
+
 :deep(.n-form-item-label) {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: 5px;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+}
+
+:deep(.n-form-item-blank) {
+  padding: 0;
 }
 
 :deep(.n-input),
 :deep(.n-select) {
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+:deep(.n-input-wrapper),
+:deep(.n-select-trigger) {
+  border-radius: 6px;
 }
 
 :deep(.n-input:hover),
 :deep(.n-select:hover) {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-color: var(--text-secondary);
 }
 
 :deep(.n-input:focus-within),
 :deep(.n-select:focus-within) {
-  box-shadow: 0 0 0 3px rgba(var(--active-color-rgb), 0.1);
+  box-shadow: 0 0 0 2px rgba(var(--active-color-rgb), 0.15);
+  border-color: var(--active-color);
 }
 
-/* 滑块样式优化 */
-:deep(.n-slider-rail) {
-  border-radius: 4px;
+:deep(.n-input__wrapper),
+:deep(.n-select__trigger) {
+  background: var(--card-bg);
 }
 
-:deep(.n-slider-fill) {
-  background: linear-gradient(90deg, var(--active-color) 0%, var(--active-color) 100%);
+/* 表单布局 */
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-item-half {
+  margin-bottom: 12px;
+}
+
+.form-item-half :deep(.n-form-item-blank) {
+  padding: 0;
+}
+
+/* 响应式设计 - 表单在小屏幕单列 */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .form-item-half {
+    margin-bottom: 10px;
+  }
+  
+  .config-panel :deep(.n-card__content),
+  .preview-panel :deep(.n-card__content) {
+    padding: 12px 14px;
+  }
+  
+  .config-panel :deep(.n-card-header),
+  .preview-panel :deep(.n-card-header) {
+    padding: 12px 14px;
+  }
+  
+  .button-group {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+}
+
+/* 中等屏幕优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .form-row {
+    gap: 12px;
+  }
+  
+  .form-item-half {
+    margin-bottom: 10px;
+  }
+}
+
+/* 按钮组样式 */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.button-group :deep(.n-button) {
+  border-radius: 8px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-group :deep(.primary-btn) {
+  background: linear-gradient(135deg, var(--active-color) 0%, var(--active-color) 100%);
+  box-shadow: 0 4px 12px rgba(var(--active-color-rgb), 0.3);
+}
+
+.button-group :deep(.primary-btn:hover) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(var(--active-color-rgb), 0.4);
+}
+
+.button-group :deep(.primary-btn:active) {
+  transform: translateY(0);
+}
+
+.button-group :deep(.secondary-btn:hover) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 分段器优化 */
+:deep(.n-segmented) {
+  border-radius: 10px;
+  padding: 4px;
+  background: var(--card-bg-hover);
+}
+
+:deep(.n-segmented-item) {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+:deep(.n-segmented-item--selected) {
+  background: var(--active-color) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(var(--active-color-rgb), 0.3);
+}
+
+/* 主题适配 */
+:root {
+  --card-bg: #ffffff;
+  --card-bg-hover: #f8fafc;
+  --border-color: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --active-color: #3b82f6;
+  --active-color-bg: rgba(59, 130, 246, 0.08);
+  --active-color-rgb: 59, 130, 246;
+  --sidebar-bg: #f1f5f9;
+  --code-bg: #f8fafc;
+  --code-text: #1e293b;
+}
+
+html.dark {
+  --card-bg: #1e293b;
+  --card-bg-hover: #334155;
+  --border-color: #475569;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --active-color: #60a5fa;
+  --active-color-bg: rgba(96, 165, 250, 0.15);
+  --active-color-rgb: 96, 165, 250;
+  --sidebar-bg: #0f172a;
+  --code-bg: #0f172a;
+  --code-text: #e2e8f0;
 }
 
 /* 桌面端优化 */

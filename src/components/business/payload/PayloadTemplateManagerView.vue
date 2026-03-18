@@ -278,7 +278,7 @@ const saveTemplate = () => {
 <style scoped>
 .payload-template-manager-view {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

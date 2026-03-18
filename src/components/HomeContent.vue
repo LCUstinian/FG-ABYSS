@@ -1,13 +1,6 @@
 <template>
   <div class="content-section">
-    <div class="content-header">
-      <h1>
-        <span class="title">{{ t('home.title') }}</span>
-        <span class="separator">|</span>
-        <span class="subtitle">{{ t('home.subtitle') }}</span>
-      </h1>
-    </div>
-    
+    <PageHeader :title="t('home.title')" :subtitle="t('home.subtitle')" />
     <div class="content-body">
       <div class="dashboard-container">
         <!-- 核心数据指标卡片 -->
@@ -286,6 +279,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import PageHeader from '@/components/shared/PageHeader.vue'
 import {
   Folder,
   Terminal,
@@ -383,45 +377,7 @@ const navigateTo = (page: string) => {
   overflow: hidden;
 }
 
-.content-header {
-  flex-shrink: 0;
-  padding: 24px 24px 20px 24px;
-  border-bottom: 1px solid var(--border-color);
-  background: var(--card-bg);
-}
 
-.dark .content-header {
-  border-bottom-color: var(--border-strong);
-}
-
-.content-header h1 {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0;
-  font-size: 0;
-  line-height: 1;
-}
-
-.content-header .title {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--active-color);
-  letter-spacing: 0;
-}
-
-.content-header .separator {
-  color: var(--text-tertiary);
-  font-weight: 300;
-  font-size: 20px;
-}
-
-.content-header .subtitle {
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--text-secondary);
-  letter-spacing: 0;
-}
 
 .content-body {
   flex: 1;
@@ -1185,22 +1141,6 @@ const navigateTo = (page: string) => {
     grid-template-columns: 1fr;
   }
   
-  .content-header {
-    padding: 20px 20px 16px 20px;
-  }
-  
-  .content-header .title {
-    font-size: 20px;
-  }
-  
-  .content-header .separator {
-    font-size: 18px;
-  }
-  
-  .content-header .subtitle {
-    font-size: 14px;
-  }
-  
   .content-body {
     padding: 16px;
   }
@@ -1278,15 +1218,6 @@ const navigateTo = (page: string) => {
 }
 
 @media (max-width: 480px) {
-  .content-header h1 {
-    flex-direction: column;
-    gap: 8px;
-    align-items: flex-start;
-  }
-  
-  .content-header .separator {
-    display: none;
-  }
   
   .metric-card {
     padding: 18px;

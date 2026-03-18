@@ -1,8 +1,6 @@
 <template>
   <div class="content-section">
-    <div class="content-header">
-      <h1><span class="title">{{ t('plugins.title') }}</span> <span class="separator">|</span> <span class="subtitle">{{ t('plugins.subtitle') }}</span></h1>
-    </div>
+    <PageHeader :title="t('plugins.title')" :subtitle="t('plugins.subtitle')" />
     <div class="content-body">
       <div class="plugins-content">
         <div class="plugins-tabs">
@@ -22,6 +20,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import PageHeader from '@/components/shared/PageHeader.vue'
 import { Plug } from 'lucide-vue-next'
 
 const { t } = useI18n()
@@ -37,50 +36,6 @@ const { t } = useI18n()
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-.content-header {
-  width: 100%;
-  padding: 24px 24px 20px 24px;
-  margin-bottom: 0;
-  background: var(--card-bg);
-  border-bottom: 1px solid var(--border-color);
-  box-sizing: border-box;
-}
-
-.dark .content-header {
-  border-bottom-color: var(--border-strong);
-}
-
-.content-section h1 {
-  margin: 0;
-  font-size: 0;
-  line-height: 1;
-  color: var(--text-color);
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.content-section h1 .title {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--active-color);
-  letter-spacing: 0;
-}
-
-.content-section h1 .separator {
-  color: var(--text-tertiary);
-  font-weight: 300;
-  font-size: 20px;
-}
-
-.content-section h1 .subtitle {
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--text-secondary);
-  letter-spacing: 0;
 }
 
 .content-body {

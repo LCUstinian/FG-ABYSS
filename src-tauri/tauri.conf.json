@@ -13,11 +13,15 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "fg-abyss",
+        "title": "FG-ABYSS 非攻 - 渊渟",
         "width": 1500,
         "height": 900,
         "minWidth": 1300,
-        "minHeight": 900
+        "minHeight": 900,
+        "decorations": false,
+        "transparent": false,
+        "resizable": true,
+        "fullscreen": false
       }
     ],
     "security": {

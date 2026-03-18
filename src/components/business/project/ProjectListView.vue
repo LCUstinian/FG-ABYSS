@@ -1,6 +1,5 @@
 <template>
-  <div class="content-section">
-    <PageHeader :title="t('projects.title')" :subtitle="t('projects.subtitle')" />
+  <div class="project-list-view">
     <div class="content-body">
       <div class="projects-content">
         <div class="projects-sidebar">
@@ -321,9 +320,8 @@ import {
   useMessage
 } from 'naive-ui'
 import Tooltip from '@/components/shared/Tooltip.vue'
-import PageHeader from '@/components/shared/PageHeader.vue'
 import CreateProjectModal from '@/components/business/project/CreateProjectModal.vue'
-import CreateWebShellModal from '@/components/business/webshell/CreateWebShellModal.vue'
+import CreateWebShellModal from './CreateWebShellModal.vue'
 import RecoverProjectModal from '@/components/business/project/RecoverProjectModal.vue'
 import { useSmartPagination } from '@/composables/useSmartPagination'
 import { useProject } from '@/composables'
@@ -1014,10 +1012,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.content-section {
+.project-list-view {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   width: 100%;
   height: 100%;
   box-sizing: border-box;

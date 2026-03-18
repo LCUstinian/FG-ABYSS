@@ -1,8 +1,6 @@
 <template>
-  <div class="content-section">
-    <PageHeader :title="t('home.title')" :subtitle="t('home.subtitle')" />
-    <div class="content-body">
-      <div class="dashboard-container">
+  <div class="dashboard-view">
+    <div class="dashboard-container">
         <!-- 核心数据指标卡片 -->
         <div class="metrics-grid">
           <div class="metric-card" @click="navigateTo('projects')">
@@ -250,7 +248,7 @@
                   <div class="stat-bar">
                     <div class="stat-bar-label">Web</div>
                     <div class="stat-bar-fill" style="width: 80%"></div>
-                    <span class="stat-bar-value">80%</span>
+                    <span class="stat-bar-value">75%</span>
                   </div>
                   <div class="stat-bar">
                     <div class="stat-bar-label">Mobile</div>
@@ -283,13 +281,11 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import PageHeader from '@/components/shared/PageHeader.vue'
 import {
   Folder,
   Terminal,
@@ -309,6 +305,7 @@ import {
   Download
 } from 'lucide-vue-next'
 import { NProgress } from 'naive-ui'
+import { useDashboard } from '@/composables/useDashboard'
 
 const { t } = useI18n()
 
@@ -324,6 +321,9 @@ const props = defineProps({
     })
   }
 })
+
+// 使用 Dashboard Composable
+const { stats, activities, refresh } = useDashboard()
 
 const formatUptimeDisplay = (uptime: string): string => {
   const seconds = parseFloat(uptime)
@@ -375,20 +375,17 @@ const navigateTo = (page: string) => {
 /* ========================================
    全局容器样式
    ======================================== */
-.content-section {
+.dashboard-view {
+  width: 100%;
+  height: 100%;
+}
+
+.dashboard-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
   background: transparent;
-}
-
-.content-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px;
-  background: var(--content-bg);
-  transition: background 0.3s ease;
 }
 
 .dashboard-container {

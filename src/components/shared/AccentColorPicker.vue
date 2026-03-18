@@ -2,10 +2,6 @@
   <div class="accent-color-picker">
     <!-- 预设颜色选择区 -->
     <div class="preset-colors-section">
-      <div class="section-title">
-        <span class="title-icon">🎨</span>
-        <span>{{ t('settings.presetColors') }}</span>
-      </div>
       <div class="preset-colors-container">
         <button
           v-for="(color, index) in presetColors"
@@ -27,11 +23,6 @@
 
     <!-- 自定义颜色选择器 -->
     <div class="custom-color-section">
-      <div class="section-title">
-        <span class="title-icon">⚙️</span>
-        <span>{{ t('settings.customColor') }}</span>
-      </div>
-      
       <div class="custom-color-container">
         <!-- 颜色预览区 -->
         <div class="color-preview-section">

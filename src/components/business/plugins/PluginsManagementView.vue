@@ -1,6 +1,5 @@
 <template>
-  <div class="content-section">
-    <PageHeader :title="t('plugins.title')" :subtitle="t('plugins.subtitle')" />
+  <div class="plugins-management-view">
     <div class="content-body">
       <div class="plugins-content">
         <div class="plugins-tabs">
@@ -20,17 +19,15 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import PageHeader from '@/components/shared/PageHeader.vue'
 import { Plug } from 'lucide-vue-next'
 
 const { t } = useI18n()
 </script>
 
 <style scoped>
-.content-section {
+.plugins-management-view {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   width: 100%;
   height: 100%;
   box-sizing: border-box;

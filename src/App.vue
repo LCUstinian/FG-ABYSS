@@ -2,13 +2,13 @@
 import TitleBar from './components/layout/TitleBar.vue'
 import StatusBar from './components/layout/StatusBar.vue'
 import Sidebar from './components/layout/Sidebar.vue'
-import Dashboard from './components/business/home/Dashboard.vue'
-import ProjectsContent from './components/business/project/ProjectList.vue'
-import PayloadsContent from './components/business/payload/PayloadList.vue'
-import PluginsManagement from './components/business/plugins/PluginsManagement.vue'
-import SettingsContent from './components/business/settings/SettingsPanel.vue'
-import WebShellControlWindow from './components/business/webshell/WebShellControlWindow.vue'
-import DatabaseManager from './components/business/database/DatabaseManager.vue'
+import HomePanel from './components/business/home/HomePanel.vue'
+import ProjectPanel from './components/business/project/ProjectPanel.vue'
+import PayloadPanel from './components/business/payload/PayloadPanel.vue'
+import PluginsPanel from './components/business/plugins/PluginsPanel.vue'
+import SettingsPanel from './components/business/settings/SettingsPanel.vue'
+// import WebShellControlWindow from './components/business/webshell/WebShellControlWindow.vue' // 文件不存在，暂时注释
+// import DatabaseManager from './components/business/database/DatabaseManager.vue' // 文件不存在，暂时注释
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { 
@@ -264,11 +264,11 @@ let updateTimer: number | null = null
 
 // 计算当前内容组件
 const currentContent = computed(() => {
-  // 检查是否在 WebShell 控制窗口模式
-  const hash = window.location.hash
-  if (hash.startsWith('#/webshell-control')) {
-    return 'webshell-control'
-  }
+  // TODO: WebShell 控制窗口功能暂未启用
+  // const hash = window.location.hash
+  // if (hash.startsWith('#/webshell-control')) {
+  //   return 'webshell-control'
+  // }
   return currentNavItem.value
 })
 
@@ -452,14 +452,9 @@ onUnmounted(() => {
   >
     <NMessageProvider>
       <NDialogProvider>
-        <!-- 判断是否为 WebShell 控制窗口模式 -->
-        <template v-if="currentContent === 'webshell-control'">
-          <!-- 最小化布局 - 只显示控制窗口组件 -->
-          <WebShellControlWindow />
-        </template>
-        <template v-else>
-          <!-- 完整布局 - 主窗口模式 -->
-          <div class="app-container" :class="{ 'dark': isDarkTheme }">
+        <!-- 完整布局 - 主窗口模式 -->
+        <!-- TODO: WebShell 控制窗口功能暂未启用 -->
+        <div class="app-container" :class="{ 'dark': isDarkTheme }">
             <TitleBar :is-dark-theme="isDarkTheme" />
             <div class="main-content">
               <!-- 左边导航区 -->
@@ -471,28 +466,27 @@ onUnmounted(() => {
               <!-- 右边内容区 -->
               <div class="content-area">
                 <!-- 首页内容 -->
-                <Dashboard 
+                <HomePanel 
                   v-if="currentContent === 'home'"
-                  :system-status="systemStatus"
                 />
                 
                 <!-- 项目内容 -->
-                <ProjectsContent 
+                <ProjectPanel 
                   v-else-if="currentContent === 'projects'"
                 />
                 
                 <!-- 载荷内容 -->
-              <PayloadsContent 
-                v-else-if="currentContent === 'payloads'"
-              />
+                <PayloadPanel 
+                  v-else-if="currentContent === 'payloads'"
+                />
                 
                 <!-- 插件内容 -->
-                <PluginsManagement 
+                <PluginsPanel 
                   v-else-if="currentContent === 'plugins'"
                 />
                 
                 <!-- 设置内容 -->
-                <SettingsContent 
+                <SettingsPanel 
                   v-else-if="currentContent === 'settings'"
                   :is-dark-theme="isDarkTheme"
                   :theme-mode="themeMode"
@@ -512,11 +506,10 @@ onUnmounted(() => {
             <!-- 底部状态栏 -->
             <StatusBar :system-status="systemStatus" />
           </div>
-        </template>
-      </NDialogProvider>
-    </NMessageProvider>
-  </NConfigProvider>
-</template>
+        </NDialogProvider>
+      </NMessageProvider>
+    </NConfigProvider>
+  </template>
 
 <style>
 /* 全局样式 - 现代极客风格 */
@@ -1169,7 +1162,6 @@ body {
 
 /* 设置样式 */
 .settings-content {
-  max-width: 600px;
   position: relative;
   z-index: 1;
 }

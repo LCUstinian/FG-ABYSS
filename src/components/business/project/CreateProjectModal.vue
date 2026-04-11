@@ -41,6 +41,7 @@
 import { ref } from 'vue'
 import { NModal, NForm, NFormItem, NInput, NButton, useMessage } from 'naive-ui'
 import { invoke } from '@/utils/tauri-mock-adapter'
+import { AuditLogger } from '@/utils/auditLogger'
 
 defineProps<{
   modelValue: boolean
@@ -77,6 +78,8 @@ const handleCreate = async () => {
       name: projectName.value.trim(),
       description: projectDescription.value.trim()
     })
+    // 记录审计日志
+    await AuditLogger.logProjectCreate(projectName.value.trim())
     projectName.value = ''
     projectDescription.value = ''
     emit('update:modelValue', false)

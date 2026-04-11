@@ -1,0 +1,431 @@
+/**
+ * FG-ABYSS 现代化 UI 色彩系统 v2.0
+ * 基于 Material Design 3.0 和 Tailwind CSS 色彩规范
+ * 符合 WCAG 2.1 AA 可访问性标准
+ */
+
+:root {
+  /* ============================================
+     1. 主色系 - 现代科技蓝（12 级扩展色板）
+     ============================================ */
+  --primary-50: #f0f9ff;
+  --primary-100: #e0f2fe;
+  --primary-200: #bae6fd;
+  --primary-300: #7dd3fc;
+  --primary-400: #38bdf8;
+  --primary-500: #0ea5e9;
+  --primary-600: #0284c7;
+  --primary-700: #0369a1;
+  --primary-800: #075985;
+  --primary-900: #0c4a6e;
+  --primary-950: #082f49;
+  
+  /* 主色强调变体 */
+  --primary-accent: #38bdf8;
+  --primary-accent-light: #7dd3fc;
+  --primary-accent-dark: #0369a1;
+  
+  /* ============================================
+     2. 辅助色系 - 渐变色彩系统
+     ============================================ */
+  
+  /* 成功色 - 翡翠绿渐变 */
+  --success-50: #ecfdf5;
+  --success-100: #d1fae5;
+  --success-200: #a7f3d0;
+  --success-300: #6ee7b7;
+  --success-400: #34d399;
+  --success-500: #10b981;
+  --success-600: #059669;
+  --success-700: #047857;
+  --success-800: #065f46;
+  --success-900: #064e3b;
+  --success-950: #022c22;
+  
+  /* 警告色 - 日落橙渐变 */
+  --warning-50: #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-200: #fde68a;
+  --warning-300: #fcd34d;
+  --warning-400: #fbbf24;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --warning-700: #b45309;
+  --warning-800: #92400e;
+  --warning-900: #78350f;
+  --warning-950: #451a03;
+  
+  /* 错误色 - 珊瑚红渐变 */
+  --error-50: #fef2f2;
+  --error-100: #fee2e2;
+  --error-200: #fecaca;
+  --error-300: #fca5a5;
+  --error-400: #f87171;
+  --error-500: #ef4444;
+  --error-600: #dc2626;
+  --error-700: #b91c1c;
+  --error-800: #991b1b;
+  --error-900: #7f1d1d;
+  --error-950: #450a0a;
+  
+  /* 信息色 - 天空蓝渐变 */
+  --info-50: #f0f9ff;
+  --info-100: #e0f2fe;
+  --info-200: #bae6fd;
+  --info-300: #7dd3fc;
+  --info-400: #38bdf8;
+  --info-500: #0ea5e9;
+  --info-600: #0284c7;
+  --info-700: #0369a1;
+  --info-800: #075985;
+  --info-900: #0c4a6e;
+  --info-950: #082f49;
+  
+  /* ============================================
+     3. 中性色系 - 高级灰度系统
+     ============================================ */
+  --gray-50: #fafafa;
+  --gray-100: #f4f4f5;
+  --gray-200: #e4e4e7;
+  --gray-300: #d4d4d8;
+  --gray-400: #a1a1aa;
+  --gray-500: #71717a;
+  --gray-600: #52525b;
+  --gray-700: #3f3f46;
+  --gray-800: #27272a;
+  --gray-900: #18181b;
+  --gray-950: #09090b;
+  
+  /* 冷暖中性色变体 */
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --slate-950: #020617;
+  
+  /* ============================================
+     4. 功能专属色彩 - 模块化设计
+     ============================================ */
+  --project-color: #0ea5e9;       /* 项目管理 - 天空蓝 */
+  --project-color-light: #38bdf8;
+  --project-color-dark: #0369a1;
+  
+  --webshell-color: #10b981;      /* WebShell - 翡翠绿 */
+  --webshell-color-light: #34d399;
+  --webshell-color-dark: #047857;
+  
+  --payload-color: #8b5cf6;       /* 载荷生成 - 紫罗兰 */
+  --payload-color-light: #a78bfa;
+  --payload-color-dark: #6d28d9;
+  
+  --plugin-color: #f59e0b;        /* 插件管理 - 琥珀橙 */
+  --plugin-color-light: #fbbf24;
+  --plugin-color-dark: #b45309;
+  
+  --settings-color: #06b6d4;      /* 系统设置 - 青色 */
+  --settings-color-light: #22d3ee;
+  --settings-color-dark: #0e7490;
+  
+  /* ============================================
+     5. 渐变系统 - 现代化视觉效果
+     ============================================ */
+  
+  /* 主色渐变 */
+  --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  --gradient-primary-light: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+  --gradient-primary-dark: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+  
+  /* 成功渐变 */
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  
+  /* 警告渐变 */
+  --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  
+  /* 错误渐变 */
+  --gradient-error: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  
+  /* 功能渐变 */
+  --gradient-project: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+  --gradient-webshell: linear-gradient(135deg, #10b981 0%, #047857 100%);
+  --gradient-payload: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  --gradient-plugin: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+  --gradient-settings: linear-gradient(135deg, #06b6d4 0%, #0e7490 100%);
+  
+  /* 彩虹渐变（特殊效果） */
+  --gradient-rainbow: linear-gradient(
+    135deg,
+    #0ea5e9 0%,
+    #10b981 25%,
+    #f59e0b 50%,
+    #ef4444 75%,
+    #8b5cf6 100%
+  );
+  
+  /* ============================================
+     6. 背景系统 - 层次化设计
+     ============================================ */
+  
+  /* 透明背景 */
+  --bg-transparent: rgba(255, 255, 255, 0);
+  --bg-transparent-light: rgba(255, 255, 255, 0.05);
+  --bg-transparent-medium: rgba(255, 255, 255, 0.1);
+  --bg-transparent-heavy: rgba(255, 255, 255, 0.2);
+  
+  /* 毛玻璃效果 */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-dark: rgba(15, 23, 42, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  
+  /* ============================================
+     7. 阴影系统 - 深度层次
+     ============================================ */
+  
+  /* 基础阴影 */
+  --shadow-xs: 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* 彩色阴影 */
+  --shadow-primary: 0 4px 14px 0 rgba(14, 165, 233, 0.39);
+  --shadow-success: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
+  --shadow-warning: 0 4px 14px 0 rgba(245, 158, 11, 0.39);
+  --shadow-error: 0 4px 14px 0 rgba(239, 68, 68, 0.39);
+  
+  /* 内阴影 */
+  --shadow-inner-sm: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --shadow-inner-md: inset 0 4px 8px 0 rgba(0, 0, 0, 0.08);
+  
+  /* ============================================
+     8. 边框系统 - 精致细节
+     ============================================ */
+  
+  --border-width-xs: 1px;
+  --border-width-sm: 2px;
+  --border-width-md: 4px;
+  --border-width-lg: 8px;
+  
+  --border-color-transparent: transparent;
+  --border-color-subtle: #e4e4e7;
+  --border-color-default: #d4d4d8;
+  --border-color-strong: #a1a1aa;
+  --border-color-focus: #0ea5e9;
+  
+  /* 渐变边框 */
+  --gradient-border: linear-gradient(90deg, #0ea5e9, #8b5cf6, #ef4444);
+  
+  /* ============================================
+     9. 圆角系统 - 流畅曲线
+     ============================================ */
+  
+  --radius-none: 0;
+  --radius-sm: 0.25rem;      /* 4px */
+  --radius-md: 0.5rem;       /* 8px */
+  --radius-lg: 0.75rem;      /* 12px */
+  --radius-xl: 1rem;         /* 16px */
+  --radius-2xl: 1.5rem;      /* 24px */
+  --radius-full: 9999px;
+  
+  /* ============================================
+     10. 过渡动画系统 - 流畅交互
+     ============================================ */
+  
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 700ms;
+  
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* 预设过渡 */
+  --transition-colors: color var(--duration-normal) var(--ease-in-out),
+                       background-color var(--duration-normal) var(--ease-in-out),
+                       border-color var(--duration-normal) var(--ease-in-out);
+  --transition-transform: transform var(--duration-normal) var(--ease-in-out);
+  --transition-shadow: box-shadow var(--duration-normal) var(--ease-in-out);
+  --transition-all: all var(--duration-normal) var(--ease-in-out);
+  
+  /* ============================================
+     11. 模糊效果 - 视觉深度
+     ============================================ */
+  
+  --blur-sm: blur(4px);
+  --blur-md: blur(8px);
+  --blur-lg: blur(16px);
+  --blur-xl: blur(24px);
+  --blur-2xl: blur(40px);
+  
+  /* ============================================
+     12. 亮度系统 - 光效处理
+     ============================================ */
+  
+  --brightness-50: brightness(0.5);
+  --brightness-75: brightness(0.75);
+  --brightness-100: brightness(1);
+  --brightness-125: brightness(1.25);
+  --brightness-150: brightness(1.5);
+  
+  /* ============================================
+     13. 透明度系统 - 层次叠加
+     ============================================ */
+  
+  --opacity-0: 0;
+  --opacity-5: 0.05;
+  --opacity-10: 0.1;
+  --opacity-20: 0.2;
+  --opacity-30: 0.3;
+  --opacity-40: 0.4;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+  --opacity-70: 0.7;
+  --opacity-80: 0.8;
+  --opacity-90: 0.9;
+  --opacity-100: 1;
+  
+  /* ============================================
+     14. Z 轴层级系统 - 空间管理
+     ============================================ */
+  
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+}
+
+/* ============================================
+    深色模式适配 - 完整的色彩系统映射
+   ============================================ */
+
+.dark {
+  /* 主色系 - 深色模式变体 */
+  --primary-50: #082f49;
+  --primary-100: #0c4a6e;
+  --primary-200: #075985;
+  --primary-300: #0369a1;
+  --primary-400: #0284c7;
+  --primary-500: #0ea5e9;
+  --primary-600: #38bdf8;
+  --primary-700: #7dd3fc;
+  --primary-800: #bae6fd;
+  --primary-900: #e0f2fe;
+  --primary-950: #f0f9ff;
+  
+  /* 中性色 - 深色模式 */
+  --gray-50: #09090b;
+  --gray-100: #18181b;
+  --gray-200: #27272a;
+  --gray-300: #3f3f46;
+  --gray-400: #52525b;
+  --gray-500: #71717a;
+  --gray-600: #a1a1aa;
+  --gray-700: #d4d4d8;
+  --gray-800: #e4e4e7;
+  --gray-900: #f4f4f5;
+  --gray-950: #fafafa;
+  
+  /* 背景系统 - 深色模式 */
+  --bg-transparent: rgba(0, 0, 0, 0);
+  --bg-transparent-light: rgba(0, 0, 0, 0.05);
+  --bg-transparent-medium: rgba(0, 0, 0, 0.1);
+  --bg-transparent-heavy: rgba(0, 0, 0, 0.2);
+  
+  --glass-bg: rgba(15, 23, 42, 0.7);
+  --glass-bg-dark: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  
+  /* 阴影系统 - 深色模式 */
+  --shadow-xs: 0 0 0 1px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  
+  /* 边框系统 - 深色模式 */
+  --border-color-subtle: #27272a;
+  --border-color-default: #3f3f46;
+  --border-color-strong: #52525b;
+  --border-color-focus: #38bdf8;
+}
+
+/* ============================================
+    高对比度模式 - 无障碍支持
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  :root {
+    --border-color-subtle: #000000;
+    --border-color-default: #000000;
+    --border-color-strong: #000000;
+    
+    --text-primary: #000000;
+    --text-secondary: #1a1a1a;
+    --text-tertiary: #333333;
+  }
+  
+  .dark {
+    --border-color-subtle: #ffffff;
+    --border-color-default: #ffffff;
+    --border-color-strong: #ffffff;
+    
+    --text-primary: #ffffff;
+    --text-secondary: #f0f0f0;
+    --text-tertiary: #e0e0e0;
+  }
+}
+
+/* ============================================
+    减少动画模式 - 无障碍支持
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0ms;
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+    --duration-slower: 0ms;
+  }
+}
+
+/* ============================================
+    打印样式优化
+   ============================================ */
+
+@media print {
+  :root {
+    --gradient-primary: none;
+    --gradient-success: none;
+    --gradient-warning: none;
+    --gradient-error: none;
+    
+    --shadow-xs: none;
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    --shadow-2xl: none;
+    
+    --glass-bg: none;
+    --glass-bg-dark: none;
+  }
+}

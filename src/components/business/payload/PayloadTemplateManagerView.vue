@@ -2,85 +2,95 @@
   <div class="payload-template-manager-view">
     <n-card :title="$t('payloads.templateManagement')" :bordered="false">
       <template #header-extra>
-        <n-button type="primary" size="small" @click="showCreateModal = true">
-          <template #icon>
-            <span>➕</span>
-          </template>
-          {{ $t('payloads.newTemplate') }}
-        </n-button>
+        <n-space>
+          <n-button size="small" @click="refreshTemplates">
+            <template #icon>
+              <span>🔄</span>
+            </template>
+            {{ $t('common.refresh') }}
+          </n-button>
+          <n-button type="primary" size="small" @click="showCreateModal = true">
+            <template #icon>
+              <span>➕</span>
+            </template>
+            {{ $t('payloads.newTemplate') }}
+          </n-button>
+        </n-space>
       </template>
 
       <!-- 模板列表 -->
       <div class="template-grid">
-        <n-grid :cols="24" :x-gap="16" :y-gap="16">
-          <n-grid-item
-            v-for="template in templates"
-            :key="template.id"
-            :span="8"
-          >
-            <n-card
-              :title="template.name"
-              :bordered="false"
-              hoverable
-              class="template-card"
+        <n-spin :show="isLoadingTemplates">
+          <n-grid :cols="24" :x-gap="16" :y-gap="16">
+            <n-grid-item
+              v-for="template in templates"
+              :key="template.name"
+              :span="8"
             >
-              <template #header-extra>
-                <n-space>
-                  <n-button quaternary circle size="small" @click="editTemplate(template)">
-                    <template #icon>
-                      <span>✏️</span>
-                    </template>
-                  </n-button>
-                  <n-button
-                    quaternary
-                    circle
-                    size="small"
-                    type="error"
-                    @click="deleteTemplate(template.id)"
-                  >
-                    <template #icon>
-                      <span>🗑️</span>
-                    </template>
-                  </n-button>
-                </n-space>
-              </template>
-
-              <div class="template-info">
-                <n-space vertical>
-                  <n-tag :type="getScriptTypeColor(template.script_type)" size="small">
-                    {{ template.script_type.toUpperCase() }}
-                  </n-tag>
-                  <n-text depth="3" style="font-size: 13px;">
-                    {{ template.description || $t('payloads.noDescription') }}
-                  </n-text>
-                  <n-divider style="margin: 12px 0;" />
-                  <n-space justify="space-between">
-                    <n-text depth="3" style="font-size: 12px;">
-                      {{ $t('payloads.created') }}{{ formatDate(template.created_at) }}
-                    </n-text>
-                    <n-text depth="3" style="font-size: 12px;">
-                      {{ $t('payloads.updated') }}{{ formatDate(template.updated_at) }}
-                    </n-text>
+              <n-card
+                :title="template.name"
+                :bordered="false"
+                hoverable
+                class="template-card"
+              >
+                <template #header-extra>
+                  <n-space>
+                    <n-button quaternary circle size="small" @click="editTemplate(template)">
+                      <template #icon>
+                        <span>✏️</span>
+                      </template>
+                    </n-button>
+                    <n-button
+                      quaternary
+                      circle
+                      size="small"
+                      type="error"
+                      @click="deleteTemplate(template.name)"
+                    >
+                      <template #icon>
+                        <span>🗑️</span>
+                      </template>
+                    </n-button>
                   </n-space>
-                </n-space>
-              </div>
+                </template>
 
-              <template #action>
-                <n-button block @click="useTemplate(template)">
-                  {{ $t('payloads.useTemplate') }}
-                </n-button>
-              </template>
-            </n-card>
-          </n-grid-item>
+                <div class="template-info">
+                  <n-space vertical>
+                    <n-tag :type="getScriptTypeColor(template.script_type)" size="small">
+                      {{ template.script_type.toUpperCase() }}
+                    </n-tag>
+                    <n-text depth="3" style="font-size: 13px;">
+                      {{ template.description || $t('payloads.noDescription') }}
+                    </n-text>
+                    <n-divider style="margin: 12px 0;" />
+                    <n-space justify="space-between">
+                      <n-text depth="3" style="font-size: 12px;">
+                        {{ $t('payloads.created') }}{{ formatDate(template.created_at) }}
+                      </n-text>
+                      <n-text depth="3" style="font-size: 12px;">
+                        {{ $t('payloads.updated') }}{{ formatDate(template.updated_at) }}
+                      </n-text>
+                    </n-space>
+                  </n-space>
+                </div>
 
-          <!-- 空状态 -->
-          <n-grid-item v-if="templates.length === 0" :span="24">
-            <n-empty
-              :description="$t('payloads.noTemplates')"
-              style="padding: 60px 20px;"
-            />
-          </n-grid-item>
-        </n-grid>
+                <template #action>
+                  <n-button block @click="useTemplate(template)">
+                    {{ $t('payloads.useTemplate') }}
+                  </n-button>
+                </template>
+              </n-card>
+            </n-grid-item>
+
+            <!-- 空状态 -->
+            <n-grid-item v-if="templates.length === 0 && !isLoadingTemplates" :span="24">
+              <n-empty
+                :description="$t('payloads.noTemplates')"
+                style="padding: 60px 20px;"
+              />
+            </n-grid-item>
+          </n-grid>
+        </n-spin>
       </div>
     </n-card>
 
@@ -161,15 +171,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useMessage } from 'naive-ui'
+import { usePayloadStore } from '@/stores/payload'
 import type { ScriptType, FunctionType } from '@/types/payload'
 
 const message = useMessage()
+const payloadStore = usePayloadStore()
 
 const showCreateModal = ref(false)
 const editingTemplate = ref<any>(null)
-
 const formData = reactive({
   name: '',
   script_type: 'php' as ScriptType,
@@ -178,27 +189,9 @@ const formData = reactive({
   code: '',
 })
 
-// 模拟模板数据
-const templates = ref([
-  {
-    id: 1,
-    name: 'PHP 基础连接',
-    script_type: 'php',
-    function_type: 'basic',
-    description: '最基础的 PHP 一句话木马',
-    created_at: '2024-01-01',
-    updated_at: '2024-01-01',
-  },
-  {
-    id: 2,
-    name: 'ASP 文件管理',
-    script_type: 'asp',
-    function_type: 'file_manager',
-    description: 'ASP 文件管理模板',
-    created_at: '2024-01-02',
-    updated_at: '2024-01-02',
-  },
-])
+// 使用store中的模板数据
+const templates = computed(() => payloadStore.templates)
+const isLoadingTemplates = computed(() => payloadStore.isLoadingTemplates)
 
 // 方法
 const getScriptTypeColor = (type: string) => {
@@ -215,6 +208,11 @@ const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString('zh-CN')
 }
 
+const refreshTemplates = async () => {
+  await payloadStore.loadTemplates()
+  message.success($t('payloads.templatesRefreshed'))
+}
+
 const editTemplate = (template: any) => {
   editingTemplate.value = template
   formData.name = template.name
@@ -225,9 +223,13 @@ const editTemplate = (template: any) => {
   showCreateModal.value = true
 }
 
-const deleteTemplate = (id: number) => {
-  templates.value = templates.value.filter(t => t.id !== id)
-  message.success($t('payloads.templateDeleted'))
+const deleteTemplate = async (name: string) => {
+  try {
+    await payloadStore.deleteTemplate(name)
+    message.success($t('payloads.templateDeleted'))
+  } catch (error: any) {
+    message.error(error.message || $t('payloads.deleteFailed'))
+  }
 }
 
 const useTemplate = (template: any) => {
@@ -235,44 +237,47 @@ const useTemplate = (template: any) => {
   // 这里可以集成到 PayloadGenerator
 }
 
-const saveTemplate = () => {
+const saveTemplate = async () => {
   if (!formData.name) {
     message.error($t('payloads.enterTemplateName'))
     return
   }
 
-  if (editingTemplate.value) {
-    // 编辑模式
-    const index = templates.value.findIndex(t => t.id === editingTemplate.value.id)
-    if (index !== -1) {
-      templates.value[index] = {
-        ...templates.value[index],
-        ...formData,
-        updated_at: new Date().toISOString(),
-      }
-      message.success($t('payloads.templateUpdated'))
-    }
-  } else {
-    // 创建模式
-    templates.value.push({
-      id: Date.now(),
-      ...formData,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    })
-    message.success($t('payloads.templateCreated'))
+  const templateData = {
+    ...formData,
+    created_at: editingTemplate.value ? editingTemplate.value.created_at : new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   }
 
-  showCreateModal.value = false
-  editingTemplate.value = null
-  Object.assign(formData, {
-    name: '',
-    script_type: 'php',
-    function_type: 'basic',
-    description: '',
-    code: '',
-  })
+  try {
+    if (editingTemplate.value) {
+      // 编辑模式
+      await payloadStore.updateTemplate(templateData)
+      message.success($t('payloads.templateUpdated'))
+    } else {
+      // 创建模式
+      await payloadStore.addTemplate(templateData)
+      message.success($t('payloads.templateCreated'))
+    }
+
+    showCreateModal.value = false
+    editingTemplate.value = null
+    Object.assign(formData, {
+      name: '',
+      script_type: 'php' as ScriptType,
+      function_type: 'basic' as FunctionType,
+      description: '',
+      code: '',
+    })
+  } catch (error: any) {
+    message.error(error.message || $t('payloads.saveFailed'))
+  }
 }
+
+// 初始化加载模板
+onMounted(async () => {
+  await payloadStore.loadTemplates()
+})
 </script>
 
 <style scoped>

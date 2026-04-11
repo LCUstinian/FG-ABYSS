@@ -7,10 +7,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PayloadMode {
-    /// 极简一句话模式 - 仅编码/混淆
+    /// 极简一句话模式 - 仅编码/混淆 (向后兼容)
     Simple,
-    /// 高级加密壳模式 - 强加密
+    /// 高级加密壳模式 - 强加密 (向后兼容)
     Advanced,
+    /// 基于文件的载荷模式
+    FileBased,
+    /// 内存Shell模式
+    MemoryShell,
+    /// 仅Suo5模式
+    Suo5Only,
 }
 
 /// 脚本类型
@@ -32,6 +38,23 @@ impl std::fmt::Display for ScriptType {
             ScriptType::Asp => write!(f, "asp"),
         }
     }
+}
+
+/// 注入类型
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InjectionType {
+    TomcatFilter,
+    SpringInterceptor,
+    IisHttpModule,
+}
+
+/// Suo5 配置结构体
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Suo5Config {
+    pub auth: String,
+    pub path: String,
+    pub timeout: u32,
 }
 
 /// 编码器类型 (仅 Simple 模式使用)
@@ -97,6 +120,10 @@ pub struct PayloadConfig {
     pub output_filename: Option<String>,
     /// 模板名称 (可选，用于自定义模板)
     pub template_name: Option<String>,
+    /// 注入类型 (可选)
+    pub injection_type: Option<InjectionType>,
+    /// Suo5 配置 (可选)
+    pub suo5_config: Option<Suo5Config>,
 }
 
 /// 客户端配置 (仅 Advanced 模式需要)
@@ -129,6 +156,25 @@ pub struct PayloadResult {
     pub message: Option<String>,
 }
 
+/// 载荷模板结构体
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PayloadTemplate {
+    /// 模板名称
+    pub name: String,
+    /// 脚本类型
+    pub script_type: ScriptType,
+    /// 功能类型
+    pub function_type: FunctionType,
+    /// 模板代码
+    pub code: String,
+    /// 描述
+    pub description: String,
+    /// 创建时间
+    pub created_at: String,
+    /// 更新时间
+    pub updated_at: String,
+}
+
 /// 错误类型
 #[derive(Debug, thiserror::Error)]
 pub enum GeneratorError {
@@ -143,6 +189,12 @@ pub enum GeneratorError {
     
     #[error("JSON 序列化失败：{0}")]
     JsonError(#[from] serde_json::Error),
+    
+    #[error("模板不存在：{0}")]
+    TemplateNotFound(String),
+    
+    #[error("模板已存在：{0}")]
+    TemplateExists(String),
 }
 
 pub type Result<T> = std::result::Result<T, GeneratorError>;

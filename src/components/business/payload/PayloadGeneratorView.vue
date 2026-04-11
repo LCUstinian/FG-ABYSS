@@ -4,26 +4,34 @@
       <!-- 左侧配置区 -->
       <div class="config-panel">
         <n-card :title="$t('payloads.configTitle')" :bordered="false" size="small">
-          <!-- 模式切换 -->
-          <n-form-item :label="$t('payloads.generateMode')" label-placement="top" size="small">
+          <!-- 多模态切换 -->
+          <div class="mode-selector-wrapper">
+            <div class="mode-selector-label">生成模式</div>
             <n-segmented
-              v-model:value="config.mode"
+              v-model:value="currentMode"
               :options="[
-                { label: $t('payloads.simpleMode'), value: 'simple' },
-                { label: $t('payloads.advancedMode'), value: 'advanced' },
+                { label: '文件落地', value: 'file_based' },
+                { label: '文件通用', value: 'file_common' },
+                { label: '文件代理', value: 'file_proxy' },
+                { label: '文件混合', value: 'file_hybrid' },
+                { label: '内存马注入', value: 'memory_shell' },
+                { label: '纯 Suo5 代理', value: 'suo5_only' },
               ]"
               block
               @update:value="onModeChange"
             />
-          </n-form-item>
+          </div>
 
           <n-divider style="margin: 12px 0;" />
 
-          <!-- 配置表单 -->
-          <div class="config-form">
-            <!-- 第一行：脚本类型 + 功能类型 -->
+          <!-- 基于模式切换配置 -->
+          <FileShellConfig v-if="isFileMode" />
+
+          <!-- 传统配置表单（其他模式） -->
+          <div v-else class="config-form">
+            <!-- 第一行：脚本类型 + 注入类型（仅内存马模式） -->
             <div class="form-row">
-              <n-form-item :label="$t('payloads.scriptType')" label-placement="top" size="small" class="form-item-half">
+              <n-form-item label="脚本类型" label-placement="top" size="small" class="form-item-half">
                 <n-select
                   v-model:value="config.script_type"
                   :options="[
@@ -32,89 +40,59 @@
                     { label: 'ASPX', value: 'aspx' },
                     { label: 'ASP', value: 'asp' },
                   ]"
-                  :placeholder="$t('payloads.selectScriptType')"
+                  placeholder="选择脚本类型"
                   size="small"
                 />
               </n-form-item>
 
-              <n-form-item :label="$t('payloads.funcType')" label-placement="top" size="small" class="form-item-half">
+              <n-form-item v-if="isMemoryShellMode" label="注入类型" label-placement="top" size="small" class="form-item-half">
                 <n-select
-                  v-model:value="config.function_type"
-                  :options="FUNCTION_TYPE_OPTIONS"
-                  :placeholder="$t('payloads.selectScriptType')"
+                  v-model:value="config.injection_type"
+                  :options="INJECTION_TYPE_OPTIONS"
+                  placeholder="选择注入类型"
                   size="small"
                 />
               </n-form-item>
+              <div v-else class="form-item-half"></div>
             </div>
 
-            <!-- 第二行：编码器/加密算法 + 混淆强度 -->
+            <!-- 第二行：混淆强度 + 自毁逻辑（仅内存马模式） -->
             <div class="form-row">
-              <!-- Simple 模式专属选项 -->
-              <template v-if="isSimpleMode">
-                <n-form-item :label="$t('payloads.encoder')" label-placement="top" size="small" class="form-item-half">
-                  <n-select
-                    v-model:value="config.encode_type"
-                    :options="[
-                      { label: $t('payloads.noEncode'), value: 'none' },
-                      { label: $t('payloads.base64'), value: 'base64' },
-                      { label: $t('payloads.xor'), value: 'xor' },
-                      { label: $t('payloads.gzinflate'), value: 'gzinflate' },
-                      { label: $t('payloads.hex'), value: 'hex' },
-                      { label: $t('payloads.urlEncode'), value: 'urlencode' },
-                      { label: $t('payloads.rot13'), value: 'rot13' },
-                    ]"
-                    :placeholder="$t('payloads.selectScriptType')"
-                    size="small"
-                  />
-                </n-form-item>
-              </template>
-
-              <!-- Advanced 模式专属选项 -->
-              <template v-if="isAdvancedMode">
-                <n-form-item :label="$t('payloads.encryption')" label-placement="top" size="small" class="form-item-half">
-                  <n-select
-                    v-model:value="config.encrypt_algo"
-                    :options="[
-                      { label: $t('payloads.aes128'), value: 'aes128_cbc' },
-                      { label: $t('payloads.aes256'), value: 'aes256_cbc' },
-                      { label: $t('payloads.xor'), value: 'xor' },
-                    ]"
-                    :placeholder="$t('payloads.selectScriptType')"
-                    size="small"
-                  />
-                </n-form-item>
-              </template>
-
-              <n-form-item :label="$t('payloads.obfuscationLevel')" label-placement="top" size="small" class="form-item-half">
+              <n-form-item label="混淆强度" label-placement="top" size="small" class="form-item-half">
                 <n-select
                   v-model:value="obfuscationValue"
                   :options="[
-                    { label: $t('payloads.low'), value: 1 },
-                    { label: $t('payloads.medium'), value: 2 },
-                    { label: $t('payloads.high'), value: 3 },
+                    { label: 'L1 (轻量)', value: 1 },
+                    { label: 'L2 (中等)', value: 2 },
+                    { label: 'L3 (高级)', value: 3 },
                   ]"
-                  :placeholder="$t('payloads.selectScriptType')"
+                  placeholder="选择混淆强度"
                   size="small"
                 />
               </n-form-item>
+
+              <n-form-item v-if="isMemoryShellMode" label="自毁逻辑" label-placement="top" size="small" class="form-item-half">
+                <n-switch v-model:value="config.self_destruct" />
+              </n-form-item>
+              <div v-else class="form-item-half"></div>
             </div>
 
             <!-- 第三行：连接密码 + 输出文件名 -->
             <div class="form-row">
               <n-form-item 
-                :label="$t('payloads.password')" 
+                label="连接密码" 
                 label-placement="top"
                 size="small"
                 class="form-item-half"
                 :rule="{
                   required: true,
-                  message: $t('payloads.enterTemplateName'),
+                  message: '密码不能为空',
                   trigger: 'blur',
                 }"
               >
                 <n-input
                   v-model:value="config.password"
-                  :placeholder="$t('payloads.passwordPlaceholder')"
+                  placeholder="输入连接密码"
                   type="password"
                   show-password-on="click"
                   clearable
@@ -122,15 +100,88 @@
                 />
               </n-form-item>
 
-              <n-form-item :label="$t('payloads.outputFilename')" label-placement="top" size="small" class="form-item-half">
+              <n-form-item label="输出文件名" label-placement="top" size="small" class="form-item-half">
                 <n-input
                   v-model:value="config.output_filename"
-                  :placeholder="$t('payloads.outputFilenamePlaceholder')"
+                  placeholder="输入输出文件名"
                   clearable
                   size="small"
                 />
               </n-form-item>
             </div>
+
+            <!-- Suo5 专属配置面板 -->
+            <n-collapse v-if="isSuo5OnlyMode || isFileProxyMode || isFileHybridMode">
+              <n-collapse-item title="Suo5 配置">
+                <!-- 第一行：认证密码 + 随机生成 -->
+                <div class="form-row">
+                  <n-form-item label="Suo5 认证密码" label-placement="top" size="small" class="form-item-half">
+                    <n-input
+                      v-model:value="suo5Auth"
+                      placeholder="输入认证密码"
+                      type="password"
+                      show-password-on="click"
+                      clearable
+                      size="small"
+                    />
+                    <n-text v-if="suo5Auth" depth="3" style="font-size: 12px; margin-top: 4px;">
+                      密码强度: {{ getPasswordStrength(suo5Auth) }}
+                    </n-text>
+                  </n-form-item>
+                  <n-form-item label=" " label-placement="top" size="small" class="form-item-half">
+                    <n-button
+                      secondary
+                      size="small"
+                      block
+                      @click="generateSuo5Password"
+                    >
+                      随机生成密码
+                    </n-button>
+                  </n-form-item>
+                </div>
+
+                <!-- 第二行：代理路径 + 随机生成 -->
+                <div class="form-row">
+                  <n-form-item label="代理路径" label-placement="top" size="small" class="form-item-half">
+                    <n-input
+                      v-model:value="suo5Path"
+                      placeholder="输入代理路径（如 /api/proxy）"
+                      clearable
+                      size="small"
+                    />
+                    <n-text depth="3" style="font-size: 12px; margin-top: 4px;">
+                      路径格式: /api/xxx 或 /path/to/proxy
+                    </n-text>
+                  </n-form-item>
+                  <n-form-item label=" " label-placement="top" size="small" class="form-item-half">
+                    <n-button
+                      secondary
+                      size="small"
+                      block
+                      @click="generateSuo5Path"
+                    >
+                      随机生成路径
+                    </n-button>
+                  </n-form-item>
+                </div>
+
+                <!-- 第三行：超时时间 -->
+                <div class="form-row">
+                  <n-form-item label="超时时间（秒）" label-placement="top" size="small" class="form-item-half">
+                    <n-input-number
+                      v-model:value="suo5Timeout"
+                      :min="1"
+                      :max="300"
+                      size="small"
+                    />
+                    <n-text depth="3" style="font-size: 12px; margin-top: 4px;">
+                      建议值: 30-60秒
+                    </n-text>
+                  </n-form-item>
+                  <div class="form-item-half"></div>
+                </div>
+              </n-collapse-item>
+            </n-collapse>
           </div>
 
           <!-- 生成按钮 -->
@@ -213,7 +264,12 @@
 
             <!-- 代码预览区 -->
             <div class="code-preview-container">
-              <pre v-if="generatedResult?.code" class="code-block"><code>{{ generatedResult.code }}</code></pre>
+              <MonacoEditor
+                v-if="generatedResult?.code"
+                :value="generatedResult.code"
+                :language="getScriptLanguage(generatedResult.filename)"
+                :read-only="true"
+              />
               
               <n-empty
                 v-else
@@ -227,12 +283,49 @@
           <div v-if="generatedResult" class="status-bar">
             <n-space justify="space-between">
               <n-text depth="3">
-                {{ $t('payloads.filename') }}{{ generatedResult.filename }}
+                文件名: {{ generatedResult.filename }}
               </n-text>
               <n-text depth="3">
-                {{ $t('payloads.size') }}{{ formatSize(generatedResult.size) }}
+                大小: {{ formatSize(generatedResult.size) }}
               </n-text>
             </n-space>
+          </div>
+
+          <!-- Suo5 客户端命令 -->
+          <div v-if="clientCommand" class="client-command-panel">
+            <n-card title="Suo5 客户端命令" size="small">
+              <div class="command-info">
+                <n-text depth="3" style="font-size: 12px; margin-bottom: 8px;">
+                  复制以下命令到终端执行，连接到生成的 Suo5 代理：
+                </n-text>
+              </div>
+              <pre class="command-block">{{ clientCommand }}</pre>
+              <div class="command-actions">
+                <n-button
+                  secondary
+                  size="small"
+                  @click="copyClientCommand"
+                >
+                  复制命令
+                </n-button>
+              </div>
+            </n-card>
+          </div>
+
+          <!-- 安全警示 -->
+          <div class="security-warning">
+            <n-alert
+              type="warning"
+              title="安全警示"
+              size="small"
+            >
+              <div>
+                <p>本工具仅供授权渗透测试与安全研究使用，严禁用于非法用途。</p>
+                <p style="font-size: 12px; margin-top: 4px;">
+                  使用本工具生成的载荷应在授权范围内使用，遵守相关法律法规。
+                </p>
+              </div>
+            </n-alert>
           </div>
         </n-card>
 
@@ -243,7 +336,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, defineAsyncComponent } from 'vue'
 import { useMessage } from 'naive-ui'
 import { 
   IconCode, 
@@ -253,8 +346,12 @@ import {
   IconSettings 
 } from '@tabler/icons-vue'
 import { usePayloadStore } from '@/stores/payload'
-import type { PayloadConfig, ObfuscationLevel, FunctionType } from '@/types/payload'
-import { FUNCTION_TYPE_OPTIONS } from '@/types/payload'
+import type { PayloadConfig, ObfuscationLevel, FunctionType, InjectionType } from '@/types/payload'
+import { FUNCTION_TYPE_OPTIONS, INJECTION_TYPE_OPTIONS } from '@/types/payload'
+import FileShellConfig from './modes/FileShellConfig.vue'
+// 动态导入 Monaco Editor 以优化性能
+const MonacoEditor = defineAsyncComponent(() => import('@/components/shared/MonacoEditor.vue'))
+import { AuditLogger } from '@/utils/auditLogger'
 
 const message = useMessage()
 const payloadStore = usePayloadStore()
@@ -262,24 +359,59 @@ const payloadStore = usePayloadStore()
 // 本地状态 - 直接使用 store 中的 config
 const config = computed(() => payloadStore.config)
 
+// 当前模式（用于 v-model）
+const currentMode = computed({
+  get: () => config.value.mode,
+  set: (mode: any) => payloadStore.setMode(mode)
+})
+
 // 混淆级别滑块值 (1-3)
 const obfuscationValue = ref(1)
 
 // 计算属性
-const isSimpleMode = computed(() => config.value.mode === 'simple')
-const isAdvancedMode = computed(() => config.value.mode === 'advanced')
+const isFileBasedMode = computed(() => config.value.mode === 'file_based')
+const isFileCommonMode = computed(() => config.value.mode === 'file_common')
+const isFileProxyMode = computed(() => config.value.mode === 'file_proxy')
+const isFileHybridMode = computed(() => config.value.mode === 'file_hybrid')
+const isMemoryShellMode = computed(() => config.value.mode === 'memory_shell')
+const isSuo5OnlyMode = computed(() => config.value.mode === 'suo5_only')
+const isFileMode = computed(() => isFileBasedMode.value || isFileCommonMode.value || isFileProxyMode.value || isFileHybridMode.value)
 const isGenerating = computed(() => payloadStore.isGenerating)
 const generatedResult = computed(() => payloadStore.generatedResult)
+const clientCommand = computed(() => payloadStore.generateClientCommand())
+
+// Suo5 配置双向绑定
+const suo5Auth = computed({
+  get: () => config.value.suo5_config?.auth || '',
+  set: (value) => {
+    if (config.value.suo5_config) {
+      config.value.suo5_config.auth = value
+    }
+  }
+})
+
+const suo5Path = computed({
+  get: () => config.value.suo5_config?.path || '',
+  set: (value) => {
+    if (config.value.suo5_config) {
+      config.value.suo5_config.path = value
+    }
+  }
+})
+
+const suo5Timeout = computed({
+  get: () => config.value.suo5_config?.timeout || 30,
+  set: (value) => {
+    if (config.value.suo5_config) {
+      config.value.suo5_config.timeout = value
+    }
+  }
+})
 
 // 模式切换
 const onModeChange = (mode: string) => {
-  if (mode === 'advanced') {
-    config.value.encode_type = undefined
-    config.value.encrypt_algo = 'aes128_cbc'
-  } else {
-    config.value.encrypt_algo = undefined
-    config.value.encode_type = 'none'
-  }
+  // 模式切换逻辑由 store 中的 watch 处理
+  // 这里可以添加额外的 UI 逻辑
 }
 
 // 混淆级别映射
@@ -300,6 +432,22 @@ const handleGenerate = async () => {
   try {
     await payloadStore.generate()
     message.success($t('payloads.generateSuccess'))
+    // 记录审计日志
+    if (generatedResult.value) {
+      const payloadTypeMap: Record<string, string> = {
+        'file_based': '文件落地',
+        'file_common': '文件通用模式',
+        'file_proxy': '文件代理模式',
+        'file_hybrid': '文件混合模式',
+        'memory_shell': '内存马注入',
+        'suo5_only': '纯 Suo5 代理'
+      };
+      const payloadType = payloadTypeMap[currentMode.value] || currentMode.value;
+      const scriptType = config.value.script_type || 'php';
+      // 生成简单的哈希作为 payload_hash
+      const payloadHash = btoa(generatedResult.value.code.substring(0, 100)).substring(0, 32);
+      await AuditLogger.logPayloadGenerate(payloadType, scriptType, payloadHash);
+    }
   } catch (error: any) {
     message.error(error.message || $t('payloads.generateFailed'))
   }
@@ -360,6 +508,55 @@ const formatSize = (bytes: number) => {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
+}
+
+// 生成 Suo5 随机密码
+const generateSuo5Password = () => {
+  const password = payloadStore.generateRandomSuo5Password()
+  message.success('已生成随机密码')
+}
+
+// 生成 Suo5 随机路径
+const generateSuo5Path = () => {
+  const path = payloadStore.generateRandomSuo5Path()
+  message.success('已生成随机路径')
+}
+
+// 复制客户端命令
+const copyClientCommand = async () => {
+  if (!clientCommand.value) return
+  
+  try {
+    await navigator.clipboard.writeText(clientCommand.value)
+    message.success('客户端命令已复制到剪贴板')
+  } catch (error: any) {
+    message.error('复制失败')
+  }
+}
+
+// 密码强度检测
+const getPasswordStrength = (password: string): string => {
+  if (password.length < 8) return '弱'
+  if (password.length < 12) return '中等'
+  if (password.length < 16) return '强'
+  return '极强'
+}
+
+// 根据文件名获取脚本语言
+const getScriptLanguage = (filename: string): string => {
+  const ext = filename.split('.').pop()?.toLowerCase()
+  switch (ext) {
+    case 'php':
+      return 'php'
+    case 'jsp':
+      return 'java'
+    case 'aspx':
+      return 'csharp'
+    case 'asp':
+      return 'vb'
+    default:
+      return 'plaintext'
+  }
 }
 </script>
 
@@ -536,9 +733,46 @@ const formatSize = (bytes: number) => {
 }
 
 .status-bar:hover {
-  border-color: var(--active-color);
-  box-shadow: 0 4px 12px rgba(var(--active-color-rgb), 0.1);
-}
+    border-color: var(--active-color);
+    box-shadow: 0 4px 12px rgba(var(--active-color-rgb), 0.1);
+  }
+
+  /* 客户端命令面板 */
+  .client-command-panel {
+    margin-top: 16px;
+  }
+
+  .command-block {
+    margin: 0 0 12px 0;
+    padding: 12px;
+    background: var(--code-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: var(--code-text);
+  }
+
+  .command-info {
+    margin-bottom: 8px;
+  }
+
+  .command-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* 安全警示 */
+  .security-warning {
+    margin-top: 16px;
+  }
+
+  :deep(.n-alert) {
+    border-radius: 8px;
+  }
 
 /* 分割线优化 */
 :deep(.n-divider) {
@@ -548,19 +782,32 @@ const formatSize = (bytes: number) => {
 
 /* 表单样式优化 - 紧凑版 */
 :deep(.n-form-item) {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 :deep(.n-form-item-label) {
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 5px;
-  font-size: 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
   letter-spacing: 0.2px;
 }
 
 :deep(.n-form-item-blank) {
   padding: 0;
+}
+
+/* 模式选择器包装器 */
+.mode-selector-wrapper {
+  margin-bottom: 16px;
+}
+
+.mode-selector-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-size: 13px;
+  letter-spacing: 0.2px;
 }
 
 :deep(.n-input),
@@ -688,22 +935,34 @@ const formatSize = (bytes: number) => {
 /* 分段器优化 */
 :deep(.n-segmented) {
   border-radius: 10px;
-  padding: 4px;
+  padding: 6px;
   background: var(--card-bg-hover);
+  border: 1px solid var(--border-color);
+  margin-bottom: 12px;
 }
 
 :deep(.n-segmented-item) {
-  padding: 8px 16px;
+  padding: 10px 12px;
   font-size: 13px;
   font-weight: 500;
   border-radius: 6px;
   transition: all 0.2s ease;
+  min-width: 80px;
+}
+
+:deep(.n-segmented-item:hover) {
+  background: var(--active-color-bg);
 }
 
 :deep(.n-segmented-item--selected) {
   background: var(--active-color) !important;
   color: white !important;
-  box-shadow: 0 2px 8px rgba(var(--active-color-rgb), 0.3);
+  box-shadow: 0 2px 8px rgba(var(--active-color-rgb), 0.4);
+  font-weight: 600;
+}
+
+:deep(.n-segmented-item__label) {
+  color: inherit;
 }
 
 /* 主题适配 */

@@ -99,6 +99,27 @@
               <n-switch v-model:value="verifySSL" />
             </div>
             
+            <div class="form-item user-agent-item">
+              <label class="form-label">{{ t('settings.userAgentPool') }}</label>
+              <div class="user-agent-content">
+                <n-input
+                  v-model:value="userAgentInput"
+                  type="textarea"
+                  :rows="4"
+                  placeholder="{{ t('settings.userAgentPlaceholder') }}"
+                  style="width: 100%; min-width: 400px;"
+                />
+                <div class="user-agent-actions">
+                  <n-button size="small" @click="addDefaultUserAgents">
+                    {{ t('settings.addDefaultUserAgents') }}
+                  </n-button>
+                  <n-button size="small" @click="clearUserAgents">
+                    {{ t('settings.clearUserAgents') }}
+                  </n-button>
+                </div>
+              </div>
+            </div>
+            
             <div class="form-actions">
               <n-button type="primary" @click="saveNetworkSettings">
                 {{ t('settings.save') }}
@@ -130,6 +151,7 @@ const testingProxy = ref(false)
 const connectionTimeout = ref(30)
 const maxRetries = ref(3)
 const verifySSL = ref(true)
+const userAgentInput = ref('')
 
 // 代理类型选项
 const proxyTypeOptions = [
@@ -169,10 +191,28 @@ const saveNetworkSettings = () => {
   const settings = {
     timeout: connectionTimeout.value,
     maxRetries: maxRetries.value,
-    verifySSL: verifySSL.value
+    verifySSL: verifySSL.value,
+    userAgents: userAgentInput.value.split('\n').filter(ua => ua.trim() !== '')
   }
   localStorage.setItem('networkSettings', JSON.stringify(settings))
   message.success(t('settings.settingsSaved'))
+}
+
+// 添加默认User-Agent
+const addDefaultUserAgents = () => {
+  const defaultUserAgents = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 14.2; rv:109.0) Gecko/20100101 Firefox/119.0',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0'
+  ]
+  userAgentInput.value = defaultUserAgents.join('\n')
+}
+
+// 清空User-Agent
+const clearUserAgents = () => {
+  userAgentInput.value = ''
 }
 
 // 加载保存的设置
@@ -192,6 +232,9 @@ onMounted(() => {
     connectionTimeout.value = settings.timeout || 30
     maxRetries.value = settings.maxRetries || 3
     verifySSL.value = settings.verifySSL !== false
+    if (settings.userAgents && Array.isArray(settings.userAgents)) {
+      userAgentInput.value = settings.userAgents.join('\n')
+    }
   }
 })
 </script>
@@ -397,6 +440,37 @@ onMounted(() => {
 
 .form-actions:hover {
   border-top-color: var(--active-color);
+}
+
+/* User-Agent 相关样式 */
+.user-agent-item {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.user-agent-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.user-agent-actions {
+  display: flex;
+  gap: 8px;
+  align-self: flex-end;
+}
+
+@media (max-width: 768px) {
+  .user-agent-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .user-agent-item textarea {
+    min-width: 100% !important;
+  }
 }
 
 /* 桌面端优化 */

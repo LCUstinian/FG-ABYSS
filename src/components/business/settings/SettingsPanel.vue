@@ -36,6 +36,9 @@
         <div v-if="currentSettingsTab === 'connection'" class="tab-content">
           <ConnectionView />
         </div>
+        <div v-if="currentSettingsTab === 'audit'" class="tab-content">
+          <AuditLogView />
+        </div>
         <div v-if="currentSettingsTab === 'about'" class="tab-content">
           <AboutView />
         </div>
@@ -51,6 +54,7 @@ import PageHeader from '@/components/shared/PageHeader.vue'
 import AppearanceView from './AppearanceView.vue'
 import ConnectionView from './ConnectionView.vue'
 import AboutView from './AboutView.vue'
+import AuditLogView from './AuditLogView.vue'
 
 const props = defineProps({
   isDarkTheme: {
@@ -73,6 +77,7 @@ const currentLanguage = ref(locale.value)
 const tabs = [
   { name: 'appearance', label: t('settings.appearance'), icon: '🎨' },
   { name: 'connection', label: t('settings.connection'), icon: '🔗' },
+  { name: 'audit', label: '审计日志', icon: '📋' },
   { name: 'about', label: t('settings.about'), icon: 'ℹ️' }
 ]
 

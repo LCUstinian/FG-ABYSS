@@ -10,6 +10,7 @@ export * from './common'
 // 业务领域类型
 export * from './project'
 export * from './webshell'
+export * from './plugin'
 
 // 保留原有的向后兼容的类型定义（逐步迁移后可删除）
 export interface DeletedProject extends Project {

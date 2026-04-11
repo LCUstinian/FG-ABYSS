@@ -2,14 +2,25 @@
  * 载荷生成模块类型定义
  */
 
-// 生成模式
-export type PayloadMode = 'simple' | 'advanced'
+// 生成模式 (向后兼容，保留旧值)
+export type PayloadMode = 
+  | 'simple' 
+  | 'advanced' 
+  | 'file_based' 
+  | 'memory_shell' 
+  | 'suo5_only'
+  | 'file_common'      // 文件通用模式
+  | 'file_proxy'      // 文件代理模式
+  | 'file_hybrid'     // 文件混合模式
 
 // 脚本类型
 export type ScriptType = 'php' | 'jsp' | 'aspx' | 'asp'
 
 // 功能类型
 export type FunctionType = 'basic' | 'file_manager' | 'process_manager' | 'registry' | 'network'
+
+// 注入类型
+export type InjectionType = 'tomcat_filter' | 'spring_interceptor' | 'iis_httpmodule'
 
 // 编码器类型
 export type EncodeType = 
@@ -22,10 +33,19 @@ export type EncodeType =
   | 'rot13'
 
 // 加密算法
-export type EncryptAlgo = 'aes128_cbc' | 'aes256_cbc' | 'xor'
+export type EncryptAlgo = 'aes128_cbc' | 'aes256_cbc' | 'aes256_gcm' | 'xor'
 
 // 混淆级别
 export type ObfuscationLevel = 'low' | 'medium' | 'high'
+
+/**
+ * Suo5 配置类型
+ */
+export interface Suo5Config {
+  auth: string
+  path: string
+  timeout: number
+}
 
 /**
  * 载荷生成配置
@@ -40,6 +60,9 @@ export interface PayloadConfig {
   obfuscation_level: ObfuscationLevel
   output_filename?: string
   template_name?: string
+  injection_type?: InjectionType
+  suo5_config?: Suo5Config
+  self_destruct: boolean
 }
 
 /**
@@ -81,9 +104,7 @@ export const ENCODE_OPTIONS: Array<{ label: string; value: EncodeType }> = [
  * 加密算法选项
  */
 export const ENCRYPT_OPTIONS: Array<{ label: string; value: EncryptAlgo }> = [
-  { label: 'AES-128-CBC', value: 'aes128_cbc' },
-  { label: 'AES-256-CBC', value: 'aes256_cbc' },
-  { label: 'XOR', value: 'xor' },
+  { label: 'AES-256-GCM', value: 'aes256_gcm' },
 ]
 
 /**
@@ -114,4 +135,27 @@ export const OBFUSCATION_OPTIONS: Array<{ label: string; value: ObfuscationLevel
   { label: '低', value: 'low' },
   { label: '中', value: 'medium' },
   { label: '高', value: 'high' },
+]
+
+/**
+ * 生成模式选项 (包含新旧模式，向后兼容)
+ */
+export const PAYLOAD_MODE_OPTIONS: Array<{ label: string; value: PayloadMode }> = [
+  { label: '简单模式', value: 'simple' },
+  { label: '高级模式', value: 'advanced' },
+  { label: '文件落地', value: 'file_based' },
+  { label: '内存 Shell', value: 'memory_shell' },
+  { label: '仅 Suo5', value: 'suo5_only' },
+  { label: '文件通用模式', value: 'file_common' },
+  { label: '文件代理模式', value: 'file_proxy' },
+  { label: '文件混合模式', value: 'file_hybrid' },
+]
+
+/**
+ * 注入类型选项
+ */
+export const INJECTION_TYPE_OPTIONS: Array<{ label: string; value: InjectionType }> = [
+  { label: 'Tomcat Filter', value: 'tomcat_filter' },
+  { label: 'Spring Interceptor', value: 'spring_interceptor' },
+  { label: 'IIS HTTP Module', value: 'iis_httpmodule' },
 ]

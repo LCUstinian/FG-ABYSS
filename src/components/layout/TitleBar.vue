@@ -245,48 +245,50 @@ onUnmounted(() => {
 }
 
 /* ============================================
-   右侧按钮区域
+   右侧按钮区域 - 精确对齐
    ============================================ */
 
 .title-bar-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   flex-shrink: 0;
 }
 
-/* 按钮组容器 */
+/* 按钮组容器 - 基线对齐 */
 .button-group {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
 }
 
-/* 窗口控制按钮组特殊处理 */
+/* 窗口控制按钮组 */
 .button-group.window-controls {
-  gap: 2px;
+  gap: 4px;
+  margin-left: 4px;
 }
 
 /* ============================================
-   分隔线
+   分隔线 - 视觉优化
    ============================================ */
 
 .divider {
   width: 1px;
-  height: 24px;
+  height: 28px;
   background: var(--border-color);
-  margin: 0 4px;
+  margin: 0 8px;
   flex-shrink: 0;
-  transition: background var(--transition-normal);
+  transition: all var(--transition-normal);
+  opacity: 0.7;
 }
 
 /* ============================================
-   按钮通用样式 - 统一视觉规范
+   按钮通用样式 - 精确居中对齐
    ============================================ */
 
 .control-button,
 .window-control {
-  /* 尺寸规格 */
+  /* 尺寸规格 - 统一 40x40px */
   position: relative;
   display: flex;
   align-items: center;
@@ -297,22 +299,22 @@ onUnmounted(() => {
   /* 视觉样式 */
   border: none;
   background: transparent;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  color: var(--text-color);
+  color: inherit;
   padding: 0;
   outline: none;
   -webkit-tap-highlight-color: transparent;
   
   /* 过渡动画 */
-  transition: all var(--transition-normal);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* 图标统一规格 */
   font-size: 18px;
   font-weight: 500;
 }
 
-/* 按钮图标容器 - 确保图标完美居中 */
+/* 按钮图标容器 - 三重居中保障 */
 .button-icon {
   display: flex;
   align-items: center;
@@ -321,79 +323,75 @@ onUnmounted(() => {
   height: 100%;
   /* 确保图标视觉居中 */
   line-height: 1;
+  /* 消除所有可能的偏移 */
+  transform: translateZ(0);
 }
 
-/* 图标统一视觉权重 */
+/* 图标统一视觉权重 - 确保所有图标尺寸一致 */
 .control-button svg,
 .window-control svg {
-  /* 统一图标线条粗细 */
   stroke-width: 2px;
-  /* 统一图标尺寸 */
   width: 18px;
   height: 18px;
-  /* 平滑过渡 */
-  transition: all var(--transition-fast);
+  display: block;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 确保图标在容器中完美居中 */
+  margin: auto;
 }
 
-/* 按钮悬停效果 - 统一反馈 */
+/* 按钮悬停效果 */
 .control-button:hover,
 .window-control:hover {
   background: var(--hover-color);
 }
 
-/* 按钮按下效果 - 统一反馈 */
+/* 按钮按下效果 - 流畅缩放 */
 .control-button:active,
 .window-control:active {
-  transform: scale(0.9);
+  transform: scale(0.92);
   background: var(--active-color-suppl);
 }
 
 /* 按钮禁用状态 */
 .control-button:disabled,
 .window-control:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
   background: transparent !important;
   transform: none !important;
 }
 
-/* 图标悬停效果 - 统一缩放 */
+/* 图标悬停效果 - 微妙缩放 */
 .control-button:hover svg,
 .window-control:hover svg {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 /* 图标按下效果 */
 .control-button:active svg,
 .window-control:active svg {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 /* ============================================
-   主题切换按钮 - 统一视觉风格
+   主题切换按钮 - 颜色优化
    ============================================ */
 
 .theme-button {
-  /* 统一颜色 */
-  color: var(--warning-color);
+  color: var(--warning-600);
 }
 
 .theme-button svg {
-  /* 统一图标视觉权重 */
   stroke-width: 2px;
 }
 
 .theme-button:hover {
-  color: var(--warning-color);
-  /* 主题色背景 */
-  background: rgba(245, 158, 11, 0.12);
-  /* 添加阴影增强视觉 */
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+  color: var(--warning-700);
+  background: rgba(245, 158, 11, 0.1);
 }
 
 .theme-button:active {
-  background: rgba(245, 158, 11, 0.2);
-  box-shadow: 0 1px 4px rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.15);
 }
 
 /* ============================================
@@ -401,163 +399,134 @@ onUnmounted(() => {
    ============================================ */
 
 .language-button {
-  /* 统一颜色 */
-  color: var(--info-color);
+  color: var(--info-600);
 }
 
-/* 确保 .button-icon 容器完全居中 */
 .language-button .button-icon {
-  /* 继承父容器的 flex 居中 */
   display: flex;
   align-items: center;
   justify-content: center;
-  /* 确保完全填充 */
   width: 100%;
   height: 100%;
 }
 
-/* 语言图标精确居中 */
+/* 语言图标 - 完美居中 */
 .language-icon {
-  /* 字体设置 */
   font-size: 20px;
   line-height: 1;
-  
-  /* Emoji 字体 */
   font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
   font-style: normal;
   font-weight: normal;
   
-  /* 精确居中对齐 - 三重保障 */
+  /* 多重居中保障 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   vertical-align: middle;
   
-  /* 消除所有可能的间距 */
+  /* 消除所有间距 */
   margin: 0;
   padding: 0;
   letter-spacing: 0;
   word-spacing: 0;
   white-space: nowrap;
   
-  /* 确保绝对居中 - 使用 transform 微调 */
+  /* 确保无偏移 */
   transform: translateY(0);
   position: relative;
   
-  /* 过渡动画 */
-  transition: transform var(--transition-fast);
+  /* 平滑过渡 */
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .language-button:hover {
-  /* 主题色背景 */
-  background: rgba(59, 130, 246, 0.12);
-  /* 添加阴影增强视觉 */
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  color: var(--info-700);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .language-button:hover .language-icon {
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 .language-button:active {
-  background: rgba(59, 130, 246, 0.2);
-  box-shadow: 0 1px 4px rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.15);
 }
 
 .language-button:active .language-icon {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 /* ============================================
-   窗口控制按钮 - 统一视觉风格
+   窗口控制按钮 - 统一对齐
    ============================================ */
 
-/* 最小化按钮 */
 .window-control.minimize {
-  /* 统一颜色 */
   color: var(--text-color);
-  /* 统一视觉权重 */
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 .window-control.minimize svg {
-  /* 统一图标线条 */
   stroke-width: 2px;
 }
 
 .window-control.minimize:hover {
   opacity: 1;
-  /* 统一悬停背景 */
-  background: var(--hover-color);
+  background: rgba(125, 125, 125, 0.08);
 }
 
 .window-control.minimize:active {
-  background: var(--active-color-suppl);
+  background: rgba(125, 125, 125, 0.12);
 }
 
-/* 最大化按钮 */
 .window-control.maximize {
-  /* 统一颜色 */
   color: var(--text-color);
-  /* 统一视觉权重 */
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 .window-control.maximize svg {
-  /* 统一图标线条 */
   stroke-width: 2px;
-  /* 优化视觉大小 - 微调使其与其他图标一致 */
+  /* 微调尺寸确保视觉一致 */
   width: 17px;
   height: 17px;
 }
 
 .window-control.maximize:hover {
   opacity: 1;
-  /* 统一悬停背景 */
-  background: var(--hover-color);
+  background: rgba(125, 125, 125, 0.08);
 }
 
 .window-control.maximize:active {
-  background: var(--active-color-suppl);
+  background: rgba(125, 125, 125, 0.12);
 }
 
-/* 关闭按钮 - 特殊处理但保持视觉统一 */
 .window-control.close {
-  /* 统一颜色 */
-  color: var(--error-color);
-  /* 统一视觉权重 */
-  opacity: 0.95;
+  color: var(--error-600);
+  opacity: 0.9;
 }
 
 .window-control.close svg {
-  /* 统一图标线条 */
   stroke-width: 2px;
 }
 
 .window-control.close:hover {
-  /* 红色背景强调 */
-  background: var(--error-color);
-  color: white;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error-700);
   opacity: 1;
-  /* 增强阴影效果 */
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
 .window-control.close:active {
-  /* 按下效果 */
-  background: var(--error-color);
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.15);
 }
 
 /* ============================================
-   深色模式适配 - 统一视觉表现
+   深色模式适配 - 完全一致的对齐和样式
    ============================================ */
 
 .title-bar.dark {
   background: var(--title-bar-bg, var(--bg-color));
   border-bottom-color: var(--border-color);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .title-bar.dark .app-name {
@@ -567,52 +536,92 @@ onUnmounted(() => {
 
 .title-bar.dark .divider {
   background: var(--border-color);
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
-/* 深色模式下的按钮效果 - 统一视觉 */
+/* 深色模式按钮效果 - 保持相同的对齐和间距 */
 .title-bar.dark .control-button:hover,
 .title-bar.dark .window-control:hover {
-  /* 深色模式专用悬停背景 */
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .title-bar.dark .control-button:active,
 .title-bar.dark .window-control:active {
-  /* 深色模式专用按下背景 */
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
 }
 
-/* 深色模式下主题按钮 */
+/* 深色模式主题按钮 */
+.title-bar.dark .theme-button {
+  color: var(--warning-400);
+}
+
 .title-bar.dark .theme-button:hover {
-  background: rgba(245, 158, 11, 0.15);
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+  color: var(--warning-300);
+  background: rgba(245, 158, 11, 0.12);
 }
 
-/* 深色模式下语言按钮 */
+.title-bar.dark .theme-button:active {
+  background: rgba(245, 158, 11, 0.18);
+}
+
+/* 深色模式语言按钮 */
+.title-bar.dark .language-button {
+  color: var(--info-400);
+}
+
 .title-bar.dark .language-button:hover {
-  background: rgba(59, 130, 246, 0.15);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  color: var(--info-300);
+  background: rgba(59, 130, 246, 0.12);
 }
 
-/* 深色模式下关闭按钮 */
+.title-bar.dark .language-button:active {
+  background: rgba(59, 130, 246, 0.18);
+}
+
+/* 深色模式窗口按钮 */
+.title-bar.dark .window-control.minimize,
+.title-bar.dark .window-control.maximize {
+  color: var(--text-color);
+}
+
+.title-bar.dark .window-control.close {
+  color: var(--error-400);
+}
+
 .title-bar.dark .window-control.close:hover {
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+  color: var(--error-300);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.title-bar.dark .window-control.close:active {
+  background: rgba(239, 68, 68, 0.18);
 }
 
 /* ============================================
-   响应式设计 - 统一视觉表现
+   响应式设计 - 保持对齐和样式一致性
    ============================================ */
 
-/* 平板尺寸 */
+/* 平板尺寸 (≤768px) */
 @media (max-width: 768px) {
   .title-bar {
     height: 44px;
-    padding: 0 10px;
+    padding: 0 12px;
   }
   
   .app-name {
     font-size: 13px;
+  }
+  
+  .title-bar-right {
+    gap: 10px;
+  }
+  
+  .button-group {
+    gap: 2px;
+  }
+  
+  .button-group.window-controls {
+    margin-left: 2px;
   }
   
   /* 按钮尺寸适度缩小 */
@@ -622,43 +631,47 @@ onUnmounted(() => {
     height: 38px;
   }
   
-  /* 图标尺寸保持不变，确保可见性 */
+  /* 图标尺寸保持一致 */
   .control-button svg,
   .window-control svg {
     width: 17px;
     height: 17px;
   }
   
+  .language-icon {
+    font-size: 19px;
+  }
+  
   .divider {
-    height: 20px;
-    margin: 0 3px;
-  }
-  
-  .title-bar-right {
-    gap: 6px;
-  }
-  
-  .button-group {
-    gap: 1px;
+    height: 24px;
+    margin: 0 6px;
   }
 }
 
-/* 手机尺寸 */
+/* 手机尺寸 (≤480px) */
 @media (max-width: 480px) {
   .title-bar {
     height: 40px;
-    padding: 0 8px;
+    padding: 0 10px;
   }
   
   .app-name {
     font-size: 12px;
   }
   
+  .title-bar-right {
+    gap: 8px;
+  }
+  
+  .button-group {
+    gap: 1px;
+  }
+  
   /* 按钮尺寸进一步缩小 */
   .control-button,
   .window-control {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
   }
   
   /* 图标尺寸适度缩小 */
@@ -669,18 +682,13 @@ onUnmounted(() => {
     stroke-width: 1.8px;
   }
   
-  /* emoji 图标适度缩小 */
   .language-icon {
     font-size: 18px;
   }
   
   .divider {
-    height: 18px;
-    margin: 0 2px;
-  }
-  
-  .title-bar-right {
-    gap: 4px;
+    height: 20px;
+    margin: 0 4px;
   }
 }
 

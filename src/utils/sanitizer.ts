@@ -17,9 +17,20 @@
 export const sanitizeHTML = (input: string): string => {
   if (!input) return ''
   
-  const div = document.createElement('div')
-  div.textContent = input
-  return div.innerHTML
+  // 检查是否在浏览器环境中
+  if (typeof document !== 'undefined') {
+    const div = document.createElement('div')
+    div.textContent = input
+    return div.innerHTML
+  } else {
+    // 在非浏览器环境中，使用简单的字符替换
+    return input
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;')
+  }
 }
 
 /**

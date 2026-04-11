@@ -2,14 +2,7 @@
 import TitleBar from './components/layout/TitleBar.vue'
 import StatusBar from './components/layout/StatusBar.vue'
 import Sidebar from './components/layout/Sidebar.vue'
-import HomePanel from './components/business/home/HomePanel.vue'
-import ProjectPanel from './components/business/project/ProjectPanel.vue'
-import PayloadPanel from './components/business/payload/PayloadPanel.vue'
-import PluginsPanel from './components/business/plugins/PluginsPanel.vue'
-import SettingsPanel from './components/business/settings/SettingsPanel.vue'
-// import WebShellControlWindow from './components/business/webshell/WebShellControlWindow.vue' // 文件不存在，暂时注释
-// import DatabaseManager from './components/business/database/DatabaseManager.vue' // 文件不存在，暂时注释
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { 
   NConfigProvider, 
@@ -22,6 +15,15 @@ import { getSystemStatus, type SystemStatus } from './api/system'
 import { appLogger } from '@/utils/logger'
 // Tauri Mock 适配层 - 替换 Wails Events API
 import { emitEvent, type UnlistenFn } from '@/utils/tauri-mock-adapter'
+
+// 组件懒加载
+const HomePanel = defineAsyncComponent(() => import('./components/business/home/HomePanel.vue'))
+const ProjectPanel = defineAsyncComponent(() => import('./components/business/project/ProjectPanel.vue'))
+const PayloadPanel = defineAsyncComponent(() => import('./components/business/payload/PayloadPanel.vue'))
+const PluginsPanel = defineAsyncComponent(() => import('./components/business/plugins/PluginsPanel.vue'))
+const SettingsPanel = defineAsyncComponent(() => import('./components/business/settings/SettingsPanel.vue'))
+// import WebShellControlWindow from './components/business/webshell/WebShellControlWindow.vue' // 文件不存在，暂时注释
+// import DatabaseManager from './components/business/database/DatabaseManager.vue' // 文件不存在，暂时注释
 
 const { t, locale } = useI18n()
 
@@ -74,13 +76,19 @@ const addOpacity = (color: string, opacity: number): string => {
   return `rgba(${R}, ${G}, ${B}, ${opacity})`
 }
 
+// 缓存颜色计算结果
+const colorCache = ref<{ [key: string]: any }>({})
+
 // 定义主题覆盖配置 - 使用全局强调色 (在设置中可自定义)
 const themeOverrides = computed(() => {
-  // 触发重新计算（即使 CSS 变量没变，trigger 变化也会触发）
-  themeTrigger.value
-  
   // 从 CSS 变量中读取当前强调色
   const primaryColor = getVar('--active-color', '#3b82f6')
+  const cacheKey = `light_${primaryColor}`
+  
+  // 检查缓存
+  if (colorCache.value[cacheKey]) {
+    return colorCache.value[cacheKey]
+  }
   
   // 计算衍生颜色
   const primaryColorHover = lightenColor(primaryColor, 10)
@@ -116,7 +124,7 @@ const themeOverrides = computed(() => {
   const errorColorSuppl = addOpacity(errorColor, 0.1)
   const errorColorActive = errorColor
   
-  return {
+  const result = {
     common: {
       primaryColor,
       primaryColorHover,
@@ -151,15 +159,22 @@ const themeOverrides = computed(() => {
       caretColor: primaryColor,
     }
   }
+  
+  // 缓存结果
+  colorCache.value[cacheKey] = result
+  return result
 })
 
 // 深色模式的主题覆盖
 const darkThemeOverrides = computed(() => {
-  // 触发重新计算
-  themeTrigger.value
-  
   // 从 CSS 变量中读取当前强调色
   const primaryColor = getVar('--active-color', '#3b82f6')
+  const cacheKey = `dark_${primaryColor}`
+  
+  // 检查缓存
+  if (colorCache.value[cacheKey]) {
+    return colorCache.value[cacheKey]
+  }
   
   // 深色模式下使用不同的计算方式
   const primaryColorHover = lightenColor(primaryColor, 15)
@@ -195,7 +210,7 @@ const darkThemeOverrides = computed(() => {
   const errorColorSuppl = addOpacity(errorColor, 0.2)
   const errorColorActive = errorColor
   
-  return {
+  const result = {
     common: {
       primaryColor,
       primaryColorHover,
@@ -230,6 +245,10 @@ const darkThemeOverrides = computed(() => {
       caretColor: primaryColor,
     }
   }
+  
+  // 缓存结果
+  colorCache.value[cacheKey] = result
+  return result
 })
 
 // 系统状态数据
@@ -342,15 +361,15 @@ const startStatusUpdates = () => {
   // 立即获取一次数据
   fetchSystemStatus()
   
-  // 每 3 秒更新一次（优化性能）
+  // 每 1 秒更新一次（1Hz，符合PRDS要求）
   updateTimer = window.setInterval(() => {
     // 仅在页面可见时更新
     if (document.visibilityState === 'visible') {
       fetchSystemStatus()
     }
-  }, 3000)
+  }, 1000)
   
-  appLogger.log('系统状态更新已启动，间隔：3 秒')
+  appLogger.log('系统状态更新已启动，间隔：1 秒')
 }
 
 // 停止定时更新

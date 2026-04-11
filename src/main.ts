@@ -4,6 +4,8 @@ import App from './App.vue'
 import i18n from './i18n'
 import naive from 'naive-ui'
 import './styles/global.css'
+import './styles/modern-color-system.css'
+import './styles/components-optimization.css'
 
 const app = createApp(App)
 const pinia = createPinia()

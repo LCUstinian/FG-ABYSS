@@ -37,4 +37,25 @@ export default defineConfig(async () => ({
       ignored: ["**/src-tauri/**"],
     },
   },
+
+  // 构建优化
+  build: {
+    // 代码分割配置
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Monaco Editor 相关代码
+          'monaco-editor': ['monaco-editor'],
+          // 第三方依赖
+          'naive-ui': ['naive-ui'],
+          'xterm': ['@xterm/xterm', '@xterm/addon-fit', '@xterm/addon-web-links'],
+          'icons': ['@tabler/icons-vue', 'lucide-vue-next', '@vicons/carbon', '@vicons/ionicons5'],
+          'vue-i18n': ['vue-i18n'],
+          'pinia': ['pinia']
+        }
+      }
+    },
+    // 增加chunk大小警告限制
+    chunkSizeWarningLimit: 1000
+  },
 }));

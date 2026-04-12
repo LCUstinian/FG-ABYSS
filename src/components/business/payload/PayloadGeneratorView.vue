@@ -19,6 +19,7 @@
               ]"
               block
               @update:value="onModeChange"
+              class="mode-segmented-control"
             />
           </div>
 
@@ -337,7 +338,23 @@
 
 <script setup lang="ts">
 import { ref, computed, defineAsyncComponent } from 'vue'
-import { useMessage } from 'naive-ui'
+import { 
+  NCard,
+  NButton,
+  NForm,
+  NFormItem,
+  NInput,
+  NSpace,
+  NRadioGroup,
+  NRadio,
+  NSlider,
+  NText,
+  NTag,
+  NCollapse,
+  NCollapseItem,
+  NDivider,
+  useMessage
+} from 'naive-ui'
 import { 
   IconCode, 
   IconEye, 
@@ -352,7 +369,9 @@ import FileShellConfig from './modes/FileShellConfig.vue'
 // 动态导入 Monaco Editor 以优化性能
 const MonacoEditor = defineAsyncComponent(() => import('@/components/shared/MonacoEditor.vue'))
 import { AuditLogger } from '@/utils/auditLogger'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const message = useMessage()
 const payloadStore = usePayloadStore()
 
@@ -800,6 +819,9 @@ const getScriptLanguage = (filename: string): string => {
 /* 模式选择器包装器 */
 .mode-selector-wrapper {
   margin-bottom: 16px;
+  min-height: 50px;
+  display: block;
+  width: 100%;
 }
 
 .mode-selector-label {
@@ -808,6 +830,41 @@ const getScriptLanguage = (filename: string): string => {
   margin-bottom: 8px;
   font-size: 13px;
   letter-spacing: 0.2px;
+  display: block;
+  width: 100%;
+}
+
+/* 模式选择器专用样式 */
+.mode-segmented-control {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  min-height: 40px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.mode-segmented-control :deep(.n-segmented) {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  width: 100% !important;
+}
+
+.mode-segmented-control :deep(.n-segmented-item) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 80px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.mode-segmented-control :deep(.n-segmented-item__label) {
+  visibility: visible !important;
+  white-space: nowrap !important;
 }
 
 :deep(.n-input),
@@ -939,6 +996,12 @@ const getScriptLanguage = (filename: string): string => {
   background: var(--card-bg-hover);
   border: 1px solid var(--border-color);
   margin-bottom: 12px;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 40px;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 :deep(.n-segmented-item) {
@@ -948,6 +1011,12 @@ const getScriptLanguage = (filename: string): string => {
   border-radius: 6px;
   transition: all 0.2s ease;
   min-width: 80px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 :deep(.n-segmented-item:hover) {
@@ -963,6 +1032,8 @@ const getScriptLanguage = (filename: string): string => {
 
 :deep(.n-segmented-item__label) {
   color: inherit;
+  white-space: nowrap;
+  visibility: visible !important;
 }
 
 /* 主题适配 */

@@ -296,8 +296,8 @@ onUnmounted(() => {
   width: 40px;
   height: 40px;
   
-  /* 视觉样式 */
-  border: none;
+  /* 视觉样式 - 移除所有边框和阴影 */
+  border: none !important;
   background: transparent;
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -305,6 +305,7 @@ onUnmounted(() => {
   padding: 0;
   outline: none;
   -webkit-tap-highlight-color: transparent;
+  box-shadow: none !important;
   
   /* 过渡动画 */
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -410,31 +411,22 @@ onUnmounted(() => {
   height: 100%;
 }
 
-/* 语言图标 - 完美居中 */
+/* 语言图标 - 使用 flex 居中，避免 emoji 基线问题 */
 .language-icon {
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1;
-  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  
-  /* 多重居中保障 */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   text-align: center;
-  vertical-align: middle;
   
   /* 消除所有间距 */
-  margin: 0;
-  padding: 0;
-  letter-spacing: 0;
-  word-spacing: 0;
-  white-space: nowrap;
+  margin: 0 !important;
+  padding: 0 !important;
   
-  /* 确保无偏移 */
-  transform: translateY(0);
-  position: relative;
+  /* 确保垂直居中 */
+  height: 100%;
+  width: 100%;
   
   /* 平滑过渡 */
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);

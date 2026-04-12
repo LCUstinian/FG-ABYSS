@@ -32,7 +32,7 @@ const { t } = useI18n()
 
 .content-body {
   flex: 1;
-  padding: 24px;
+  padding: 0px;
   overflow-y: auto;
   background: var(--content-bg);
 }

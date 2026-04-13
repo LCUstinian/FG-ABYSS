@@ -1,3 +1,5 @@
+pub mod models;
+
 use rusqlite::{Connection, Result};
 use std::path::Path;
 

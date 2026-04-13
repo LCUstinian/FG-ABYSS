@@ -1,14 +1,16 @@
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+pub mod commands;
+pub mod core;
+pub mod infra;
+pub mod plugins;
 
-mod commands;
-mod core;
-mod infra;
-mod plugins;
+pub use commands::*;
+pub use core::logger;
+pub use core::config;
+pub use infra::database;
+pub use infra::file_system;
+pub use plugins::tray;
 
-use commands::*;
-use tauri::Manager;
-
-fn main() {
+pub fn run_app() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
@@ -16,7 +18,8 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_notification::init())
         .setup(|app| {
-            plugins::tray::setup_system_tray(app.handle())?;
+            logger::init();
+            tray::setup_system_tray(app.handle())?;
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

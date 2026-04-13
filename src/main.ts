@@ -14,3 +14,7 @@ app.use(i18n)
 app.use(naive)
 
 app.mount('#app')
+
+if (import.meta.env.DEV) {
+  console.log('FG-ABYSS started in development mode')
+}

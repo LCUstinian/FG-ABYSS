@@ -46,6 +46,16 @@ pub fn run() {
             commands::get_webshells_by_project,
             commands::test_connection,
             commands::get_system_info,
+            // 加密通信 Commands
+            commands::test_webshell_connection,
+            commands::send_encrypted_request,
+            commands::decrypt_response,
+            commands::execute_system_command,
+            commands::get_filesystem_info,
+            commands::list_directory,
+            commands::upload_file,
+            commands::download_file,
+            commands::generate_encryption_key,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

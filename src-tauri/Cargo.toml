@@ -19,9 +19,13 @@ tauri-plugin-dialog = "2.0.0"
 tauri-plugin-notification = "2.0.0"
 
 tokio = { version = "1.36", features = ["full"] }
-reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
+reqwest = { version = "0.11", features = ["json", "rustls-tls", "cookies"] }
 rusqlite = { version = "0.31", features = ["bundled"] }
 ring = "0.17"
+aes-gcm = "0.10"
+rand = "0.8"
+base64 = "0.21"
+hex = "0.4"
 mlua = { version = "0.9", features = ["lua54", "send", "vendored"] }
 wasmtime = "18.0"
 argon2 = "0.5"

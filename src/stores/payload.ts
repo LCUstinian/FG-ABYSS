@@ -70,7 +70,7 @@ export const usePayloadStore = defineStore('payload', () => {
     
     // 标签过滤
     if (filterTag.value) {
-      result = result.filter(config => config.tags?.includes(filterTag.value))
+      result = result.filter(config => config.tags?.some(tag => tag === filterTag.value))
     }
     
     // 排序

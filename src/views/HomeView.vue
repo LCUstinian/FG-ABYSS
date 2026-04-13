@@ -101,12 +101,10 @@
 import { usePayloadStore } from '@/stores/payload'
 import { useProjectStore } from '@/stores/project'
 import { useWebShellStore } from '@/stores/webshell'
-import { useI18n } from 'vue-i18n'
 
 const payloadStore = usePayloadStore()
 const projectStore = useProjectStore()
 const webshellStore = useWebShellStore()
-const { t } = useI18n()
 </script>
 
 <style scoped>

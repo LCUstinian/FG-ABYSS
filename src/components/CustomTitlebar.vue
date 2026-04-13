@@ -42,8 +42,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { appWindow } from '@tauri-apps/api/window'
+import { getCurrentWindow } from '@tauri-apps/api/window'
 
+const appWindow = getCurrentWindow()
 const isMaximized = ref(false)
 
 const minimize = async () => {

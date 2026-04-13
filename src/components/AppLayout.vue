@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, h } from 'vue'
+import { ref, h } from 'vue'
 import { RouterLink } from 'vue-router'
 import { NIcon } from 'naive-ui'
 import CustomTitlebar from './CustomTitlebar.vue'
@@ -40,7 +40,7 @@ interface Props {
   sidebarWidth?: number
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   showTitlebar: true,
   sidebarWidth: 220,
 })

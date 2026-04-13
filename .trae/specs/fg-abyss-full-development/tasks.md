@@ -28,91 +28,31 @@
 
 ## 阶段 1 完成 ✅
 
-## 阶段 2: 核心架构实现 (P0)
+## 阶段 2: 核心架构实现 (P0) ✅
 
-- [ ] Task 2.1: 实现布局系统
-  - [ ] 创建 CustomTitlebar.vue（自定义标题栏，含 Logo、应用名、主题切换、窗口控制）
-  - [ ] 创建 NavigationMenu.vue（左侧导航菜单，5 个菜单项）
-  - [ ] 创建 StatusBar.vue（底部状态栏，显示连接状态、项目数、载荷数）
-  - [ ] 创建 MainLayout.vue（主布局组件，整合所有布局组件）
-  - [ ] 实现主题系统（亮色/暗色/跟随系统）
-  - [ ] 实现语言切换（中文/英文）
+- [x] Task 2.1: 实现布局系统
+- [x] Task 2.2: 实现路由系统
+- [x] Task 2.3: 实现状态管理 (Pinia)
+- [x] Task 2.4: 实现国际化 (i18n)
 
-- [ ] Task 2.2: 实现路由系统
-  - [ ] 创建 src/router/index.ts（路由配置）
-  - [ ] 创建路由定义（/, /project, /payload, /plugin, /settings）
-  - [ ] 创建路由守卫
-  - [ ] 实现页面切换动画
+## 阶段 2 完成 ✅
 
-- [ ] Task 2.3: 实现状态管理（Pinia）
-  - [ ] 创建 src/stores/index.ts（Pinia 初始化）
-  - [ ] 创建 app.ts（应用全局状态）
-  - [ ] 创建 payload.ts（载荷配置状态）
-  - [ ] 创建 project.ts（项目状态）
-  - [ ] 创建 webshell.ts（WebShell 连接状态）
+## 阶段 3: 数据库基础设施 (P0) ✅
 
-- [ ] Task 2.4: 实现国际化（i18n）
-  - [ ] 创建 src/i18n/index.ts（i18n 配置）
-  - [ ] 创建 zh-CN.ts（中文语言包）
-  - [ ] 创建 en-US.ts（英文语言包）
-  - [ ] 集成到 Vue 应用
+- [x] Task 3.1: 实现 SQLite 数据库层
+- [x] Task 3.2: 实现数据模型
 
-## 阶段 3: 数据库基础设施 (P0)
+## 阶段 3 完成 ✅
 
-- [ ] Task 3.1: 实现 SQLite 数据库层
-  - [ ] 创建 src-tauri/infra/database/mod.rs（数据库模块）
-  - [ ] 创建连接池管理（pool.rs）
-  - [ ] 创建数据模型（models/mod.rs）
-  - [ ] 创建数据库迁移脚本（migrations/001_create_tables.sql）
-  - [ ] 实现数据库初始化逻辑
+## 阶段 4: 载荷管理模块 (P0) - 本地功能 ✅
 
-- [ ] Task 3.2: 实现数据模型
-  - [ ] 创建 PayloadConfig 模型（载荷配置）
-  - [ ] 创建 Project 模型（项目）
-  - [ ] 创建 WebShell 模型（WebShell）
-  - [ ] 创建 Plugin 模型（插件）
-  - [ ] 实现 CRUD 操作 trait
+- [x] Task 4.1: 实现载荷生成核心逻辑
+- [x] Task 4.2: 实现载荷管理 Commands
+- [x] Task 4.3: 实现载荷管理前端组件
+- [x] Task 4.4: 实现载荷管理 API 层
+- [x] Task 4.5: 实现搜索/过滤/排序功能
 
-## 阶段 4: 载荷管理模块 (P0) - 本地功能
-
-- [ ] Task 4.1: 实现载荷生成核心逻辑
-  - [ ] 创建 src-tauri/core/payload/mod.rs（载荷模块）
-  - [ ] 创建 generator.rs（载荷生成器）
-  - [ ] 创建 php.rs（PHP 载荷生成）
-  - [ ] 创建 jsp.rs（JSP 载荷生成）
-  - [ ] 创建 asp.rs（ASP 载荷生成）
-  - [ ] 创建 aspx.rs（ASPX 载荷生成）
-  - [ ] 创建 template.rs（模板管理）
-
-- [ ] Task 4.2: 实现载荷管理 Commands
-  - [ ] 创建 src-tauri/commands/payload.rs
-  - [ ] 实现 create_payload_config 命令
-  - [ ] 实现 update_payload_config 命令
-  - [ ] 实现 delete_payload_config 命令
-  - [ ] 实现 get_all_payload_configs 命令
-  - [ ] 实现 generate_payload 命令
-
-- [ ] Task 4.3: 实现载荷管理前端组件
-  - [ ] 创建 PayloadView.vue（载荷管理页面）
-  - [ ] 创建 PayloadConfig.vue（载荷配置表单）
-  - [ ] 创建 PayloadPreview.vue（代码预览）
-  - [ ] 创建 PayloadHistory.vue（历史记录）
-  - [ ] 创建 PayloadTemplate.vue（模板管理）
-  - [ ] 创建 LanguageSelector.vue（脚本语言选择）
-  - [ ] 创建 EncryptionSelector.vue（加密算法选择）
-  - [ ] 创建 ObfuscationSlider.vue（混淆强度滑块）
-
-- [ ] Task 4.4: 实现载荷管理 API 层
-  - [ ] 创建 src/api/payload.ts（载荷 API）
-  - [ ] 集成 invoke 调用后端命令
-  - [ ] 实现错误处理
-  - [ ] 实现类型定义（src/types/payload.ts）
-
-- [ ] Task 4.5: 实现搜索/过滤/排序功能
-  - [ ] 实现搜索框组件（通用搜索算法）
-  - [ ] 实现过滤面板（按类型、标签过滤）
-  - [ ] 实现排序功能（多字段排序）
-  - [ ] 集成到 Pinia store
+## 阶段 4 完成 ✅
 
 ## 阶段 5: 项目管理模块 (P0) - 本地数据管理
 

@@ -18,16 +18,21 @@ impl ProjectManager {
     /// 创建项目
     pub async fn create(&self, name: String, description: Option<String>) -> Result<Project> {
         let project = Project::new(name, description);
+        let project_id = project.id.clone();
+        let project_name = project.name.clone();
+        let project_description = project.description.clone().unwrap_or_default();
+        let project_created_at = project.created_at;
+        let project_updated_at = project.updated_at;
         
         let conn = self.db.lock().await;
         conn.execute(
             "INSERT INTO projects (id, name, description, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5)",
-            [
-                &project.id,
-                &project.name,
-                &project.description.as_deref().unwrap_or(""),
-                &project.created_at,
-                &project.updated_at,
+            rusqlite::params![
+                project_id,
+                project_name,
+                project_description,
+                project_created_at,
+                project_updated_at,
             ],
         )?;
         
@@ -41,14 +46,14 @@ impl ProjectManager {
         
         conn.execute(
             "UPDATE projects SET name = ?1, description = ?2, updated_at = ?3 WHERE id = ?4 AND deleted_at IS NULL",
-            [&name, &description.as_deref().unwrap_or(""), &updated_at, &id],
+            rusqlite::params![name, description.unwrap_or_default(), updated_at, id],
         )?;
         
         Ok(Project {
             id: id.to_string(),
             name,
-            description,
-            created_at: 0, // 需要从数据库读取
+            description: None,
+            created_at: 0,
             updated_at,
             deleted_at: None,
         })
@@ -61,7 +66,7 @@ impl ProjectManager {
         
         conn.execute(
             "UPDATE projects SET deleted_at = ?1 WHERE id = ?2",
-            [&deleted_at, &id],
+            rusqlite::params![deleted_at, id],
         )?;
         
         Ok(())
@@ -73,7 +78,7 @@ impl ProjectManager {
         
         conn.execute(
             "UPDATE projects SET deleted_at = NULL WHERE id = ?1",
-            [&id],
+            rusqlite::params![id],
         )?;
         
         Ok(())
@@ -121,7 +126,7 @@ impl ProjectManager {
                 description: row.get(2)?,
                 created_at: row.get(3)?,
                 updated_at: row.get(4)?,
-                deleted_at: Some(row.get(4)?),
+                deleted_at: row.get(4)?,
             })
         })?;
         

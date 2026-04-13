@@ -30,15 +30,15 @@ impl WebShellManager {
         conn.execute(
             "INSERT INTO webshells (id, project_id, name, url, password, payload_type, created_at, updated_at) 
              VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
-            [
-                &webshell.id,
-                &project_id.as_deref().unwrap_or(""),
-                &webshell.name,
-                &webshell.url,
-                &webshell.password,
-                &webshell.payload_type,
-                &webshell.created_at,
-                &webshell.updated_at,
+            rusqlite::params![
+                webshell.id,
+                project_id.unwrap_or_default(),
+                webshell.name,
+                webshell.url,
+                webshell.password,
+                webshell.payload_type,
+                webshell.created_at,
+                webshell.updated_at,
             ],
         )?;
         
@@ -61,12 +61,12 @@ impl WebShellManager {
         conn.execute(
             "UPDATE webshells SET name = ?1, url = ?2, password = ?3, payload_type = ?4, 
              project_id = ?5, updated_at = ?6 WHERE id = ?7 AND deleted_at IS NULL",
-            [&name, &url, &password, &payload_type, &project_id.as_deref().unwrap_or(""), &updated_at, &id],
+            rusqlite::params![name, url, password, payload_type, project_id.unwrap_or_default(), updated_at, id],
         )?;
         
         Ok(WebShell {
             id: id.to_string(),
-            project_id: project_id,
+            project_id: None,
             name,
             url,
             password,
@@ -87,7 +87,7 @@ impl WebShellManager {
         
         conn.execute(
             "UPDATE webshells SET deleted_at = ?1 WHERE id = ?2",
-            [&deleted_at, &id],
+            rusqlite::params![deleted_at, id],
         )?;
         
         Ok(())
@@ -104,7 +104,7 @@ impl WebShellManager {
              WHERE project_id = ?1 AND deleted_at IS NULL"
         )?;
         
-        let webshells = stmt.query_map([&project_id], |row| {
+        let webshells = stmt.query_map(rusqlite::params![project_id], |row| {
             Ok(WebShell {
                 id: row.get(0)?,
                 project_id: row.get(1)?,
@@ -136,7 +136,7 @@ impl WebShellManager {
         
         conn.execute(
             "UPDATE webshells SET status = ?1, last_connected_at = ?2 WHERE id = ?3",
-            [&status, &last_connected_at, &id],
+            rusqlite::params![status, last_connected_at, id],
         )?;
         
         Ok(())

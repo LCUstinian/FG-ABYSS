@@ -1,2 +1,5 @@
-export { useAppStore } from './app'
-export { useTerminalStore } from './terminal'
+import { createPinia } from 'pinia'
+
+const pinia = createPinia()
+
+export default pinia

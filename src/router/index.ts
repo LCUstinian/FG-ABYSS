@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
@@ -8,14 +8,29 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/HomeView.vue'),
   },
   {
-    path: '/terminal',
-    name: 'Terminal',
-    component: () => import('@/views/TerminalView.vue'),
+    path: '/project',
+    name: 'Project',
+    component: () => import('@/views/ProjectView.vue'),
+  },
+  {
+    path: '/payload',
+    name: 'Payload',
+    component: () => import('@/views/PayloadView.vue'),
+  },
+  {
+    path: '/plugin',
+    name: 'Plugin',
+    component: () => import('@/views/PluginView.vue'),
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: () => import('@/views/SettingsView.vue'),
   },
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 })
 

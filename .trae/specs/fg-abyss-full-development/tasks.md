@@ -10,7 +10,7 @@
   - [ ] 创建 Tauri 配置（tauri.conf.json）
   - [ ] 创建基础目录结构（src/, src-tauri/src/）
 
-- [ ] Task 1.2: 配置开发环境和 Git
+- [x] Task 1.2: 配置开发环境和 Git
   - [ ] 初始化 Git 仓库（使用当前目录）
   - [ ] 创建 .gitignore 文件
   - [ ] 创建 .env.example 文件
@@ -18,13 +18,15 @@
   - [ ] 安装 Rust 依赖（cargo fetch）
   - [ ] 创建首个 Git 提交（Initial commit）
 
-- [ ] Task 1.3: 创建应用入口和基础组件
-  - [ ] 创建 src/main.ts（Vue 应用入口）
-  - [ ] 创建 src/App.vue（根组件）
-  - [ ] 创建 src/index.html（HTML 入口）
-  - [ ] 创建 src-tauri/src/main.rs（Tauri 入口）
-  - [ ] 创建 src-tauri/src/lib.rs（核心逻辑入口）
-  - [ ] 验证开发服务器启动（pnpm tauri dev）
+- [x] Task 1.3: 创建应用入口和基础组件
+  - [x] 创建 src/main.ts（Vue 应用入口）
+  - [x] 创建 src/App.vue（根组件）
+  - [x] 创建 src/index.html（HTML 入口）
+  - [x] 创建 src-tauri/src/main.rs（Tauri 入口）
+  - [x] 创建 src-tauri/src/lib.rs（核心逻辑入口）
+  - [x] 验证开发服务器启动（pnpm tauri dev）
+
+## 阶段 1 完成 ✅
 
 ## 阶段 2: 核心架构实现 (P0)
 

@@ -1,16 +1,9 @@
-pub mod commands;
-pub mod core;
-pub mod infra;
-pub mod plugins;
+mod commands;
+mod core;
+mod infra;
+mod plugins;
 
-pub use commands::*;
-pub use core::logger;
-pub use core::config;
-pub use infra::database;
-pub use infra::file_system;
-pub use plugins::tray;
-
-pub fn run_app() {
+pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
@@ -18,14 +11,21 @@ pub fn run_app() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_notification::init())
         .setup(|app| {
-            logger::init();
-            tray::setup_system_tray(app.handle())?;
+            // 初始化数据库
+            infra::init()?;
+            
+            // 初始化日志
+            core::logger::init();
+            
+            // 设置系统托盘
+            plugins::tray::setup_system_tray(app.handle())?;
+            
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            ping,
-            execute_command,
-            get_system_info,
+            commands::ping,
+            commands::execute_command,
+            commands::get_system_info,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

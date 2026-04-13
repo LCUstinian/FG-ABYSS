@@ -1,3 +1,7 @@
+# ======================
+# FG-ABYSS .gitignore
+# ======================
+
 # Logs
 logs
 *.log
@@ -7,14 +11,28 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+.pnpm-store
+
+# Build outputs
 dist
 dist-ssr
-*.local
+build
+out
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
 .idea
 .DS_Store
 *.suo
@@ -22,3 +40,40 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.tmp
+*.bak
+
+# Tauri
+src-tauri/target
+src-tauri/icons/*.png
+src-tauri/icons/*.ico
+src-tauri/icons/*.icns
+src-tauri/gen
+src-tauri/tauri.*.json
+
+# Rust
+src-tauri/target/
+**/target/
+**/*.rs.bk
+**/Cargo.lock
+**/*.pdb
+
+# Node.js
+.npm
+.eslintcache
+.nyc_output
+coverage
+.jest
+test-results
+
+# OS
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Temp files
+*.tmp
+*.temp
+*.cache

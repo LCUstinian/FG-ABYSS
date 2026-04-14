@@ -2,6 +2,8 @@ mod commands;
 mod core;
 mod infra;
 mod plugins;
+mod logging;
+mod error;
 
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -28,8 +30,14 @@ pub fn run() {
             // 初始化日志
             core::logger::init();
             
+            // 初始化增强日志系统
+            logging::init_global_logger(logging::LoggingConfig::default());
+            
             // 设置系统托盘
             plugins::tray::setup_system_tray(_app.handle())?;
+            
+            // 记录启动信息
+            info!("FG-ABYSS", "应用启动成功");
             
             Ok(())
         })

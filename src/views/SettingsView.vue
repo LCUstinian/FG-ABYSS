@@ -517,9 +517,10 @@ const handleResetSettings = () => {
 .settings-view {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
   padding: 12px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .settings-section {
@@ -535,14 +536,22 @@ const handleResetSettings = () => {
 
 :deep(.n-card) {
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 :deep(.n-card__content) {
+  flex: 1;
   overflow-y: auto;
   padding-right: 16px;
+  min-height: 0;
 }
 
 :deep(.n-menu) {
   --n-item-height: 44px;
+}
+
+:deep(.n-grid) {
+  height: calc(100% - 24px);
 }
 </style>

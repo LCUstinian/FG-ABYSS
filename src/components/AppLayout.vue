@@ -95,15 +95,17 @@ const handleMenuSelect = (key: string) => {
 .app-layout {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: #0f0f23;
+  overflow: hidden;
 }
 
 .app-container {
   display: flex;
   flex: 1;
   overflow: hidden;
+  min-height: 0;
 }
 
 .app-sidebar {
@@ -111,6 +113,7 @@ const handleMenuSelect = (key: string) => {
   flex-direction: column;
   background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .sidebar-header {
@@ -119,6 +122,7 @@ const handleMenuSelect = (key: string) => {
   padding: 16px;
   gap: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .sidebar-brand {
@@ -126,18 +130,22 @@ const handleMenuSelect = (key: string) => {
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 .sidebar-nav {
   flex: 1;
   padding: 12px 8px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .app-content {
   flex: 1;
   overflow: auto;
   background: #0f0f23;
+  min-width: 0;
+  min-height: 0;
 }
 
 :deep(.n-menu) {
@@ -145,5 +153,6 @@ const handleMenuSelect = (key: string) => {
   --n-item-text-color-hover: #ffffff;
   --n-item-color-hover: rgba(64, 158, 255, 0.15);
   --n-item-color-active: rgba(64, 158, 255, 0.2);
+  --n-item-height: 44px;
 }
 </style>

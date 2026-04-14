@@ -377,17 +377,25 @@ const handleInstallPlugin = async () => {
 .plugin-view {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
   padding: 12px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .plugin-view :deep(.n-card) {
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .plugin-view :deep(.n-card__content) {
-  height: calc(100% - 60px);
+  flex: 1;
   overflow: auto;
+  min-height: 0;
+}
+
+.plugin-view :deep(.n-grid) {
+  height: calc(100% - 24px);
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
   <div class="console-view">
-    <n-grid :cols="100" :x-gap="12" style="height: calc(100% - 60px)">
+    <n-grid :cols="100" :x-gap="12" style="height: 100%">
       <!-- 左侧：WebShell 列表 -->
       <n-grid-item :span="25">
-        <n-card :title="t('webshells')" :bordered="false" style="height: 100%">
+        <n-card :title="t('webshells')" :bordered="false" content-style="display: flex; flex-direction: column; height: calc(100% - 60px);">
           <template #header-extra>
             <n-button size="small" @click="handleRefresh">
               <template #icon>
@@ -23,7 +23,7 @@
             clearable
           />
 
-          <n-list hoverable>
+          <n-list hoverable style="flex: 1; overflow-y: auto;">
             <n-list-item
               v-for="webshell in filteredWebshells"
               :key="webshell.id"
@@ -48,7 +48,7 @@
 
       <!-- 右侧：控制台和插件 -->
       <n-grid-item :span="75">
-        <n-card :bordered="false" style="height: 100%">
+        <n-card :bordered="false" content-style="display: flex; flex-direction: column; height: calc(100% - 60px);">
           <template #header>
             <n-space>
               <span>{{ selectedWebshell ? selectedWebshell.name : '选择 WebShell' }}</span>
@@ -63,22 +63,22 @@
           </template>
 
           <!-- 控制台窗口 -->
-          <div v-show="activePlugin === 'console'" style="height: calc(100% - 100px)">
+          <div v-show="activePlugin === 'console'" style="flex: 1; min-height: 0;">
             <ConsoleWindow ref="consoleWindowRef" />
           </div>
 
           <!-- 文件管理器 -->
-          <div v-show="activePlugin === 'file'" style="height: calc(100% - 100px)">
+          <div v-show="activePlugin === 'file'" style="flex: 1; min-height: 0;">
             <FileManager />
           </div>
 
           <!-- 数据库管理器 -->
-          <div v-show="activePlugin === 'database'" style="height: calc(100% - 100px)">
+          <div v-show="activePlugin === 'database'" style="flex: 1; min-height: 0;">
             <DatabaseManager />
           </div>
 
           <!-- 终端管理器 -->
-          <div v-show="activePlugin === 'terminal'" style="height: calc(100% - 100px)">
+          <div v-show="activePlugin === 'terminal'" style="flex: 1; min-height: 0;">
             <TerminalManager />
           </div>
         </n-card>
@@ -173,19 +173,18 @@ const handleSelectWebshell = (webshell: any) => {
   overflow: hidden;
 }
 
-.console-view :deep(.n-card) {
+.console-view :deep(.n-grid) {
   height: 100%;
+}
+
+.console-view :deep(.n-card) {
   display: flex;
   flex-direction: column;
 }
 
 .console-view :deep(.n-card__content) {
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
   min-height: 0;
-}
-
-.console-view :deep(.n-grid) {
-  height: calc(100% - 24px);
 }
 </style>

@@ -2,7 +2,7 @@ use chrono::{DateTime, Local};
 use serde::{Serialize, Deserialize};
 use std::fs::{File, OpenOptions};
 use std::io::{Write, BufWriter};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 
 /// 日志级别
@@ -44,7 +44,7 @@ impl LogLevel {
 }
 
 /// 日志条目
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone)]
 pub struct LogEntry {
     /// 时间戳
     pub timestamp: DateTime<Local>,
@@ -55,7 +55,6 @@ pub struct LogEntry {
     /// 日志消息
     pub message: String,
     /// 额外数据（可选）
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<serde_json::Value>,
 }
 
@@ -178,7 +177,7 @@ impl Logger {
     }
 
     /// 检查是否需要轮转日志文件
-    fn check_rotation(&self) -> std::io::Result<()> {
+    fn check_rotation(&mut self) -> std::io::Result<()> {
         if !self.config.rotation_enabled {
             return Ok(());
         }
@@ -194,7 +193,7 @@ impl Logger {
     }
 
     /// 轮转日志文件
-    fn rotate_logs(&self) -> std::io::Result<()> {
+    fn rotate_logs(&mut self) -> std::io::Result<()> {
         // 删除最旧的日志文件
         let mut log_files: Vec<_> = std::fs::read_dir(&self.config.log_dir)?
             .filter_map(|e| e.ok())
@@ -229,17 +228,17 @@ impl Logger {
         let mut sanitized = message.to_string();
 
         // 脱敏密码
-        if let Ok(regex) = regex::Regex::new(r"(?i)(password|passwd|pwd|secret|token|api_key|apikey)\s*[=:]\s*['\"]?([^'\"\s]+)") {
+        if let Ok(regex) = regex::Regex::new(r"(?i)(password|passwd|pwd|secret|token|api_key|apikey)\s*[=:]\s*[^\\s]+") {
             sanitized = regex.replace_all(&sanitized, "$1=***REDACTED***").to_string();
         }
 
         // 脱敏邮箱
-        if let Ok(regex) = regex::Regex::new(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}") {
+        if let Ok(regex) = regex::Regex::new(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}") {
             sanitized = regex.replace_all(&sanitized, "***@***.***").to_string();
         }
 
         // 脱敏 IP 地址
-        if let Ok(regex) = regex::Regex::new(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b") {
+        if let Ok(regex) = regex::Regex::new(r"\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b") {
             sanitized = regex.replace_all(&sanitized, "***.***.***.***").to_string();
         }
 
@@ -267,12 +266,8 @@ impl Logger {
             if let Ok(mut writer_guard) = self.writer.lock() {
                 if let Some(writer) = writer_guard.as_mut() {
                     let log_line = format!("{}\n", entry.format(false));
-                    if let Ok(bytes) = writer.write_all(log_line.as_bytes()) {
-                        *self.current_file_size.lock().unwrap() += log_line.len() as u64;
-                        
-                        // 检查是否需要轮转
-                        let _ = self.check_rotation();
-                    }
+                    let _ = writer.write_all(log_line.as_bytes());
+                    *self.current_file_size.lock().unwrap() += log_line.len() as u64;
                 }
             }
         }

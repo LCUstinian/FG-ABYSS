@@ -1,4 +1,4 @@
-use crate::plugins::types::{Plugin, PluginError, Result};
+use crate::plugins::types::PluginError;
 use std::collections::HashMap;
 
 /// 插件沙箱环境
@@ -9,8 +9,10 @@ pub struct PluginSandbox {
     resource_limits: ResourceLimits,
 }
 
+pub type Result<T> = std::result::Result<T, PluginError>;
+
 /// 沙箱状态
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum SandboxState {
     /// 未初始化
     Uninitialized,
@@ -128,7 +130,7 @@ impl PluginSandbox {
     }
 
     /// 检查资源使用
-    pub fn check_resource_usage(&self, plugin_id: &str) -> ResourceUsage {
+    pub fn check_resource_usage(&self, _plugin_id: &str) -> ResourceUsage {
         // TODO: 实现实际的资源监控
         ResourceUsage {
             memory_mb: 0,

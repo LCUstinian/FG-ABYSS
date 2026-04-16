@@ -148,7 +148,7 @@ impl Plugin {
 
     fn is_version_compatible(&self, app_version: &str) -> bool {
         // 简单的版本比较（实际应该使用 semver 库）
-        app_version >= &self.metadata.min_version
+        app_version.to_string() >= self.metadata.min_version
     }
 }
 

@@ -14,13 +14,13 @@ pub struct PluginRuntime {
     /// 插件加载器
     loader: PluginLoader,
     /// 插件沙箱
-    sandbox: PluginSandbox,
+    sandbox: Arc<RwLock<PluginSandbox>>,
 }
 
 impl PluginRuntime {
     pub fn new(plugins_dir: std::path::PathBuf) -> Self {
         let loader = PluginLoader::new(plugins_dir);
-        let sandbox = PluginSandbox::with_limits(ResourceLimits::default());
+        let sandbox = Arc::new(RwLock::new(PluginSandbox::with_limits(ResourceLimits::default())));
 
         Self {
             plugins: Arc::new(RwLock::new(HashMap::new())),
@@ -58,14 +58,16 @@ impl PluginRuntime {
         plugin.validate(env!("CARGO_PKG_VERSION"))?;
 
         // 初始化沙箱
-        self.sandbox.initialize(&plugin_id)?;
+        let mut sandbox = self.sandbox.write().await;
+        sandbox.initialize(&plugin_id)?;
 
         // 添加到插件列表
         let mut plugins = self.plugins.write().await;
         plugins.insert(plugin_id.clone(), plugin);
 
         // 启动沙箱
-        self.sandbox.start(&plugin_id)?;
+        sandbox.start(&plugin_id)?;
+        drop(sandbox);
 
         log::info!("加载插件：{}", plugin_id);
 
@@ -75,7 +77,9 @@ impl PluginRuntime {
     /// 卸载插件
     pub async fn unload_plugin(&self, plugin_id: &str) -> Result<()> {
         // 终止沙箱
-        self.sandbox.terminate(plugin_id)?;
+        let mut sandbox = self.sandbox.write().await;
+        sandbox.terminate(plugin_id)?;
+        drop(sandbox);
 
         // 从列表中移除
         let mut plugins = self.plugins.write().await;
@@ -98,7 +102,9 @@ impl PluginRuntime {
         plugin.status = PluginStatus::Active;
         
         // 启动沙箱
-        self.sandbox.start(plugin_id)?;
+        let mut sandbox = self.sandbox.write().await;
+        sandbox.start(plugin_id)?;
+        drop(sandbox);
 
         // 更新配置
         let mut configs = self.configs.write().await;
@@ -120,7 +126,9 @@ impl PluginRuntime {
         plugin.status = PluginStatus::Inactive;
         
         // 暂停沙箱
-        self.sandbox.suspend(plugin_id)?;
+        let mut sandbox = self.sandbox.write().await;
+        sandbox.suspend(plugin_id)?;
+        drop(sandbox);
 
         // 更新配置
         let mut configs = self.configs.write().await;
@@ -165,7 +173,8 @@ impl PluginRuntime {
         }
 
         // 在沙箱中执行
-        self.sandbox.execute(plugin_id, code)
+        let sandbox = self.sandbox.read().await;
+        sandbox.execute(plugin_id, code)
     }
 
     /// 获取插件配置

@@ -1,4 +1,4 @@
-use crate::plugins::types::{Plugin, PluginError, PluginMetadata, PluginStatus, Result};
+use crate::plugins::types::{Plugin, PluginError, PluginMetadata, Result};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -53,7 +53,7 @@ impl PluginLoader {
             .map_err(|e| PluginError::ValidationFailed(format!("解析元数据失败：{}", e)))?;
 
         // 创建插件实例
-        let mut plugin = Plugin::new(plugin_path.to_path_buf(), metadata);
+        let plugin = Plugin::new(plugin_path.to_path_buf(), metadata);
 
         // 验证插件
         plugin.validate(env!("CARGO_PKG_VERSION"))?;

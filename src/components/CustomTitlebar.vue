@@ -75,6 +75,11 @@ onMounted(async () => {
   user-select: none;
   -webkit-app-region: drag;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
 }
 
 .titlebar-drag-region {
@@ -82,10 +87,12 @@ onMounted(async () => {
   align-items: center;
   height: 100%;
   padding-left: 12px;
+  flex: 1;
 }
 
 .titlebar-icon {
   margin-right: 8px;
+  flex-shrink: 0;
 }
 
 .titlebar-title {
@@ -93,12 +100,16 @@ onMounted(async () => {
   font-weight: 600;
   color: #ffffff;
   letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .titlebar-controls {
   display: flex;
   height: 100%;
   -webkit-app-region: no-drag;
+  flex-shrink: 0;
 }
 
 .titlebar-button {
@@ -112,6 +123,8 @@ onMounted(async () => {
   color: #ffffff;
   cursor: pointer;
   transition: background-color 0.15s ease;
+  padding: 0;
+  margin: 0;
 }
 
 .titlebar-button:hover {

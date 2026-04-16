@@ -99,6 +99,8 @@ const handleMenuSelect = (key: string) => {
   height: 100vh;
   background: #0f0f23;
   overflow: hidden;
+  padding-top: 40px; /* 为固定标题栏留出空间 */
+  box-sizing: border-box;
 }
 
 .app-container {

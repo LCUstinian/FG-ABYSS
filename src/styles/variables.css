@@ -1,0 +1,31 @@
+/* Theme-invariant semantic variables. Theme-variant vars are set by useThemeCssVars() at runtime. */
+:root {
+  --color-success:  #4ade80;
+  --color-warning:  #fbbf24;
+  --color-error:    #f87171;
+  --color-info:     #60a5fa;
+  --code-bg:        #0c0d11;
+  --code-border:    #1a1c26;
+  --wc-close-bg:    #ef4444;
+  --font-mono:      'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #app {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  background: var(--bg-base);
+  color: var(--text-1);
+  -webkit-font-smoothing: antialiased;
+}

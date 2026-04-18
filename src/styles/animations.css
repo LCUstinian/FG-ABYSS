@@ -1,0 +1,44 @@
+/* Disable all animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Page route fade */
+.fade-enter-active { transition: opacity 120ms ease-out; }
+.fade-leave-active { transition: opacity 80ms ease-in; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+
+/* Status dot pulse — reduced to static glow when prefers-reduced-motion */
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); }
+  50%       { box-shadow: 0 0 0 5px rgba(74, 222, 128, 0); }
+}
+.status-dot-active {
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+/* Skeleton shimmer for loading states */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+.skeleton-row {
+  background: linear-gradient(
+    90deg,
+    var(--bg-elevated) 25%,
+    var(--bg-hover)    50%,
+    var(--bg-elevated) 75%
+  );
+  background-size: 800px 40px;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+/* Batch action bar slide */
+.batch-bar-enter-active { transition: transform 200ms ease-out; }
+.batch-bar-leave-active { transition: transform 140ms ease-in; }
+.batch-bar-enter-from, .batch-bar-leave-to { transform: translateY(48px); }

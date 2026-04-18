@@ -42,14 +42,22 @@ impl PluginRepo for DbPluginRepo {
     }
 
     async fn find_by_id(&self, id: &str) -> Result<Plugin> {
-        let id = id.to_string();
+        let id_owned = id.to_string();
+        let id_err = id.to_string();
         self.db.call(move |conn| {
             conn.query_row(
                 "SELECT id, name, version, enabled, config, source, created_at, updated_at
                  FROM plugins WHERE id = ?1",
-                [&id], row_to_plugin,
+                [&id_owned], row_to_plugin,
             )
-        }).await
+        }).await.map_err(|e| {
+            if let crate::AppError::Database(ref re) = e {
+                if matches!(re, rusqlite::Error::QueryReturnedNoRows) {
+                    return crate::AppError::NotFound(format!("plugin {id_err}"));
+                }
+            }
+            e
+        })
     }
 
     async fn insert(&self, p: &Plugin) -> Result<()> {

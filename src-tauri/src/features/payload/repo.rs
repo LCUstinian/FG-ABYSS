@@ -43,12 +43,13 @@ impl PayloadRepo for DbPayloadRepo {
     }
 
     async fn find_by_id(&self, id: &str) -> Result<Payload> {
-        let id = id.to_string();
+        let id_owned = id.to_string();
+        let id_err = id.to_string();
         self.db.call(move |conn| {
             conn.query_row(
                 "SELECT id, name, payload_type, config, created_at
                  FROM payloads WHERE id = ?1 AND deleted_at IS NULL",
-                [&id],
+                [&id_owned],
                 |r| {
                     let pt_str: String = r.get(2)?;
                     let cfg_str: String = r.get(3)?;
@@ -61,7 +62,14 @@ impl PayloadRepo for DbPayloadRepo {
                     })
                 },
             )
-        }).await
+        }).await.map_err(|e| {
+            if let crate::AppError::Database(ref re) = e {
+                if matches!(re, rusqlite::Error::QueryReturnedNoRows) {
+                    return crate::AppError::NotFound(format!("payload {id_err}"));
+                }
+            }
+            e
+        })
     }
 
     async fn insert(&self, p: &Payload) -> Result<()> {
@@ -84,12 +92,22 @@ impl PayloadRepo for DbPayloadRepo {
     async fn soft_delete(&self, id: &str, ts: i64) -> Result<()> {
         let id = id.to_string();
         self.db.call(move |conn| {
-            conn.execute(
+            let n = conn.execute(
                 "UPDATE payloads SET deleted_at = ?1 WHERE id = ?2 AND deleted_at IS NULL",
                 rusqlite::params![ts, id],
             )?;
+            if n == 0 {
+                return Err(rusqlite::Error::QueryReturnedNoRows);
+            }
             Ok(())
-        }).await
+        }).await.map_err(|e| {
+            if let crate::AppError::Database(ref re) = e {
+                if matches!(re, rusqlite::Error::QueryReturnedNoRows) {
+                    return crate::AppError::NotFound("payload not found".into());
+                }
+            }
+            e
+        })
     }
 
     async fn insert_history(&self, e: &PayloadHistoryEntry) -> Result<()> {

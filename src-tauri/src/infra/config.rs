@@ -99,7 +99,9 @@ pub fn load_or_default(path: &Path) -> Result<Config> {
 pub fn save(path: &Path, cfg: &Config) -> Result<()> {
     let text = toml::to_string_pretty(cfg)
         .map_err(|e| AppError::InvalidInput(e.to_string()))?;
-    std::fs::write(path, text)?;
+    let tmp = path.with_extension("toml.tmp");
+    std::fs::write(&tmp, &text)?;
+    std::fs::rename(&tmp, path)?;
     Ok(())
 }
 

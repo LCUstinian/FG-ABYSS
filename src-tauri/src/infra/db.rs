@@ -24,7 +24,10 @@ impl Database {
         self.0
             .call(move |conn| f(conn).map_err(tokio_rusqlite::Error::Rusqlite))
             .await
-            .map_err(|e| AppError::DbConnect(e.to_string()))
+            .map_err(|e| match e {
+                tokio_rusqlite::Error::Rusqlite(re) => AppError::Database(re),
+                other => AppError::DbConnect(other.to_string()),
+            })
     }
 
     pub async fn migrate(&self) -> Result<()> {

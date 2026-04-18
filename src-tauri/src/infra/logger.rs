@@ -9,9 +9,9 @@ pub fn init(logs_dir: &Path) -> Result<WorkerGuard> {
     let (non_blocking, guard) = tracing_appender::non_blocking(file_appender);
 
     tracing_subscriber::registry()
+        .with(tracing_subscriber::EnvFilter::new("info"))
         .with(tracing_subscriber::fmt::layer().with_writer(non_blocking))
         .with(tracing_subscriber::fmt::layer().with_writer(std::io::stderr))
-        .with(tracing_subscriber::EnvFilter::new("info"))
         .init();
 
     Ok(guard)

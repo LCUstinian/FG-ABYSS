@@ -26,7 +26,7 @@ pub fn encrypt(plain: &[u8], key: &[u8; 32]) -> Result<String> {
 pub fn decrypt(cipher_b64: &str, key: &[u8; 32]) -> Result<Vec<u8>> {
     let combined = BASE64.decode(cipher_b64)
         .map_err(|e| AppError::Crypto(e.to_string()))?;
-    if combined.len() < 12 {
+    if combined.len() < 28 {
         return Err(AppError::Crypto("ciphertext too short".into()));
     }
     let (nonce_bytes, ciphertext) = combined.split_at(12);

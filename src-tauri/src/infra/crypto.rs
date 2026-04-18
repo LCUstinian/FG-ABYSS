@@ -112,7 +112,7 @@ impl CryptoContext {
 
 // --- CryptoChain ---
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default, specta::Type)]
 #[serde(rename_all = "snake_case", tag = "type")]
 pub enum CodecStep {
     #[default]
@@ -124,7 +124,7 @@ pub enum CodecStep {
     HexEncode,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default, specta::Type)]
 pub struct CryptoChain {
     pub steps: Vec<CodecStep>,
 }

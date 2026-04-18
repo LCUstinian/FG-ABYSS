@@ -12,9 +12,10 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "FG-ABYSS",
-        "width": 1280,
-        "height": 800,
+        "width": 1400,
+        "height": 900,
         "minWidth": 1024,
         "minHeight": 768,
         "decorations": false,
@@ -23,7 +24,7 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; frame-src 'self'"
     }
   },
   "bundle": {

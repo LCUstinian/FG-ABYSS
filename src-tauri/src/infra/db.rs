@@ -5,6 +5,12 @@ use crate::{AppError, Result};
 #[derive(Clone)]
 pub struct Database(Arc<tokio_rusqlite::Connection>);
 
+impl std::fmt::Debug for Database {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Database").finish_non_exhaustive()
+    }
+}
+
 impl Database {
     pub async fn open(path: &Path) -> Result<Self> {
         let conn = tokio_rusqlite::Connection::open(path).await

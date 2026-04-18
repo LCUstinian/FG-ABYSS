@@ -9,7 +9,7 @@
         <span
           class="console-dot"
           :class="{ 'status-dot-active': isActive }"
-          aria-label="状态: 活跃"
+          :aria-label="isActive ? '状态: 活跃' : '状态: 离线'"
         />
       </div>
       <button class="console-close" aria-label="关闭" @click="closeWindow">
@@ -52,7 +52,8 @@ import { getCurrentWindow } from '@tauri-apps/api/window'
 // Console window reads webshell_id from URL query param (hash router)
 // URL format: tauri://localhost/#/console?id={webshell_id}
 const route = useRoute()
-const webshellId = route.query.id as string | undefined
+const raw = route.query.id
+const webshellId = typeof raw === 'string' ? raw : undefined
 
 const shellName = webshellId ? `shell-${webshellId.slice(0, 8)}` : 'Unknown'
 const shellUrl  = 'https://example.com/shell.php'
@@ -66,7 +67,7 @@ async function closeWindow() {
 
 <style scoped>
 .console-view {
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   background: var(--bg-base);

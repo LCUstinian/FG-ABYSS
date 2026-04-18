@@ -162,10 +162,15 @@ async function copyCode() {
 async function generate() {
   generating.value = true
   generateError.value = false
-  // Placeholder — actual Tauri invoke wired in payload feature plan
-  await new Promise(r => setTimeout(r, 600))
-  codeOutput.value = `<?php\n// Generated ${lang.value} payload\n// Key: ${keyValue.value || '(empty)'}\n// Enc: ${encMode.value}\n?>`
-  generating.value = false
+  try {
+    // Placeholder — actual Tauri invoke wired in payload feature plan
+    await new Promise(r => setTimeout(r, 600))
+    codeOutput.value = `<?php\n// Generated ${lang.value} payload\n// Key: ${keyValue.value || '(empty)'}\n// Enc: ${encMode.value}\n?>`
+  } catch {
+    generateError.value = true
+  } finally {
+    generating.value = false
+  }
 }
 </script>
 
@@ -250,7 +255,7 @@ async function generate() {
   gap: 4px;
   padding: 8px 12px;
   border-bottom: 1px solid var(--code-border);
-  background: #16181f;
+  background: var(--code-bg);
 }
 
 .code-area {
@@ -275,6 +280,6 @@ async function generate() {
   border-top: 1px solid var(--code-border);
   text-align: right;
   font-family: var(--font-mono);
-  background: #16181f;
+  background: var(--code-bg);
 }
 </style>

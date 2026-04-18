@@ -44,21 +44,24 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useLocalStorage } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 import { Home, FolderOpen, Package, Puzzle, Settings } from 'lucide-vue-next'
 import { ChevronLeft } from 'lucide-vue-next'
 
+const { t } = useI18n()
 const route = useRoute()
 const collapsed = useLocalStorage('fg-sidebar-collapsed', false)
 
-const navItems = [
-  { path: '/',         label: '首页', icon: Home       },
-  { path: '/project',  label: '项目', icon: FolderOpen  },
-  { path: '/payload',  label: '载荷', icon: Package     },
-  { path: '/plugin',   label: '插件', icon: Puzzle      },
-  { path: '/settings', label: '设置', icon: Settings    },
-]
+const navItems = computed(() => [
+  { path: '/',         label: t('nav.home'),     icon: Home       },
+  { path: '/project',  label: t('nav.project'),  icon: FolderOpen  },
+  { path: '/payload',  label: t('nav.payload'),  icon: Package     },
+  { path: '/plugin',   label: t('nav.plugin'),   icon: Puzzle      },
+  { path: '/settings', label: t('nav.settings'), icon: Settings    },
+])
 </script>
 
 <style scoped>

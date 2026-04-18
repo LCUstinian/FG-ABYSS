@@ -6,7 +6,7 @@
       <span class="app-sub">{{ t('app.sub') }}</span>
     </div>
 
-    <div class="titlebar-right" data-tauri-drag-region="false">
+    <div class="titlebar-right">
       <!-- Theme toggle -->
       <button
         class="tb-icon-btn"

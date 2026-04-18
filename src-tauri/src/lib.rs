@@ -3,6 +3,7 @@ pub use error::{AppError, Result};
 
 pub mod infra;
 pub mod features;
+pub mod state;
 
 pub fn run() {
     tauri::Builder::default()

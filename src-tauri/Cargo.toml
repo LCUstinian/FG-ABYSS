@@ -13,7 +13,7 @@ tauri-build = { version = "2", features = [] }
 [dependencies]
 tauri       = { version = "2", features = [] }
 tauri-specta = { version = "2.0.0-rc.24", features = ["derive", "typescript"] }
-specta      = { version = "2.0.0-rc.24" }
+specta      = { version = "2.0.0-rc.24", features = ["serde_json"] }
 specta-typescript = { version = "0.0.11" }
 
 serde       = { version = "1", features = ["derive"] }

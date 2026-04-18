@@ -1,36 +1,25 @@
 <template>
-  <n-config-provider :theme="theme">
-    <n-global-style />
-    <n-message-provider>
+  <n-config-provider
+    :theme="themeStore.naiveTheme"
+    :theme-overrides="themeStore.themeOverrides"
+    :locale="zhCN"
+    :date-locale="dateZhCN"
+    :theme-overrides-common="{ zIndexModal: 100, zIndexPopover: 20, zIndexMessage: 1000 }"
+  >
+    <n-message-provider placement="top-right">
       <n-dialog-provider>
-        <AppLayout>
-          <router-view />
-        </AppLayout>
+        <AppShell />
       </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { darkTheme } from 'naive-ui'
-import AppLayout from './components/AppLayout.vue'
+import { zhCN, dateZhCN } from 'naive-ui'
+import { useThemeStore } from '@/stores/theme'
+import { useThemeCssVars } from '@/composables/useThemeCssVars'
+import AppShell from '@/components/layout/AppShell.vue'
 
-const theme = ref(darkTheme)
+const themeStore = useThemeStore()
+useThemeCssVars()
 </script>
-
-<style>
-#app {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
-</style>

@@ -29,7 +29,10 @@ rand        = "0.8"
 base64      = "0.22"
 url         = "2"
 zeroize     = { version = "1", features = ["derive"] }
-reqwest     = { version = "0.12", features = ["json", "multipart"] }
+reqwest     = { version = "0.12", features = ["json", "stream"] }
+encoding_rs = "0.8"
+futures     = "0.3"
+bytes       = "1"
 dashmap     = "5"
 toml        = "0.8"
 chrono      = { version = "0.4", features = ["serde"] }
@@ -46,5 +49,5 @@ tokio-test = "0.4"
 codegen-units = 1
 lto           = true
 opt-level     = "s"
-panic         = "abort"
-strip         = true
+debug         = 1
+strip         = false

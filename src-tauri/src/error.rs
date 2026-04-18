@@ -64,4 +64,26 @@ impl serde::Serialize for AppError {
     }
 }
 
+// Specta type registration: AppError serializes as { kind: string, message: string }
+impl specta::Type for AppError {
+    fn definition(types: &mut specta::Types) -> specta::datatype::DataType {
+        use specta::datatype::{DataType, Field, NamedDataType, Primitive, Struct};
+
+        let ndt = NamedDataType::new(
+            "AppError",
+            vec![],
+            Struct::named()
+                .field("kind", Field::new(DataType::Primitive(Primitive::str)))
+                .field("message", Field::new(DataType::Primitive(Primitive::str)))
+                .build(),
+        );
+        ndt.register(types);
+        // Return the inner DataType directly (inline) since NamedReference has no public constructor
+        Struct::named()
+            .field("kind", Field::new(DataType::Primitive(Primitive::str)))
+            .field("message", Field::new(DataType::Primitive(Primitive::str)))
+            .build()
+    }
+}
+
 pub type Result<T> = std::result::Result<T, AppError>;

@@ -2,7 +2,7 @@ use std::path::Path;
 use serde::{Deserialize, Serialize};
 use crate::{AppError, Result};
 
-#[derive(Debug, Serialize, Deserialize, Default, Clone)]
+#[derive(Debug, Serialize, Deserialize, Default, Clone, specta::Type)]
 pub struct Config {
     pub meta:       MetaConfig,
     pub appearance: AppearanceConfig,
@@ -12,7 +12,7 @@ pub struct Config {
     pub logging:    LoggingConfig,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, specta::Type)]
 pub struct MetaConfig {
     pub config_version: u32,
 }
@@ -20,7 +20,7 @@ impl Default for MetaConfig {
     fn default() -> Self { Self { config_version: 1 } }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, specta::Type)]
 pub struct AppearanceConfig {
     pub theme: String,
     pub language: String,
@@ -32,14 +32,14 @@ impl Default for AppearanceConfig {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default, specta::Type)]
 pub struct WindowConfig {
     pub x: i32, pub y: i32,
     pub width: u32, pub height: u32,
     pub maximized: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, specta::Type)]
 pub struct ConnectionConfig {
     pub timeout_secs: u64,
     pub retry_count: u32,
@@ -55,7 +55,7 @@ impl Default for ConnectionConfig {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, specta::Type)]
 pub struct SecurityConfig {
     pub encryption: String,
     pub key_rotation_days: u32,
@@ -72,7 +72,7 @@ impl Default for SecurityConfig {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, specta::Type)]
 pub struct LoggingConfig {
     pub level: String,
     pub max_file_size_mb: u64,

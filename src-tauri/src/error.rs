@@ -64,23 +64,13 @@ impl serde::Serialize for AppError {
     }
 }
 
-// Specta type registration: AppError serializes as { kind: string, message: string }
+// AppError inlined as { kind: string, message: string } in TS bindings.
+// Using Dynamic NamedId would register a new entry on every call → duplicate-name panic.
 impl specta::Type for AppError {
-    fn definition(types: &mut specta::Types) -> specta::datatype::DataType {
-        use specta::datatype::{DataType, Field, NamedDataType, Primitive, Struct};
-
-        let ndt = NamedDataType::new(
-            "AppError",
-            vec![],
-            Struct::named()
-                .field("kind", Field::new(DataType::Primitive(Primitive::str)))
-                .field("message", Field::new(DataType::Primitive(Primitive::str)))
-                .build(),
-        );
-        ndt.register(types);
-        // Return the inner DataType directly (inline) since NamedReference has no public constructor
+    fn definition(_types: &mut specta::Types) -> specta::datatype::DataType {
+        use specta::datatype::{DataType, Field, Primitive, Struct};
         Struct::named()
-            .field("kind", Field::new(DataType::Primitive(Primitive::str)))
+            .field("kind",    Field::new(DataType::Primitive(Primitive::str)))
             .field("message", Field::new(DataType::Primitive(Primitive::str)))
             .build()
     }

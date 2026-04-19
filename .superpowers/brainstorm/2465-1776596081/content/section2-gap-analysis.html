@@ -1,0 +1,155 @@
+<h2>Section 2：规格 vs 现状 — 全面差距分析</h2>
+<p class="subtitle">红色 = 现在缺失或不符合规格 · 绿色 = 已正确实现</p>
+
+<div class="section">
+  <h3>📐 布局层（AppShell / Sidebar / Titlebar / StatusBar）</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+
+    <div style="background:#0d0e13;border-radius:8px;padding:14px;border:1px solid #1f2130">
+      <div style="font-size:11px;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">标题栏</div>
+      <div style="font-size:12px;line-height:1.8;color:#94a3b8">
+        <span style="color:#4ade80">✅</span> data-tauri-drag-region 存在<br>
+        <span style="color:#f87171">❌</span> 缺 allow-start-dragging 权限<br>
+        <span style="color:#f87171">❌</span> titlebar-right 未设 data-tauri-drag-region="false"<br>
+        <span style="color:#f87171">❌</span> 规格要求 logo 为 24×24px SVG，现在是 ◈ 文字字符
+      </div>
+    </div>
+
+    <div style="background:#0d0e13;border-radius:8px;padding:14px;border:1px solid #1f2130">
+      <div style="font-size:11px;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">侧边栏</div>
+      <div style="font-size:12px;line-height:1.8;color:#94a3b8">
+        <span style="color:#4ade80">✅</span> RouterLink 路由 / 折叠动画 / 激活样式<br>
+        <span style="color:#4ade80">✅</span> n-tooltip 悬停 400ms 延迟<br>
+        <span style="color:#f87171">❌</span> 折叠时宽度过渡动画（规格：只动 opacity+transform）<br>
+        <span style="color:#f87171">❌</span> 缺 cursor: pointer（现在默认 cursor）<br>
+        <span style="color:#f87171">❌</span> 折叠态下 active 图标颜色不保持 --accent
+      </div>
+    </div>
+
+    <div style="background:#0d0e13;border-radius:8px;padding:14px;border:1px solid #1f2130">
+      <div style="font-size:11px;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">状态栏</div>
+      <div style="font-size:12px;line-height:1.8;color:#94a3b8">
+        <span style="color:#4ade80">✅</span> 基本布局正确<br>
+        <span style="color:#f87171">❌</span> 缺状态点脉冲动画 (pulse-dot 2.4s)<br>
+        <span style="color:#f87171">❌</span> 数字未使用 mono font + tabular-nums<br>
+        <span style="color:#f87171">❌</span> 缺 prefers-reduced-motion 支持
+      </div>
+    </div>
+
+    <div style="background:#0d0e13;border-radius:8px;padding:14px;border:1px solid #1f2130">
+      <div style="font-size:11px;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">全局 CSS 契约</div>
+      <div style="font-size:12px;line-height:1.8;color:#94a3b8">
+        <span style="color:#f87171">❌</span> 缺 --titlebar-h / --statusbar-h / --content-h 变量<br>
+        <span style="color:#f87171">❌</span> 缺 z-index 层级 CSS 变量（--z-dropdown 等）<br>
+        <span style="color:#f87171">❌</span> animations.css 缺 prefers-reduced-motion 块<br>
+        <span style="color:#f87171">❌</span> 缺全局 cursor / focus-ring 规则
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>🖥️ 各视图缺口</h3>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px">
+
+    <div style="background:#0d0e13;border-radius:8px;padding:14px;border:1px solid #1f2130">
+      <div style="font-size:12px;font-weight:600;color:#e2e4ed;margin-bottom:8px">首页 HomeView</div>
+      <div style="font-size:11px;line-height:1.7;color:#94a3b8">
+        <span style="color:#4ade80">✅</span> 4列统计卡片布局<br>
+        <span style="color:#4ade80">✅</span> 空状态 + 跳转按钮<br>
+        <span style="color:#f87171">❌</span> 卡片固定4列，无响应式断点<br>
+        <span style="color:#f87171">❌</span> 卡片缺左侧3px accent装饰边<br>
+        <span style="color:#f87171">❌</span> 深色卡片缺玻璃边框效果<br>
+        <span style="color:#f87171">❌</span> 统计数字未用 tabular-nums
+      </div>
+    </div>
+
+    <div style="background:#0d0e13;border-radius:8px;padding:14px;border:1px solid #1f2130">
+      <div style="font-size:12px;font-weight:600;color:#e2e4ed;margin-bottom:8px">项目 ProjectView</div>
+      <div style="font-size:11px;line-height:1.7;color:#94a3b8">
+        <span style="color:#4ade80">✅</span> 树 + 表格双栏布局<br>
+        <span style="color:#f87171">❌</span> 表格缺复选框列<br>
+        <span style="color:#f87171">❌</span> 表格缺状态点列<br>
+        <span style="color:#f87171">❌</span> 缺悬停显示的操作按钮列<br>
+        <span style="color:#f87171">❌</span> 缺行右键菜单（n-dropdown）<br>
+        <span style="color:#f87171">❌</span> 缺批量操作栏（底部滑出）<br>
+        <span style="color:#f87171">❌</span> URL未用 mono font
+      </div>
+    </div>
+
+    <div style="background:#0d0e13;border-radius:8px;padding:14px;border:1px solid #1f2130">
+      <div style="font-size:12px;font-weight:600;color:#e2e4ed;margin-bottom:8px">载荷 PayloadView</div>
+      <div style="font-size:11px;line-height:1.7;color:#94a3b8">
+        <span style="color:#4ade80">✅</span> 配置+预览双栏<br>
+        <span style="color:#4ade80">✅</span> 密钥强度条<br>
+        <span style="color:#f87171">❌</span> 代码区缺 shiki 语法高亮<br>
+        <span style="color:#f87171">❌</span> 代码区深色岛屿在亮色主题无阴影处理<br>
+        <span style="color:#f87171">❌</span> 生成按钮缺成功/失败状态反馈<br>
+        <span style="color:#f87171">❌</span> 配置面板缺 overflow-y: auto（内容可能被裁剪）
+      </div>
+    </div>
+
+    <div style="background:#0d0e13;border-radius:8px;padding:14px;border:1px solid #1f2130">
+      <div style="font-size:12px;font-weight:600;color:#e2e4ed;margin-bottom:8px">插件 PluginView</div>
+      <div style="font-size:11px;line-height:1.7;color:#94a3b8">
+        <span style="color:#4ade80">✅</span> 卡片网格 + 启用开关<br>
+        <span style="color:#f87171">❌</span> 网格无响应式（宽度变化时列数不变）<br>
+        <span style="color:#f87171">❌</span> filter-tab 样式简陋（应有选中背景）<br>
+        <span style="color:#f87171">❌</span> 卡片未设 cursor: pointer
+      </div>
+    </div>
+
+    <div style="background:#0d0e13;border-radius:8px;padding:14px;border:1px solid #1f2130">
+      <div style="font-size:12px;font-weight:600;color:#e2e4ed;margin-bottom:8px">设置 SettingsView</div>
+      <div style="font-size:11px;line-height:1.7;color:#94a3b8">
+        <span style="color:#4ade80">✅</span> 子菜单 + 外观面板<br>
+        <span style="color:#4ade80">✅</span> 主题/强调色切换<br>
+        <span style="color:#f87171">❌</span> 缺 连接/安全/日志/备份/关于 5个面板<br>
+        <span style="color:#f87171">❌</span> 外观面板主题选项应为卡片式(带缩略图)<br>
+        <span style="color:#f87171">❌</span> 强调色选择器圆点缺选中白色勾+外圈
+      </div>
+    </div>
+
+    <div style="background:#0d0e13;border-radius:8px;padding:14px;border:1px solid #1f2130">
+      <div style="font-size:12px;font-weight:600;color:#e2e4ed;margin-bottom:8px">控制台 ConsoleView</div>
+      <div style="font-size:11px;line-height:1.7;color:#94a3b8">
+        <span style="color:#4ade80">✅</span> 标签页骨架<br>
+        <span style="color:#f87171">❌</span> 头部只有32px高（规格32px）✓ 但缺拖拽区域<br>
+        <span style="color:#f87171">❌</span> Tab内容高度未填满（缺 flex-1）<br>
+        <span style="color:#f87171">❌</span> 无标题栏拖动区域（Console窗口也要可拖动）
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>🎨 全局样式规则缺口</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+    <div style="background:#0d0e13;border-radius:8px;padding:12px;border:1px solid #1f2130;font-size:11px;line-height:1.8;color:#94a3b8">
+      <span style="color:#f87171">❌</span> <b>Mono Font 强制列表</b>未全面落实 (URL、session ID、版本号等)<br>
+      <span style="color:#f87171">❌</span> <b>Focus ring</b> 未设置（所有可聚焦元素缺统一的 box-shadow 高亮）<br>
+      <span style="color:#f87171">❌</span> <b>Disabled 状态</b> 未统一 (opacity: 0.38, cursor: not-allowed)<br>
+      <span style="color:#f87171">❌</span> <b>Cursor 规则</b> 未全面落实（多处交互元素无 cursor: pointer）
+    </div>
+    <div style="background:#0d0e13;border-radius:8px;padding:12px;border:1px solid #1f2130;font-size:11px;line-height:1.8;color:#94a3b8">
+      <span style="color:#f87171">❌</span> <b>Naive UI themeOverrides</b>未完整实现（缺DataTable/Menu/Modal等覆盖）<br>
+      <span style="color:#f87171">❌</span> <b>路由过渡动画</b> fade 存在但时长未对齐（规格: enter 120ms / leave 80ms）<br>
+      <span style="color:#f87171">❌</span> <b>Skeleton shimmer</b> 加载占位骨架屏未实现<br>
+      <span style="color:#f87171">❌</span> <b>亮色主题</b> 多处样式会出现对比度问题（卡片无阴影等）
+    </div>
+  </div>
+</div>
+
+<div style="background:rgba(79,156,255,0.08);border:1px solid rgba(79,156,255,0.25);border-radius:8px;padding:14px;margin-top:16px">
+  <div style="color:#4f9cff;font-weight:600;margin-bottom:6px">📋 结论：修复计划范围</div>
+  <div style="font-size:13px;color:#94a3b8;line-height:1.7">
+    在原有「交互骨架修复」基础上，新增「规格对齐 UI 精修」模块。两个部分合并为一个统一的计划执行，按以下顺序：<br><br>
+    <b style="color:#e2e4ed">Layer 0</b>（本次新增）：Naive UI themeOverrides 完整实现 · 全局 CSS 规则落实<br>
+    <b style="color:#e2e4ed">Layer 1</b>（基础设施）：Capabilities · 滚动契约 · z-index · 高度变量<br>
+    <b style="color:#e2e4ed">Layer 2</b>（布局组件）：Titlebar · Sidebar · StatusBar 精修<br>
+    <b style="color:#e2e4ed">Layer 3</b>（各视图）：逐视图对齐规格 · Settings 补全5个面板
+  </div>
+</div>
+
+<p style="color:#94a3b8;font-size:13px;margin-top:12px">👆 这是完整差距分析。确认后进入第三部分：各视图重点 UI 方案设计（用浏览器展示 mock 效果）。</p>

@@ -63,6 +63,7 @@
         :data="filteredShells"
         :row-key="(row: Shell) => row.id"
         :loading="false"
+        v-model:checked-row-keys="selectedRowKeys"
         size="small"
         class="shell-table"
       />
@@ -71,13 +72,26 @@
         <n-pagination :page="1" :page-count="1" size="small" />
         <span class="total-count">共 {{ filteredShells.length }} 条</span>
       </div>
+
+      <!-- Batch action bar — slides up when rows are selected -->
+      <Transition name="batch-bar">
+        <div v-if="selectedRowKeys.length > 0" class="batch-bar">
+          <span class="batch-count">已选 <b style="color:var(--accent)">{{ selectedRowKeys.length }}</b> 个</span>
+          <div class="batch-divider" />
+          <n-button size="small" text>批量测试</n-button>
+          <n-button size="small" text>批量导出</n-button>
+          <n-button size="small" text style="color: var(--color-error)">移入回收站</n-button>
+          <div style="flex:1" />
+          <n-button size="small" text @click="selectedRowKeys = []">取消选择</n-button>
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, h } from 'vue'
-import type { DataTableColumns } from 'naive-ui'
+import type { DataTableColumns, DataTableRowKey } from 'naive-ui'
 import { Plus, Search, Trash2 } from 'lucide-vue-next'
 
 interface Project { id: string; name: string; shellCount: number }
@@ -93,9 +107,10 @@ const projects = ref<Project[]>([
   { id: 'all', name: '全部', shellCount: 0 },
 ])
 
-const selectedProject = ref('all')
-const searchText = ref('')
-const typeFilter = ref<string | null>(null)
+const selectedProject  = ref('all')
+const searchText       = ref('')
+const typeFilter       = ref<string | null>(null)
+const selectedRowKeys  = ref<DataTableRowKey[]>([])
 
 const typeOptions = [
   { label: 'PHP',  value: 'PHP'  },
@@ -246,6 +261,7 @@ const columns: DataTableColumns<Shell> = [
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 .table-toolbar {
@@ -274,4 +290,24 @@ const columns: DataTableColumns<Shell> = [
   color: var(--text-3);
   font-family: var(--font-mono);
 }
+
+.batch-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.12);
+  z-index: 10;
+}
+
+.batch-count { font-size: 13px; color: var(--text-2); }
+.batch-count b { color: var(--accent); }
+.batch-divider { width: 1px; height: 16px; background: var(--border); }
 </style>

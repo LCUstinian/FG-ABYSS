@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FG-ABYSS UI Mockups</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+    background: #09090c;
+    color: #e2e4ed;
+    font-size: 13px;
+    padding: 24px;
+  }
+  h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #e2e4ed; }
+  .subtitle { font-size: 13px; color: #7a829a; margin-bottom: 24px; }
+
+  /* Tab switcher */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid #1f2130; padding-bottom: 0; }
+  .tab-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    color: #7a829a;
+    cursor: pointer;
+    font-size: 13px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 120ms;
+  }
+  .tab-btn:hover { color: #e2e4ed; }
+  .tab-btn.active { color: #4f9cff; border-bottom-color: #4f9cff; font-weight: 600; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* App shell mockup */
+  .app-frame {
+    border: 1px solid #1f2130;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 540px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.6);
+  }
+
+  /* Titlebar */
+  .m-titlebar {
+    height: 48px;
+    background: #09090c;
+    border-bottom: 1px solid #1f2130;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    user-select: none;
+    padding: 0;
+  }
+  .m-tb-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 16px;
+  }
+  .m-logo {
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, #4f9cff 0%, #22d3ee 100%);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #09090c;
+  }
+  .m-appname { font-size: 13px; font-weight: 600; color: #e2e4ed; }
+  .m-appsub { font-size: 11px; color: #646b85; margin-left: 2px; letter-spacing: .08em; }
+  .m-tb-right { display: flex; align-items: center; height: 100%; }
+  .m-tb-btn {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent; border: none; color: #7a829a;
+    cursor: pointer; border-radius: 4px; margin: 0 2px; font-size: 14px;
+  }
+  .m-tb-btn:hover { background: #191b23; color: #e2e4ed; }
+  .m-wc { display: flex; align-items: center; height: 100%; margin-left: 4px; }
+  .m-wc-btn {
+    width: 40px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    border: none; background: transparent; color: #7a829a;
+    cursor: default; font-size: 12px;
+  }
+  .m-wc-btn:hover { background: #191b23; color: #e2e4ed; }
+  .m-wc-close { width: 48px; }
+  .m-wc-close:hover { background: #ef4444; color: #fff; }
+
+  /* Shell body */
+  .m-body { display: flex; flex: 1; overflow: hidden; }
+
+  /* Sidebar */
+  .m-sidebar {
+    width: 200px; flex-shrink: 0;
+    background: #09090c;
+    border-right: 1px solid #1f2130;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .m-nav { flex: 1; padding: 8px 0; }
+  .m-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    height: 40px; padding: 0 12px;
+    color: #7a829a;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+    transition: all 80ms;
+    text-decoration: none;
+  }
+  .m-nav-item:hover { background: #191b23; color: #e2e4ed; }
+  .m-nav-item.active {
+    border-left-color: #4f9cff;
+    background: rgba(79,156,255,0.12);
+    color: #4f9cff; font-weight: 600;
+  }
+  .m-nav-icon { font-size: 16px; flex-shrink: 0; }
+  .m-nav-label { font-size: 13px; }
+  .m-collapse-btn {
+    display: flex; align-items: center; gap: 10px;
+    height: 40px; padding: 0 12px;
+    border: none; border-top: 1px solid #1f2130;
+    background: transparent; color: #646b85; cursor: pointer;
+    width: 100%; transition: all 80ms; font-size: 13px;
+  }
+  .m-collapse-btn:hover { background: #191b23; color: #7a829a; }
+
+  /* Content area */
+  .m-content { flex: 1; overflow: hidden; position: relative; background: #0d0e13; }
+
+  /* Statusbar */
+  .m-statusbar {
+    height: 28px; background: #09090c;
+    border-top: 1px solid #1f2130;
+    display: flex; align-items: center;
+    gap: 8px; padding: 0 16px;
+    font-size: 12px; color: #7a829a; flex-shrink: 0;
+  }
+  .m-status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #646b85;
+    animation: pulse-dot 2.4s ease-in-out infinite;
+  }
+  .m-status-dot.active { background: #4ade80; }
+  @keyframes pulse-dot {
+    0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4) }
+    50% { box-shadow: 0 0 0 5px rgba(74,222,128,0) }
+  }
+  .m-divider { width: 1px; height: 12px; background: #1f2130; }
+  .m-stat-num { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; color: #e2e4ed; }
+
+  /* HOME VIEW */
+  .home-view { padding: 24px; height: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
+  .home-header { display: flex; align-items: baseline; justify-content: space-between; }
+  .home-title { font-size: 20px; font-weight: 700; color: #e2e4ed; }
+  .home-date { font-size: 12px; color: #646b85; font-family: monospace; }
+  .stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .stat-card {
+    background: #13141a;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-left: 3px solid #4f9cff;
+    border-radius: 6px;
+    padding: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .stat-icon { color: #4f9cff; font-size: 20px; flex-shrink: 0; }
+  .stat-num { font-size: 20px; font-weight: 700; color: #e2e4ed; font-family: monospace; font-variant-numeric: tabular-nums; }
+  .stat-label { font-size: 12px; color: #7a829a; margin-top: 2px; }
+  .section-title { font-size: 14px; font-weight: 600; color: #e2e4ed; margin-bottom: 12px; }
+  .empty-state { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px 0; color: #646b85; }
+  .empty-icon { font-size: 48px; }
+  .empty-t { font-size: 14px; color: #e2e4ed; }
+  .empty-s { font-size: 13px; color: #7a829a; }
+  .btn-primary {
+    background: #4f9cff; color: #fff; border: none;
+    padding: 0 16px; height: 36px; border-radius: 6px;
+    font-size: 13px; cursor: pointer; font-weight: 500;
+  }
+
+  /* PROJECT VIEW */
+  .project-view { display: flex; height: 100%; overflow: hidden; }
+  .project-tree { width: 240px; flex-shrink: 0; background: #09090c; border-right: 1px solid #1f2130; display: flex; flex-direction: column; }
+  .tree-header { padding: 12px; border-bottom: 1px solid #1f2130; }
+  .tree-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .tree-item { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; cursor: pointer; color: #7a829a; font-size: 13px; transition: background 80ms; }
+  .tree-item:hover { background: #191b23; color: #e2e4ed; }
+  .tree-item.active { background: rgba(79,156,255,0.12); color: #4f9cff; font-weight: 600; }
+  .tree-name { flex: 1; }
+  .tree-count { font-size: 12px; color: #646b85; font-family: monospace; }
+  .shell-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .table-toolbar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid #1f2130; }
+  .s-input { height: 28px; background: #13141a; border: 1px solid #1f2130; border-radius: 4px; color: #e2e4ed; padding: 0 8px; font-size: 12px; width: 180px; }
+  .s-input:focus { outline: none; border-color: #4f9cff; box-shadow: 0 0 0 2px rgba(79,156,255,0.12); }
+  .s-btn { height: 28px; padding: 0 10px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+  .s-btn-primary { background: #4f9cff; color: #fff; border: none; }
+  .s-btn-default { background: #13141a; color: #7a829a; border: 1px solid #1f2130; }
+  .spacer { flex: 1; }
+  .shell-table-wrap { flex: 1; overflow-y: auto; }
+  .shell-table { width: 100%; border-collapse: collapse; }
+  .shell-table th { height: 36px; background: #13141a; color: #7a829a; font-size: 12px; font-weight: 500; text-align: left; padding: 0 12px; border-bottom: 1px solid #1f2130; position: sticky; top: 0; z-index: 10; }
+  .shell-table td { height: 40px; padding: 0 12px; border-bottom: 1px solid #1f2130; color: #e2e4ed; font-size: 13px; }
+  .shell-table tr:hover td { background: #191b23; }
+  .shell-table tr:hover .row-actions { opacity: 1; }
+  .s-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .s-dot.active { background: #4ade80; }
+  .s-dot.offline { background: #646b85; }
+  .s-mono { font-family: monospace; font-size: 12px; color: #7a829a; }
+  .s-badge { padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: monospace; }
+  .s-php { background: rgba(79,156,255,0.15); color: #4f9cff; }
+  .s-jsp { background: rgba(251,146,60,0.15); color: #fb923c; }
+  .s-asp { background: rgba(167,139,250,0.15); color: #a78bfa; }
+  .row-actions { opacity: 0; display: flex; gap: 4px; transition: opacity 80ms; }
+  .row-act-btn { background: transparent; border: none; color: #7a829a; cursor: pointer; padding: 4px; border-radius: 4px; font-size: 14px; }
+  .row-act-btn:hover { background: #191b23; color: #e2e4ed; }
+  .batch-bar {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 48px; background: #13141a;
+    border-top: 1px solid #1f2130;
+    display: flex; align-items: center; gap: 16px; padding: 0 16px;
+    transform: translateY(0); transition: transform 200ms;
+    z-index: 10;
+  }
+  .batch-count { color: #4f9cff; font-weight: 600; font-size: 13px; }
+  .batch-action { background: transparent; border: none; color: #7a829a; cursor: pointer; font-size: 13px; padding: 0 8px; height: 32px; border-radius: 4px; }
+  .batch-action:hover { background: #191b23; color: #e2e4ed; }
+  .batch-del { color: #f87171; }
+  .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; border-top: 1px solid #1f2130; }
+
+  /* PAYLOAD VIEW */
+  .payload-view { display: flex; height: 100%; overflow: hidden; }
+  .config-panel { width: 340px; flex-shrink: 0; border-right: 1px solid #1f2130; display: flex; flex-direction: column; gap: 0; overflow-y: auto; padding: 20px; }
+  .field-label { font-size: 12px; font-weight: 500; color: #7a829a; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: .04em; }
+  .config-section { margin-bottom: 20px; }
+  .radio-group { display: flex; gap: 4px; }
+  .radio-btn { padding: 0 12px; height: 32px; border-radius: 4px; border: 1px solid #1f2130; background: #13141a; color: #7a829a; font-size: 12px; cursor: pointer; }
+  .radio-btn.active { background: #4f9cff; border-color: #4f9cff; color: #fff; font-weight: 600; }
+  .radio-list { display: flex; flex-direction: column; gap: 8px; }
+  .radio-item { display: flex; align-items: center; gap: 8px; color: #7a829a; font-size: 13px; cursor: pointer; }
+  .radio-item.active { color: #e2e4ed; }
+  .radio-circle { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #1f2130; flex-shrink: 0; background: transparent; }
+  .radio-item.active .radio-circle { border-color: #4f9cff; background: radial-gradient(circle, #4f9cff 4px, transparent 4px); }
+  .key-row { display: flex; gap: 6px; align-items: center; }
+  .key-input { flex: 1; height: 36px; background: #13141a; border: 1px solid #1f2130; border-radius: 6px; color: #e2e4ed; padding: 0 10px; font-family: monospace; font-size: 13px; }
+  .key-input:focus { outline: none; border-color: #4f9cff; box-shadow: 0 0 0 2px rgba(79,156,255,0.12); }
+  .icon-btn { width: 32px; height: 32px; background: transparent; border: none; color: #7a829a; cursor: pointer; border-radius: 4px; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .icon-btn:hover { background: #191b23; color: #e2e4ed; }
+  .strength-bar { display: flex; gap: 3px; margin-top: 8px; }
+  .strength-seg { height: 3px; flex: 1; border-radius: 2px; background: #1f2130; }
+  .strength-seg.s1 { background: #f87171; }
+  .strength-seg.s2 { background: #fbbf24; }
+  .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .m-slider { flex: 1; height: 4px; background: #1f2130; border-radius: 2px; position: relative; }
+  .m-slider-fill { height: 4px; background: #4f9cff; border-radius: 2px; width: 40%; }
+  .m-slider-dot { width: 12px; height: 12px; background: #4f9cff; border-radius: 50%; position: absolute; top: -4px; left: 40%; transform: translateX(-50%); box-shadow: 0 0 0 2px rgba(79,156,255,0.3); }
+  .level-badge { background: rgba(79,156,255,0.12); color: #4f9cff; font-family: monospace; padding: 2px 8px; border-radius: 4px; font-size: 12px; min-width: 28px; text-align: center; }
+  .check-list { display: flex; flex-direction: column; gap: 6px; }
+  .check-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #7a829a; cursor: pointer; }
+  .check-box { width: 14px; height: 14px; border: 2px solid #1f2130; border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+  .check-item.checked .check-box { background: #4f9cff; border-color: #4f9cff; color: #fff; }
+  .gen-btn { height: 40px; background: #4f9cff; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: auto; }
+  .code-panel { flex: 1; display: flex; flex-direction: column; background: #0c0d11; overflow: hidden; }
+  .code-toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 8px 12px; background: #16181f; border-bottom: 1px solid #1a1c26; }
+  .code-body { flex: 1; overflow-y: auto; padding: 16px; font-family: monospace; font-size: 13px; line-height: 1.6; color: #abb2bf; }
+  .code-kw { color: #c678dd; }
+  .code-str { color: #98c379; }
+  .code-var { color: #e06c75; }
+  .code-fn { color: #61afef; }
+  .code-status-bar { padding: 6px 12px; background: #16181f; border-top: 1px solid #1a1c26; font-size: 12px; color: #646b85; font-family: monospace; display: flex; justify-content: flex-end; }
+
+  /* SETTINGS VIEW */
+  .settings-view { display: flex; height: 100%; overflow: hidden; }
+  .settings-nav { width: 180px; flex-shrink: 0; background: #09090c; border-right: 1px solid #1f2130; padding: 8px 0; display: flex; flex-direction: column; }
+  .settings-item { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 16px; border: none; border-left: 2px solid transparent; background: transparent; color: #7a829a; font-size: 13px; cursor: pointer; text-align: left; transition: background 80ms; width: 100%; }
+  .settings-item:hover { background: #191b23; color: #e2e4ed; }
+  .settings-item.active { border-left-color: #4f9cff; background: rgba(79,156,255,0.12); color: #4f9cff; font-weight: 600; }
+  .settings-content { flex: 1; overflow-y: auto; padding: 24px; }
+  .section-heading { font-size: 16px; font-weight: 600; color: #e2e4ed; margin-bottom: 20px; }
+  .settings-card { background: #13141a; border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 20px; margin-bottom: 16px; }
+  .settings-card-title { font-size: 13px; font-weight: 600; color: #e2e4ed; margin-bottom: 16px; }
+  .theme-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .theme-card { border: 2px solid #1f2130; border-radius: 6px; padding: 10px; cursor: pointer; transition: border-color 120ms; }
+  .theme-card:hover { border-color: #7a829a; }
+  .theme-card.active { border-color: #4f9cff; }
+  .theme-preview { height: 48px; border-radius: 4px; margin-bottom: 8px; }
+  .theme-preview.dark { background: linear-gradient(135deg, #09090c 40%, #0d0e13 40%); }
+  .theme-preview.light { background: linear-gradient(135deg, #eef0f6 40%, #f6f7fb 40%); }
+  .theme-preview.system { background: linear-gradient(135deg, #09090c 50%, #f6f7fb 50%); }
+  .theme-label { font-size: 12px; color: #7a829a; text-align: center; }
+  .theme-card.active .theme-label { color: #4f9cff; }
+  .accent-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .accent-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
+  .accent-dot.selected::after { content: '✓'; color: #fff; font-size: 14px; font-weight: 700; }
+  .accent-dot.selected { box-shadow: 0 0 0 2px #0d0e13, 0 0 0 4px currentColor; }
+</style>
+</head>
+<body>
+<h2>Section 3：各视图 UI 效果设计</h2>
+<p class="subtitle">按规格实现后的视觉预期效果 — 深色主题演示</p>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('home')">首页</button>
+  <button class="tab-btn" onclick="switchTab('project')">项目</button>
+  <button class="tab-btn" onclick="switchTab('payload')">载荷</button>
+  <button class="tab-btn" onclick="switchTab('settings')">设置</button>
+</div>
+
+<!-- HOME -->
+<div id="tab-home" class="tab-panel active">
+  <div class="app-frame">
+    <div class="m-titlebar">
+      <div class="m-tb-left">
+        <div class="m-logo">◈</div>
+        <span class="m-appname">渊渟</span>
+        <span class="m-appsub">ABYSS</span>
+      </div>
+      <div class="m-tb-right">
+        <button class="m-tb-btn" title="切换主题">🌙</button>
+        <button class="m-tb-btn" title="切换语言">ZH</button>
+        <div class="m-wc">
+          <button class="m-wc-btn">−</button>
+          <button class="m-wc-btn">□</button>
+          <button class="m-wc-close m-wc-btn">✕</button>
+        </div>
+      </div>
+    </div>
+    <div class="m-body">
+      <div class="m-sidebar">
+        <div class="m-nav">
+          <a class="m-nav-item active"><span class="m-nav-icon">⌂</span><span class="m-nav-label">首页</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">📁</span><span class="m-nav-label">项目</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">📦</span><span class="m-nav-label">载荷</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">🧩</span><span class="m-nav-label">插件</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">⚙</span><span class="m-nav-label">设置</span></a>
+        </div>
+        <button class="m-collapse-btn"><span>‹‹</span><span>折叠</span></button>
+      </div>
+      <div class="m-content">
+        <div class="home-view">
+          <div class="home-header">
+            <span class="home-title">欢迎回来</span>
+            <span class="home-date">2026/04/19</span>
+          </div>
+          <div class="stat-cards">
+            <div class="stat-card"><span class="stat-icon">⌨</span><div><div class="stat-num">3</div><div class="stat-label">活跃 Shell</div></div></div>
+            <div class="stat-card"><span class="stat-icon">📁</span><div><div class="stat-num">5</div><div class="stat-label">项目</div></div></div>
+            <div class="stat-card"><span class="stat-icon">📦</span><div><div class="stat-num">12</div><div class="stat-label">载荷</div></div></div>
+            <div class="stat-card"><span class="stat-icon">⚡</span><div><div class="stat-num">142</div><div class="stat-label">今日请求</div></div></div>
+          </div>
+          <div>
+            <div class="section-title">最近连接</div>
+            <div class="empty-state">
+              <div class="empty-icon">🌐</div>
+              <div class="empty-t">还没有 WebShell</div>
+              <div class="empty-s">前往「项目」页面添加第一个 WebShell</div>
+              <button class="btn-primary">前往项目</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-statusbar">
+      <div class="m-status-dot active"></div>
+      <span>已连接</span>
+      <div class="m-divider"></div>
+      <span>项目 <span class="m-stat-num">5</span></span>
+      <div class="m-divider"></div>
+      <span>Shell <span class="m-stat-num">12</span></span>
+      <div class="m-divider"></div>
+      <span>载荷 <span class="m-stat-num">12</span></span>
+    </div>
+  </div>
+  <p style="color:#646b85;font-size:12px;margin-top:10px">✦ 状态点有脉冲动画 · 数字使用等宽字体 · 统计卡片有左侧3px强调色边框 + 玻璃质感</p>
+</div>
+
+<!-- PROJECT -->
+<div id="tab-project" class="tab-panel">
+  <div class="app-frame">
+    <div class="m-titlebar">
+      <div class="m-tb-left"><div class="m-logo">◈</div><span class="m-appname">渊渟</span><span class="m-appsub">ABYSS</span></div>
+      <div class="m-tb-right"><button class="m-tb-btn">🌙</button><button class="m-tb-btn">ZH</button><div class="m-wc"><button class="m-wc-btn">−</button><button class="m-wc-btn">□</button><button class="m-wc-close m-wc-btn">✕</button></div></div>
+    </div>
+    <div class="m-body">
+      <div class="m-sidebar">
+        <div class="m-nav">
+          <a class="m-nav-item"><span class="m-nav-icon">⌂</span><span class="m-nav-label">首页</span></a>
+          <a class="m-nav-item active"><span class="m-nav-icon">📁</span><span class="m-nav-label">项目</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">📦</span><span class="m-nav-label">载荷</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">🧩</span><span class="m-nav-label">插件</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">⚙</span><span class="m-nav-label">设置</span></a>
+        </div>
+        <button class="m-collapse-btn"><span>‹‹</span><span>折叠</span></button>
+      </div>
+      <div class="m-content">
+        <div class="project-view">
+          <div class="project-tree">
+            <div class="tree-header">
+              <button class="s-btn s-btn-primary" style="width:100%">+ 新建项目</button>
+            </div>
+            <div class="tree-list">
+              <div class="tree-item active"><span class="tree-name">▼ 全部</span><span class="tree-count">8</span></div>
+              <div class="tree-item"><span class="tree-name">项目 Alpha</span><span class="tree-count">5</span></div>
+              <div class="tree-item"><span class="tree-name">项目 Beta</span><span class="tree-count">2</span></div>
+              <div class="tree-item"><span class="tree-name">项目 Gamma</span><span class="tree-count">1</span></div>
+              <div class="tree-item" style="border-top:1px solid #1f2130;margin-top:8px;color:#646b85"><span>🗑</span><span class="tree-name">回收站</span><span class="tree-count">3</span></div>
+            </div>
+          </div>
+          <div class="shell-area">
+            <div class="table-toolbar">
+              <input class="s-input" placeholder="🔍 搜索..." />
+              <select class="s-input" style="width:80px"><option>PHP</option><option>JSP</option></select>
+              <div class="spacer"></div>
+              <button class="s-btn s-btn-primary">+ 添加 Shell</button>
+            </div>
+            <div class="shell-table-wrap">
+              <table class="shell-table">
+                <thead>
+                  <tr>
+                    <th style="width:40px"><input type="checkbox" /></th>
+                    <th style="width:40px">状态</th>
+                    <th style="width:160px">名称</th>
+                    <th>URL</th>
+                    <th style="width:80px">类型</th>
+                    <th style="width:120px">最近连接</th>
+                    <th style="width:80px">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="checkbox" checked /></td>
+                    <td><span class="s-dot active"></span></td>
+                    <td>shell-prod</td>
+                    <td><span class="s-mono">https://192.168.1.1/shell.php</span></td>
+                    <td><span class="s-badge s-php">PHP</span></td>
+                    <td><span class="s-mono" style="color:#646b85">2分钟前</span></td>
+                    <td><div class="row-actions"><button class="row-act-btn">🖥</button><button class="row-act-btn">✏</button><button class="row-act-btn" style="color:#f87171">🗑</button></div></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" /></td>
+                    <td><span class="s-dot active"></span></td>
+                    <td>shell-test</td>
+                    <td><span class="s-mono">http://10.0.0.5/cmd.jsp</span></td>
+                    <td><span class="s-badge s-jsp">JSP</span></td>
+                    <td><span class="s-mono" style="color:#646b85">1小时前</span></td>
+                    <td><div class="row-actions"><button class="row-act-btn">🖥</button><button class="row-act-btn">✏</button><button class="row-act-btn" style="color:#f87171">🗑</button></div></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" /></td>
+                    <td><span class="s-dot offline"></span></td>
+                    <td>shell-dev</td>
+                    <td><span class="s-mono">http://172.16.0.1/web.aspx</span></td>
+                    <td><span class="s-badge s-asp">ASP</span></td>
+                    <td><span class="s-mono" style="color:#646b85">3天前</span></td>
+                    <td><div class="row-actions"><button class="row-act-btn">🖥</button><button class="row-act-btn">✏</button><button class="row-act-btn" style="color:#f87171">🗑</button></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <span style="color:#646b85;font-size:12px;font-family:monospace">共 8 条</span>
+            </div>
+            <!-- Batch bar -->
+            <div class="batch-bar">
+              <span class="batch-count">已选 1 个</span>
+              <div style="width:1px;height:16px;background:#1f2130"></div>
+              <button class="batch-action">批量测试</button>
+              <button class="batch-action">批量导出</button>
+              <div class="spacer"></div>
+              <button class="batch-action batch-del">移入回收站</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-statusbar"><div class="m-status-dot active"></div><span>已连接</span><div class="m-divider"></div><span>Shell <span class="m-stat-num">8</span></span></div>
+  </div>
+  <p style="color:#646b85;font-size:12px;margin-top:10px">✦ URL 使用等宽字体 · 行悬停显示操作按钮 · 底部批量操作栏（选中行后滑出）</p>
+</div>
+
+<!-- PAYLOAD -->
+<div id="tab-payload" class="tab-panel">
+  <div class="app-frame">
+    <div class="m-titlebar">
+      <div class="m-tb-left"><div class="m-logo">◈</div><span class="m-appname">渊渟</span><span class="m-appsub">ABYSS</span></div>
+      <div class="m-tb-right"><button class="m-tb-btn">🌙</button><button class="m-tb-btn">ZH</button><div class="m-wc"><button class="m-wc-btn">−</button><button class="m-wc-btn">□</button><button class="m-wc-close m-wc-btn">✕</button></div></div>
+    </div>
+    <div class="m-body">
+      <div class="m-sidebar">
+        <div class="m-nav">
+          <a class="m-nav-item"><span class="m-nav-icon">⌂</span><span class="m-nav-label">首页</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">📁</span><span class="m-nav-label">项目</span></a>
+          <a class="m-nav-item active"><span class="m-nav-icon">📦</span><span class="m-nav-label">载荷</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">🧩</span><span class="m-nav-label">插件</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">⚙</span><span class="m-nav-label">设置</span></a>
+        </div>
+        <button class="m-collapse-btn"><span>‹‹</span><span>折叠</span></button>
+      </div>
+      <div class="m-content">
+        <div class="payload-view">
+          <div class="config-panel">
+            <div class="config-section">
+              <span class="field-label">语言</span>
+              <div class="radio-group">
+                <button class="radio-btn active">PHP</button>
+                <button class="radio-btn">JSP</button>
+                <button class="radio-btn">ASP</button>
+                <button class="radio-btn">ASPX</button>
+              </div>
+            </div>
+            <div class="config-section">
+              <span class="field-label">加密方式</span>
+              <div class="radio-list">
+                <label class="radio-item active"><div class="radio-circle"></div>AES-256-GCM <span style="background:rgba(79,156,255,0.12);color:#4f9cff;padding:1px 5px;border-radius:3px;font-size:11px;margin-left:4px">推荐</span></label>
+                <label class="radio-item"><div class="radio-circle"></div>XOR</label>
+                <label class="radio-item"><div class="radio-circle"></div>无加密</label>
+              </div>
+            </div>
+            <div class="config-section">
+              <span class="field-label">密钥</span>
+              <div class="key-row">
+                <input class="key-input" type="password" value="my-secret-key-32" />
+                <button class="icon-btn">👁</button>
+                <button class="icon-btn">⧉</button>
+              </div>
+              <div class="strength-bar">
+                <div class="strength-seg s1"></div>
+                <div class="strength-seg s2"></div>
+                <div class="strength-seg"></div>
+                <div class="strength-seg"></div>
+              </div>
+            </div>
+            <div class="config-section">
+              <span class="field-label">混淆等级</span>
+              <div class="slider-row">
+                <div class="m-slider"><div class="m-slider-fill"></div><div class="m-slider-dot"></div></div>
+                <span class="level-badge">L2</span>
+              </div>
+              <div class="check-list">
+                <label class="check-item checked"><div class="check-box">✓</div>变量重命名</label>
+                <label class="check-item checked"><div class="check-box">✓</div>字符串加密</label>
+                <label class="check-item"><div class="check-box"></div>垃圾代码</label>
+              </div>
+            </div>
+            <button class="gen-btn">生成载荷</button>
+          </div>
+          <div class="code-panel">
+            <div class="code-toolbar">
+              <button class="icon-btn" style="color:#7a829a">⧉</button>
+              <button class="icon-btn" style="color:#7a829a">↓</button>
+            </div>
+            <div class="code-body">
+              <span class="code-kw">&lt;?php</span><br>
+              &nbsp;&nbsp;<span class="code-var">$k</span> = <span class="code-str">"a8f3b92c1d4e..."</span>;<br>
+              &nbsp;&nbsp;<span class="code-var">$iv</span> = <span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"iv"</span>]);<br>
+              &nbsp;&nbsp;<span class="code-var">$data</span> = <span class="code-fn">openssl_decrypt</span>(<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"d"</span>]),<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"aes-256-gcm"</span>,<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-var">$k</span>, <span class="code-var">OPENSSL_RAW_DATA</span>, <span class="code-var">$iv</span><br>
+              &nbsp;&nbsp;);<br>
+              &nbsp;&nbsp;<span class="code-fn">eval</span>(<span class="code-var">$data</span>);<br>
+              <span class="code-kw">?&gt;</span>
+            </div>
+            <div class="code-status-bar">PHP 5.x-8.x · AES-256-GCM · 428 B</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-statusbar"><div class="m-status-dot active"></div><span>已连接</span></div>
+  </div>
+  <p style="color:#646b85;font-size:12px;margin-top:10px">✦ 代码区永远深色（深色岛屿） · shiki 语法高亮 · 生成按钮有加载/成功/失败三态</p>
+</div>
+
+<!-- SETTINGS -->
+<div id="tab-settings" class="tab-panel">
+  <div class="app-frame">
+    <div class="m-titlebar">
+      <div class="m-tb-left"><div class="m-logo">◈</div><span class="m-appname">渊渟</span><span class="m-appsub">ABYSS</span></div>
+      <div class="m-tb-right"><button class="m-tb-btn">🌙</button><button class="m-tb-btn">ZH</button><div class="m-wc"><button class="m-wc-btn">−</button><button class="m-wc-btn">□</button><button class="m-wc-close m-wc-btn">✕</button></div></div>
+    </div>
+    <div class="m-body">
+      <div class="m-sidebar">
+        <div class="m-nav">
+          <a class="m-nav-item"><span class="m-nav-icon">⌂</span><span class="m-nav-label">首页</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">📁</span><span class="m-nav-label">项目</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">📦</span><span class="m-nav-label">载荷</span></a>
+          <a class="m-nav-item"><span class="m-nav-icon">🧩</span><span class="m-nav-label">插件</span></a>
+          <a class="m-nav-item active"><span class="m-nav-icon">⚙</span><span class="m-nav-label">设置</span></a>
+        </div>
+        <button class="m-collapse-btn"><span>‹‹</span><span>折叠</span></button>
+      </div>
+      <div class="m-content">
+        <div class="settings-view">
+          <div class="settings-nav">
+            <button class="settings-item active">🎨 外观</button>
+            <button class="settings-item">🌐 连接</button>
+            <button class="settings-item">🔒 安全</button>
+            <button class="settings-item">📄 日志</button>
+            <button class="settings-item">💾 备份</button>
+            <button class="settings-item">ℹ 关于</button>
+          </div>
+          <div class="settings-content">
+            <div class="section-heading">外观</div>
+            <div class="settings-card">
+              <div class="settings-card-title">主题</div>
+              <div class="theme-cards">
+                <div class="theme-card"><div class="theme-preview dark"></div><div class="theme-label">深色</div></div>
+                <div class="theme-card active"><div class="theme-preview system"></div><div class="theme-label">跟随系统 ✓</div></div>
+                <div class="theme-card"><div class="theme-preview light"></div><div class="theme-label">浅色</div></div>
+              </div>
+            </div>
+            <div class="settings-card">
+              <div class="settings-card-title">强调色</div>
+              <div class="accent-row">
+                <div class="accent-dot selected" style="background:#4f9cff;color:#fff">✓</div>
+                <div class="accent-dot" style="background:#22d3ee"></div>
+                <div class="accent-dot" style="background:#a78bfa"></div>
+                <div class="accent-dot" style="background:#f472b6"></div>
+                <div class="accent-dot" style="background:#fb923c"></div>
+                <div class="accent-dot" style="background:#4ade80"></div>
+              </div>
+            </div>
+            <div class="settings-card">
+              <div class="settings-card-title">字体大小</div>
+              <div style="display:flex;gap:8px">
+                <button class="radio-btn">12px</button>
+                <button class="radio-btn active">13px</button>
+                <button class="radio-btn">14px</button>
+                <button class="radio-btn">15px</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-statusbar"><div class="m-status-dot"></div><span>未连接</span></div>
+  </div>
+  <p style="color:#646b85;font-size:12px;margin-top:10px">✦ 主题选择卡片式（含缩略图预览） · 强调色圆点有选中勾 · 设置补全6个面板</p>
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

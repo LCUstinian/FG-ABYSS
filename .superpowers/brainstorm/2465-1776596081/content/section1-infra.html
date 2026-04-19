@@ -1,0 +1,97 @@
+<h2>Section 1: 基础设施层修复设计</h2>
+<p class="subtitle">全局契约先行 — 这四项修复是所有视图 bug 的共同根治</p>
+
+<div class="section">
+  <h3>① Tauri 权限修复</h3>
+  <div style="background:#1a1c26;border-radius:8px;padding:16px;font-family:monospace;font-size:13px;color:#e2e8f0;margin-top:8px">
+    <span style="color:#64748b">// src-tauri/capabilities/default.json</span><br>
+    <span style="color:#94a3b8">"permissions": [</span><br>
+    &nbsp;&nbsp;<span style="color:#4ade80">"core:default"</span>,<br>
+    &nbsp;&nbsp;<span style="color:#4ade80">"core:window:allow-minimize"</span>,<br>
+    &nbsp;&nbsp;<span style="color:#4ade80">"core:window:allow-toggle-maximize"</span>,<br>
+    &nbsp;&nbsp;<span style="color:#4ade80">"core:window:allow-close"</span>,<br>
+    &nbsp;&nbsp;<span style="color:#4ade80">"core:window:allow-create"</span>,<br>
+    &nbsp;&nbsp;<span style="color:#4ade80">"core:window:allow-set-focus"</span>,<br>
+    &nbsp;&nbsp;<span style="color:#f59e0b;font-weight:bold">"core:window:allow-start-dragging"</span> <span style="color:#64748b">← 新增，修复标题栏拖动</span><br>
+    <span style="color:#94a3b8">]</span>
+  </div>
+</div>
+
+<div class="section">
+  <h3>② 滚动容器契约（Scroll Contract）</h3>
+  <p style="color:var(--text-secondary,#94a3b8);font-size:13px;margin:8px 0 12px">
+    当前问题：多层 <code style="background:#1a1c26;padding:2px 5px;border-radius:3px">overflow:hidden</code> 嵌套，导致内容被裁剪、点击无法穿透。新规则：
+  </p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div style="background:#1a1c26;border-radius:8px;padding:16px;border:1px solid #ef444433">
+      <div style="color:#f87171;font-weight:600;margin-bottom:8px">❌ 现在（有问题）</div>
+      <div style="font-family:monospace;font-size:12px;color:#94a3b8;line-height:1.8">
+        .app-shell <span style="color:#f87171">overflow:hidden</span><br>
+        └─ .app-main <span style="color:#f87171">overflow:hidden</span><br>
+        &nbsp;&nbsp;&nbsp;└─ .content-area <span style="color:#f87171">overflow:hidden</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ .home-view <span style="color:#f59e0b">overflow-y:auto</span> ✓<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ .payload-view <span style="color:#f87171">无滚动 ✗</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ .plugin-view &nbsp;<span style="color:#f87171">无滚动 ✗</span>
+      </div>
+    </div>
+    <div style="background:#1a1c26;border-radius:8px;padding:16px;border:1px solid #4ade8033">
+      <div style="color:#4ade80;font-weight:600;margin-bottom:8px">✅ 修复后（统一规则）</div>
+      <div style="font-family:monospace;font-size:12px;color:#94a3b8;line-height:1.8">
+        .app-shell <span style="color:#4ade80">overflow:hidden</span> 边界<br>
+        └─ .app-main <span style="color:#4ade80">overflow:hidden</span> 边界<br>
+        &nbsp;&nbsp;&nbsp;└─ .content-area <span style="color:#4ade80">overflow:hidden</span> 边界<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <b>每个 View 自己负责滚动</b><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;overflow-y:auto + height:100%
+      </div>
+    </div>
+  </div>
+  <p style="color:#60a5fa;font-size:12px;margin-top:12px">
+    📌 规则：框架层只做 <code style="background:#1a1c26;padding:2px 5px;border-radius:3px">overflow:hidden</code> 边界，滚动由各视图自己管理。
+  </p>
+</div>
+
+<div class="section">
+  <h3>③ z-index 层级规范</h3>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <div style="background:#1a1c26;border-radius:6px;padding:10px 14px;text-align:center">
+      <div style="font-size:11px;color:#64748b;margin-bottom:4px">LAYER 0</div>
+      <div style="font-size:12px;color:#e2e8f0">页面内容</div>
+      <div style="font-size:11px;color:#4ade80">z-index: auto</div>
+    </div>
+    <div style="color:#64748b;align-self:center">→</div>
+    <div style="background:#1a1c26;border-radius:6px;padding:10px 14px;text-align:center">
+      <div style="font-size:11px;color:#64748b;margin-bottom:4px">LAYER 1</div>
+      <div style="font-size:12px;color:#e2e8f0">Sidebar / Titlebar</div>
+      <div style="font-size:11px;color:#4ade80">z-index: 10</div>
+    </div>
+    <div style="color:#64748b;align-self:center">→</div>
+    <div style="background:#1a1c26;border-radius:6px;padding:10px 14px;text-align:center">
+      <div style="font-size:11px;color:#64748b;margin-bottom:4px">LAYER 2</div>
+      <div style="font-size:12px;color:#e2e8f0">浮动面板 / Dropdown</div>
+      <div style="font-size:11px;color:#4ade80">z-index: 100</div>
+    </div>
+    <div style="color:#64748b;align-self:center">→</div>
+    <div style="background:#1a1c26;border-radius:6px;padding:10px 14px;text-align:center">
+      <div style="font-size:11px;color:#64748b;margin-bottom:4px">LAYER 3</div>
+      <div style="font-size:12px;color:#e2e8f0">Toast / Dialog</div>
+      <div style="font-size:11px;color:#4ade80">z-index: 1000+</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>④ 视图高度基准</h3>
+  <div style="background:#1a1c26;border-radius:8px;padding:14px;font-family:monospace;font-size:12px;color:#e2e8f0">
+    <span style="color:#64748b">/* styles/app-shell.css — 新增 CSS 变量 */</span><br>
+    <span style="color:#60a5fa">:root</span> {<br>
+    &nbsp;&nbsp;<span style="color:#f59e0b">--titlebar-h</span>: 48px;<br>
+    &nbsp;&nbsp;<span style="color:#f59e0b">--statusbar-h</span>: 28px;<br>
+    &nbsp;&nbsp;<span style="color:#f59e0b">--content-h</span>: calc(100vh - var(--titlebar-h) - var(--statusbar-h));<br>
+    }<br><br>
+    <span style="color:#64748b">/* 所有顶层视图统一使用 */</span><br>
+    <span style="color:#60a5fa">.view-root</span> { height: var(--content-h); overflow: hidden; }
+  </div>
+  <p style="color:#94a3b8;font-size:12px;margin-top:8px">各 View 的根元素改用 <code style="background:#1a1c26;padding:2px 4px;border-radius:3px">.view-root</code> 语义类，高度来源统一，不再依赖隐式继承。</p>
+</div>
+
+<p style="color:#94a3b8;font-size:13px;margin-top:8px">👆 以上 4 项是基础设施层。确认后我展示第二部分：导航与标题栏细节设计。</p>

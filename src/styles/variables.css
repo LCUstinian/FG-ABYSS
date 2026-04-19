@@ -16,6 +16,19 @@
   padding: 0;
 }
 
+/* Global cursor rules */
+button, [role="button"], [tabindex="0"],
+a, label[for], select { cursor: pointer; }
+input, textarea { cursor: text; }
+[disabled], [aria-disabled="true"] { cursor: not-allowed; opacity: 0.38; pointer-events: none; }
+
+/* Focus ring — never naked outline: none */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-bg), 0 0 0 1px var(--accent);
+  border-radius: 4px;
+}
+
 html, body, #app {
   height: 100%;
   overflow: hidden;

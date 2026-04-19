@@ -17,10 +17,12 @@
     <!-- Right panels -->
     <div class="settings-content">
       <h2 class="section-heading">{{ currentLabel }}</h2>
-      <AppearancePanel v-if="activeSection === 'appearance'" />
-      <div v-else class="placeholder-panel">
-        <span style="color: var(--text-3); font-size: 13px">{{ currentLabel }} — 配置项待实现</span>
-      </div>
+      <AppearancePanel  v-if="activeSection === 'appearance'" />
+      <ConnectionPanel  v-else-if="activeSection === 'connection'" />
+      <SecurityPanel    v-else-if="activeSection === 'security'" />
+      <LogsPanel        v-else-if="activeSection === 'logs'" />
+      <BackupPanel      v-else-if="activeSection === 'backup'" />
+      <AboutPanel       v-else-if="activeSection === 'about'" />
     </div>
   </div>
 </template>
@@ -29,6 +31,11 @@
 import { ref, computed } from 'vue'
 import { Palette, Wifi, ShieldCheck, ScrollText, Archive, Info } from 'lucide-vue-next'
 import AppearancePanel from './AppearancePanel.vue'
+import ConnectionPanel from './ConnectionPanel.vue'
+import SecurityPanel   from './SecurityPanel.vue'
+import LogsPanel       from './LogsPanel.vue'
+import BackupPanel     from './BackupPanel.vue'
+import AboutPanel      from './AboutPanel.vue'
 
 const activeSection = ref('appearance')
 
